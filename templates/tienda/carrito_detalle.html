@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Carrito{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Carrito</h1>
+{% if items %}
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+      <th>Subtotal</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for it in items %}
+    <tr>
+      <td>{{ it.product.name }}</td>
+      <td>
+        <form action="{% url 'carrito_actualizar' it.product.id %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <input type="number" name="qty" value="{{ it.qty }}" min="0" style="width:70px">
+          <button type="submit" class="btn btn--soft">Actualizar</button>
+        </form>
+      </td>
+      <td>{{ it.product.price }}</td>
+      <td>{{ it.subtotal }}</td>
+      <td>
+        <form action="{% url 'carrito_eliminar' it.product.id %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn--soft">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><strong>Total:</strong> {{ total }}</p>
+<form action="{% url 'carrito_vaciar' %}" method="post" style="display:inline">
+  {% csrf_token %}
+  <button type="submit" class="btn btn--soft">Vaciar carrito</button>
+</form>
+<a href="{% url 'checkout' %}" class="btn btn--primary">Proceder al pago</a>
+{% else %}
+<p>Tu carrito está vacío.</p>
+{% endif %}
+</div>
+{% endblock %}

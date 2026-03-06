@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ingresar - Stiman Dessert{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+  .login-container { max-width:500px; margin:100px auto 40px; background:#fff; border-radius:14px; box-shadow:0 8px 30px rgba(0,0,0,.08); overflow:hidden; }
+  .login-header { background: linear-gradient(135deg, #ff4081, #e91e63); color:#fff; padding:28px; text-align:center; }
+  .login-header h1 { margin:0; font-size:28px; margin-bottom:8px; }
+  .login-header p { margin:0; opacity:.9; }
+  .login-body { padding:28px; }
+  .form-group { margin-bottom:18px; }
+  .form-group label { display:block; margin-bottom:6px; font-weight:600; color:#222; font-size:13px; text-transform:uppercase; }
+  .form-group input { width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:6px; font-size:14px; font-family:inherit; }
+  .form-group input:focus { outline:none; border-color:#ff6ea6; box-shadow:0 0 0 3px rgba(255,110,166,0.1); }
+  .form-group .errorlist { background:#fee2e2; border-left:4px solid #ef4444; padding:8px 12px; border-radius:6px; list-style:none; margin-top:6px; }
+  .form-group .errorlist li { color:#b91c1c; font-weight:500; }
+  .login-btn { width:100%; background: linear-gradient(135deg, #ff4081, #e91e63); color:#fff; border:none; padding:12px; border-radius:6px; font-weight:600; font-size:15px; cursor:pointer; transition:all 0.3s ease; margin-top:12px; }
+  .login-btn:hover { background: linear-gradient(135deg, #e91e63, #c2185b); transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,64,129,.3); }
+  .login-footer { text-align:center; padding:20px 28px; border-top:1px solid #f1d1df; background:#fafafa; }
+  .login-footer p { margin:8px 0; color:#666; font-size:14px; }
+  .login-footer a { color:#ff6ea6; text-decoration:none; font-weight:600; }
+  .login-footer a:hover { text-decoration:underline; }
+  .auth-link { color:#ff6ea6; text-decoration:none; font-size:13px; font-weight:500; display:inline-block; margin-top:10px; }
+  .auth-link:hover { text-decoration:underline; }
+  @media (max-width:600px) { .login-container { margin:60px 16px 40px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-header">
+    <h1>🔐 Ingresar</h1>
+    <p>Accede a tu cuenta en Stiman Dessert</p>
+  </div>
+
+  <div class="login-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="errorlist">
+            {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <div class="errorlist">
+            {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div style="background:#fee2e2; border-left:4px solid #ef4444; padding:12px; border-radius:6px; margin-bottom:18px;">
+          {% for error in form.non_field_errors %}
+            <div style="color:#b91c1c; font-weight:500;">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <button type="submit" class="login-btn">Entrar</button>
+      <a href="{% url 'password_reset' %}" class="auth-link">¿Olvidaste tu contraseña?</a>
+    </form>
+  </div>
+
+  <div class="login-footer">
+    <p>¿No tienes cuenta? <a href="{% url 'signup' %}">Regístrate aquí</a></p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}
+

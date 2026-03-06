@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<div class="container">
+<h1>Checkout</h1>
+<table class="admin-table">
+  <thead>
+    <tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr>
+  </thead>
+  <tbody>
+    {% for it in items %}
+    <tr>
+      <td>{{ it.product.name }}</td>
+      <td>{{ it.qty }}</td>
+      <td>{{ it.subtotal }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p><strong>Total a pagar:</strong> {{ total }}</p>
+<h2>Paga con Nequi</h2>
+<p>Envía el total a Nequi: <strong>{{ nequi_number }}</strong></p>
+<p>Referencia: tu usuario {{ request.user.username|default:"invitado" }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn--primary">He realizado el pago</button>
+</form>
+</div>
+{% endblock %}

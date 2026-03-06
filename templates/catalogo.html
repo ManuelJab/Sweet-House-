@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Catálogo - Stiman Dessert{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}">{% endblock %}
+{% block content %}
+
+<section class="hero-catalogo">
+  <div class="hero-content container">
+    <h1>Nuestro Catálogo de Postres</h1>
+    <p><i class="bi bi-circle-fill"></i> Descubre Todos Nuestros Deliciosos Postres Artesanales <i
+        class="bi bi-circle-fill"></i></p>
+  </div>
+</section>
+
+<section id="catalogo" class="catalogo-section">
+  {% if postres_especiales %}
+  <section class="especiales-section container">
+    <h2 class="especiales-title">Tortas y postres para eventos especiales</h2>
+    <div class="especiales-list">
+      {% for s in postres_especiales %}
+      <div class="especial-card">
+        <span class="badge-especial">Especial</span>
+        <a class="especial-thumb" href="#" aria-label="{{ s.name }}">
+          {% if s.image %}
+          <img src="{{ s.image.url }}" alt="{{ s.name }}">
+          {% else %}
+          <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ s.name }}">
+          {% endif %}
+        </a>
+        <div class="especial-body">
+          <h4 class="especial-title">{{ s.name }}</h4>
+          <p class="especial-price">${{ s.price }}</p>
+          <form action="{% url 'carrito_agregar' s.id %}" method="post" class="producto-actions">
+            {% csrf_token %}
+            <input type="number" name="qty" value="1" min="1" class="qty-input">
+            <button type="submit" class="btn btn--secondary">Agregar</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+  <div class="productos-grid container">
+    {% for p in productos %}
+    <div class="producto card-ui">
+      {% if p.image %}
+      <img src="{{ p.image.url }}" alt="{{ p.name }}">
+      {% else %}
+      <img src="{% static 'img/' %}{{ p.name|slugify }}.jpg" alt="{{ p.name }}"
+        onerror="this.onerror=null;this.src='{% static 'img/cheesecake.jpeg' %}';">
+      {% endif %}
+      <div class="producto-info">
+        <h3>{{ p.name }}</h3>
+        <p class="descripcion">{{ p.description|default:'Delicioso postre artesanal.' }}</p>
+        <p class="precio">${{ p.price }}</p>
+        <div style="margin-bottom:8px;">
+          <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" aria-label="Agregar a favoritos"><i
+              class="bi bi-heart-fill"></i> Favorito</a>
+        </div>
+        <form action="{% url 'carrito_agregar' p.id %}" method="post">
+          {% csrf_token %}
+          <button class="btn btn--primary">Agregar al Carrito</button>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <p>No hay productos disponibles.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<div id="carrito-modal" class="modal">
+  <div class="modal-contenido carrito-imagen">
+    <span class="cerrar">&times;</span>
+    <div class="carrito-visual">
+      <img src="./img/carrito_compra.png" alt="Carrito de Compras" class="carrito-grande">
+      <h3>¡Productos agregados al carrito!</h3>
+      <p>Revisa tu pedido y procede al pago</p>
+      <a href="{% url 'carrito_detalle' %}" id="ir-checkout" class="btn-checkout">Ver Carrito y Pagar</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}

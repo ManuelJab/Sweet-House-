@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contacto - Stiman Dessert{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contacto.css' %}">{% endblock %}
+{% block content %}
+
+<!-- SECCIÓN DE CONTACTO -->
+<section id="contacto" class="contact-container">
+    <h1><i class="bi bi-telephone-fill"></i> ¡Contáctanos!</h1>
+
+    <div class="contact-grid">
+        <!-- Oficina -->
+        <div class="contact-card">
+            <div class="card-header">
+                <span class="card-icon"><i class="bi bi-building"></i></span>
+                <h3>Nuestra Oficina</h3>
+            </div>
+            <div class="card-content">
+                <p><strong><i class="bi bi-geo-alt-fill"></i> Dirección:</strong></p>
+                <p>Calle 123 # 45-67</p>
+                <p>Cartagena, Colombia</p>
+            </div>
+        </div>
+
+        <!-- Contacto directo -->
+        <div class="contact-card">
+            <div class="card-header">
+                <span class="card-icon"><i class="bi bi-phone-fill"></i></span>
+                <h3>Contáctanos</h3>
+            </div>
+            <div class="card-content">
+                <p><strong><i class="bi bi-envelope-fill"></i> Email:</strong></p>
+                <p><a href="mailto:contacto@stimandessert.com">contacto@stimandessert.com</a></p>
+                <p><strong><i class="bi bi-telephone-fill"></i> Teléfono:</strong></p>
+                <p><a href="tel:+573000000000">+57 300 000 0000</a></p>
+            </div>
+        </div>
+
+        <!-- Horarios -->
+        <div class="contact-card">
+            <div class="card-header">
+                <span class="card-icon"><i class="bi bi-clock-fill"></i></span>
+                <h3>Horarios de Atención</h3>
+            </div>
+            <div class="card-content">
+                <p><strong>Lunes a Viernes:</strong> 9:00 AM - 5:00 PM</p>
+                <p><strong>Sábado:</strong> 09:00 AM - 4:00 PM</p>
+                <p><strong>Domingo:</strong> 10:00 AM - 2:00 PM</p>
+                <p><strong>Feriados:</strong> 10:00 AM - 2:00 PM</p>
+            </div>
+        </div>
+
+        <!-- Entregas -->
+        <div class="contact-card delivery-card">
+            <div class="card-header">
+                <span class="card-icon"><i class="bi bi-truck"></i></span>
+                <h3>Horario de Entrega</h3>
+            </div>
+            <div class="card-content">
+                <p><strong><i class="bi bi-truck"></i> Entregas:</strong> 9:00 AM - 5:00 PM</p>
+                <p><strong><i class="bi bi-box-seam-fill"></i> Tiempo estimado:</strong>30 minutos</p>
+                <p><strong><i class="bi bi-star-fill"></i> Pedidos especiales:</strong> Con 24h de anticipación</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/573015096797" class="whatsapp-flotante" target="_blank">
+    <img src="{% static 'img/whatsapp.jpeg' %}" alt="WhatsApp">
+</a>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/app.js' %}"></script>
+{% endblock %}

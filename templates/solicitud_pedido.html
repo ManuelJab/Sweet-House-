@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solicitud de pedido - Stiman Dessert{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+  /* Contenedor principal */
+  body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0e6f0 100%);
+  }
+
+  /* Card del formulario */
+  .solicitud-form {
+    max-width: 900px;
+    margin: 100px auto 40px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.15);
+    border: 2px solid #ffe0ed;
+    animation: slideDown 0.6s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .solicitud-form h1 {
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  .solicitud-form p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+  }
+
+  /* Grid del formulario */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-grid .full {
+    grid-column: 1 / -1;
+  }
+
+  /* Labels y campos */
+  .form-grid label {
+    display: block;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    text-transform: capitalize;
+  }
+
+  .form-grid input[type="text"],
+  .form-grid input[type="email"],
+  .form-grid input[type="tel"],
+  .form-grid input[type="number"],
+  .form-grid select,
+  .form-grid textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #ffe0ed;
+    border-radius: 12px;
+    background: #fff9fc;
+    font-size: 0.95rem;
+    color: #333;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .form-grid textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
+
+  .form-grid input:focus,
+  .form-grid select:focus,
+  .form-grid textarea:focus {
+    outline: none;
+    border-color: #ff4081;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 64, 129, 0.1);
+  }
+
+  /* Texto de ayuda */
+  .form-help {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 6px;
+  }
+
+  /* Botón enviar */
+  .submit-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 12px 30px rgba(233, 30, 99, 0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(233, 30, 99, 0.35);
+  }
+
+  .submit-btn:active {
+    transform: translateY(-1px);
+  }
+
+  /* Errores */
+  .field-error {
+    color: #d32f2f;
+    background: #ffebee;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    border-left: 4px solid #d32f2f;
+  }
+
+  /* Sección historial */
+  .historial-section {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.1);
+    border: 2px solid #ffe0ed;
+  }
+
+  .historial-section h2 {
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+
+  .solicitud-item {
+    background: linear-gradient(135deg, #fff9fc 0%, #fff5f9 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 5px solid #ff4081;
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .solicitud-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.15);
+  }
+
+  .solicitud-item strong {
+    color: #e91e63;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+  }
+
+  .solicitud-item p {
+    margin: 10px 0;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  .solicitud-meta {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .solicitud-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .no-solicitudes {
+    text-align: center;
+    padding: 30px 20px;
+    color: #999;
+    font-size: 1.05rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 780px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .solicitud-form {
+      margin: 100px 16px 40px;
+      padding: 24px;
+    }
+
+    .solicitud-form h1 {
+      font-size: 1.8rem;
+    }
+
+    .historial-section {
+      margin: 40px 16px;
+      padding: 24px;
+    }
+
+    .solicitud-meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="solicitud-form">
+  <h1><i class="bi bi-clipboard-check"></i> Solicitud de pedido</h1>
+  <p>Completa los datos para que podamos contactarte y procesar tu pedido.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-grid">
+      <div>
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% if form.name.errors %}<div class="field-error">{{ form.name.errors }}</div>{% endif %}
+      </div>
+      <div>
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% if form.email.errors %}<div class="field-error">{{ form.email.errors }}</div>{% endif %}
+      </div>
+
+      <div>
+        {{ form.phone.label_tag }}
+        {{ form.phone }}
+      </div>
+      <div>
+        {{ form.address.label_tag }}
+        {{ form.address }}
+      </div>
+
+      <div>
+        {{ form.product.label_tag }}
+        {{ form.product }}
+      </div>
+      <div>
+        {{ form.quantity.label_tag }}
+        {{ form.quantity }}
+      </div>
+
+      <div class="full">
+        {{ form.notes.label_tag }}
+        {{ form.notes }}
+      </div>
+
+      <div>
+        {{ form.size.label_tag }}
+        {{ form.size }}
+      </div>
+      <div>
+        {{ form.occasion.label_tag }}
+        {{ form.occasion }}
+      </div>
+      <div>
+        {{ form.event_date.label_tag }}
+        {{ form.event_date }}
+      </div>
+      <div>
+        {{ form.event_message.label_tag }}
+        {{ form.event_message }}
+      </div>
+    </div>
+
+    <div style="margin-top: 18px;">
+      <button type="submit" class="submit-btn"><i class="bi bi-check-lg"></i> Enviar solicitud</button>
+    </div>
+  </form>
+</div>
+
+{% if solicitudes_guardadas %}
+<div class="historial-section">
+  <h2><i class="bi bi-clipboard-check"></i> Tus solicitudes guardadas</h2>
+  {% for solicitud in solicitudes_guardadas %}
+  <div class="solicitud-item">
+    <strong><i class="bi bi-cake2-fill"></i> {{ solicitud.product_name }} - Cantidad: {{ solicitud.quantity }}</strong>
+    <div style="margin:6px 0;">
+      <span style="background:#fff0f5; padding:6px 10px; border-radius:999px; font-weight:600;">Estado:
+        {% if solicitud.status == 'recibido' %}Pedido recibido{% elif solicitud.status == 'preparacion' %}En
+        preparación{% elif solicitud.status == 'envio' %}En camino{% else %}Entregado{% endif %}
+      </span>
+    </div>
+    <p>{{ solicitud.notes|truncatewords:20 }}</p>
+    <div class="solicitud-meta">
+      <span><i class="bi bi-calendar-event"></i> {{ solicitud.created_at|date:"d/m/Y H:i" }}</span>
+      <span><i class="bi bi-person-fill"></i> {{ solicitud.name }}</span>
+      <span><i class="bi bi-telephone-fill"></i> {{ solicitud.phone }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% elif email_filter %}
+<div class="historial-section">
+  <div class="no-solicitudes">
+    <p>No tienes solicitudes guardadas aún. ¡Envía tu primera solicitud arriba!</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

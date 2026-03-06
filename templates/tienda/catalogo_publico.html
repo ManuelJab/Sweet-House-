@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Catálogo - Stiman Dessert{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=3">
+{% endblock %}
+{% block content %}
+
+<section class="hero-catalogo">
+	<div class="hero-content container">
+		<h1>Nuestro Catálogo de Postres</h1>
+		<p><i class="bi bi-circle-fill"></i> Descubre todos nuestros deliciosos postres artesanales <i class="bi bi-circle-fill"></i></p>
+	</div>
+</section>
+
+<section id="catalogo" class="catalogo-section">
+	<div class="catalogo-filtro-container container">
+		<button class="btn-catalogo-dropdown" id="btn-catalogo-dropdown" aria-expanded="false">
+			<span class="btn-icon"><i class="bi bi-grid-fill"></i></span>
+			<span class="btn-text">Catálogo</span>
+			<span class="btn-arrow">▼</span>
+		</button>
+		<div class="categoria-dropdown" id="categoria-dropdown" role="menu" aria-label="Categorías de postres">
+			<button class="categoria-option active" data-filter="todos" role="menuitem">
+				<span class="option-icon"><i class="bi bi-grid-fill"></i></span>
+				<span>Todos</span>
+			</button>
+			{% if postres_especiales %}
+			<button class="categoria-option" data-filter="especiales" role="menuitem">
+				<span class="option-icon"><i class="bi bi-star-fill"></i></span>
+				<span>Especiales</span>
+			</button>
+			{% endif %}
+			<button class="categoria-option" data-filter="postres" role="menuitem">
+				<span class="option-icon"><i class="bi bi-cake2-fill"></i></span>
+				<span>Postres</span>
+			</button>
+			<button class="categoria-option" data-filter="flanes" role="menuitem">
+				<span class="option-icon"><i class="bi bi-pie-chart-fill"></i></span>
+				<span>Flanes</span>
+			</button>
+			<button class="categoria-option" data-filter="tortas_frias" role="menuitem">
+				<span class="option-icon"><i class="bi bi-snow"></i></span>
+				<span>Tortas frías</span>
+			</button>
+			<button class="categoria-option" data-filter="pudines" role="menuitem">
+				<span class="option-icon"><i class="bi bi-cup-fill"></i></span>
+				<span>Pudines</span>
+			</button>
+		</div>
+	</div>
+	{% if postres_especiales %}
+	<section class="especiales-section container">
+		<h2 class="especiales-title">Tortas y postres para eventos especiales</h2>
+		<div class="especiales-list">
+			{% for s in postres_especiales %}
+			<div class="especial-card"
+				data-ingredients="{% if s.ingredients %}{{ s.ingredients }}{% elif s.description %}{{ s.description }}{% else %}{% endif %}"
+				data-product-name="{{ s.name }}" data-description="{{ s.description|default:'' }}">
+				<span class="badge-especial">Especial</span>
+				<a class="especial-thumb" href="#" aria-label="{{ s.name }}">
+					{% if s.image %}
+					<img src="{{ s.image.url }}" alt="{{ s.name }}">
+					{% else %}
+					<img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ s.name }}">
+					{% endif %}
+				</a>
+				<div class="especial-body">
+					<h4 class="especial-title">{{ s.name }}</h4>
+					<p class="especial-price">${{ s.price }}</p>
+					{% if request.user.is_staff %}
+					<div style="margin-bottom: 8px;">
+						<a href="{% url 'producto_update' s.id %}?next={{ request.path }}" class="btn-admin-edit"
+							style="font-size: 0.8rem; padding: 4px 8px;">
+							<i class="bi bi-pencil-fill"></i> Editar
+						</a>
+					</div>
+					{% endif %}
+					<form action="{% url 'carrito_agregar' s.id %}" method="post" class="producto-actions">
+						{% csrf_token %}
+						<input type="number" name="qty" value="1" min="1" class="qty-input">
+						<button type="submit" class="btn btn--secondary">Agregar</button>
+					</form>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</section>
+	{% endif %}
+	<div class="productos-grid container">
+		{% for p in productos %}
+		<div class="product-card producto"
+			data-categoria="{% if 'flan' in p.name|lower %}flanes{% elif p.category == 'galleta' %}galletas{% elif p.category == 'pudin' %}pudines{% else %}postres{% endif %}"
+			data-ingredients="{% if p.ingredients %}{{ p.ingredients }}{% elif p.description %}{{ p.description }}{% else %}{% endif %}"
+			data-product-name="{{ p.name }}" data-description="{{ p.description|default:'' }}">
+			{% if p.is_special %}
+			<span class="badge-especial">Especial</span>
+			{% endif %}
+			<a class="producto-thumb" href="#" aria-label="{{ p.name }}">
+				{% if p.image %}
+				<img src="{{ p.image.url }}" alt="{{ p.name }}">
+				{% else %}
+				<img src="{% static 'img/' %}{{ p.name|slugify }}.jpg" alt="{{ p.name }}"
+					onerror="this.onerror=null;this.src='{% static 'img/cheesecake.jpeg' %}';">
+				{% endif %}
+			</a>
+			<div class="card-body">
+				<h3 class="card-title">{{ p.name }}</h3>
+				<p class="card-price">${{ p.price }}</p>
+				{% if request.user.is_staff %}
+				<div style="margin-bottom: 8px;">
+					<a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn-admin-edit">
+						<i class="bi bi-pencil-fill"></i> Editar (Admin)
+					</a>
+				</div>
+				{% endif %}
+				<div class="card-actions">
+					<form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:inline;">
+						{% csrf_token %}
+						<button type="submit" class="btn btn--primary">Agregar al Carrito</button>
+					</form>
+					<a href="{% url 'favoritos_toggle' p.id %}" class="btn-fav-link">Quitar <i
+							class="bi bi-heart-fill"></i></a>
+				</div>
+			</div>
+		</div>
+		{% empty %}
+		<p>No hay productos disponibles.</p>
+		{% endfor %}
+	</div>
+
+	<!-- Modal de ingredientes -->
+	<div id="ingredients-modal" class="ingredients-modal">
+		<p class="ingredients-modal-title" id="ingredients-modal-title"></p>
+		<p class="ingredients-modal-desc" id="ingredients-modal-desc"></p>
+		<p class="ingredients-modal-subtitle"><i class="bi bi-list-check"></i> Ingredientes</p>
+		<ul class="ingredients-list" id="ingredients-modal-list"></ul>
+	</div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/catalogo.js' %}?v=5"></script>
+{% endblock %}

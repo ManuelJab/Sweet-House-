@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}{% if is_create %}Nuevo Producto{% else %}Editar Producto{% endif %}{% endblock %}
+{% block content %}
+<section class="admin-form">
+	<div class="admin-card">
+		<h1>{% if is_create %}Nuevo Producto{% else %}Editar Producto{% endif %}</h1>
+		<p class="form-description">Completa la información del producto. Previsualiza la imagen y valida los campos
+			antes de guardar.</p>
+		<form method="post" enctype="multipart/form-data" class="admin-form-body form-grid" id="producto-form">
+			{% csrf_token %}
+			{% if back_url %}
+			<input type="hidden" name="next" value="{{ back_url }}">
+			{% endif %}
+
+			{% if form.non_field_errors %}
+			<div class="message error">
+				{{ form.non_field_errors }}
+			</div>
+			{% endif %}
+
+			<p class="form-item">
+				<label for="id_name" class="form-label">{{ form.name.label }}</label>
+				{{ form.name }}
+				<small class="hint">{{ form.name.help_text }}</small>
+				{% if form.name.errors %}
+				<small class="error">{{ form.name.errors|striptags }}</small>
+				{% endif %}
+			</p>
+			<p class="form-item">
+				<label for="id_price" class="form-label">{{ form.price.label }}</label>
+			<div class="price-input">
+				<span class="currency-chip">$</span>
+				{{ form.price }}
+			</div>
+			<small class="hint">{{ form.price.help_text }}</small>
+			{% if form.price.errors %}
+			<small class="error">{{ form.price.errors|striptags }}</small>
+			{% endif %}
+			</p>
+			<p class="form-item form-span-2">
+				<label for="id_description" class="form-label">{{ form.description.label }}</label>
+				{{ form.description }}
+			<div class="char-counter"><small id="desc-counter">0/600</small></div>
+			<small class="hint">{{ form.description.help_text }}</small>
+			{% if form.description.errors %}
+			<small class="error">{{ form.description.errors|striptags }}</small>
+			{% endif %}
+			</p>
+			<p class="form-item form-span-2">
+				<label for="id_ingredients" class="form-label">{{ form.ingredients.label }}</label>
+				{{ form.ingredients }}
+				<small class="hint">{{ form.ingredients.help_text }}</small>
+				{% if form.ingredients.errors %}
+				<small class="error">{{ form.ingredients.errors|striptags }}</small>
+				{% endif %}
+			</p>
+			<p class="form-item">
+				<label for="id_image" class="form-label">{{ form.image.label }}</label>
+			<div id="image-dropzone" class="dropzone">
+				{{ form.image }}
+				<div class="dz-help">Arrastra y suelta una imagen o haz clic para seleccionar</div>
+			</div>
+			<small class="hint">{{ form.image.help_text }}</small>
+			{% if form.image.errors %}
+			<small class="error">{{ form.image.errors|striptags }}</small>
+			{% endif %}
+			</p>
+			<p class="form-item">
+				<label for="id_category" class="form-label">{{ form.category.label }}</label>
+				{{ form.category }}
+				<small class="hint">{{ form.category.help_text }}</small>
+				{% if form.category.errors %}
+				<small class="error">{{ form.category.errors|striptags }}</small>
+				{% endif %}
+			</p>
+			<p class="form-item switch-container">
+				<label for="id_is_special" class="form-label">{{ form.is_special.label }}</label>
+				<span class="switch">
+					{{ form.is_special }}
+					<span class="slider"></span>
+				</span>
+				{% if form.is_special.errors %}
+				<small class="error">{{ form.is_special.errors|striptags }}</small>
+				{% endif %}
+			</p>
+			<p class="form-item switch-container">
+				<label for="id_is_active" class="form-label">{{ form.is_active.label }}</label>
+				<span class="switch">
+					{{ form.is_active }}
+					<span class="slider"></span>
+				</span>
+				{% if form.is_active.errors %}
+				<small class="error">{{ form.is_active.errors|striptags }}</small>
+				{% endif %}
+			</p>
+			<div class="form-item form-preview form-span-2">
+				<img id="preview-img" src="" alt="Previsualización" class="preview-image">
+			</div>
+			<div class="admin-actions form-span-2">
+				<button type="submit" class="btn btn-primary">Guardar</button>
+				{% if back_url %}
+				<a href="{{ back_url }}" class="btn btn-secondary">Volver</a>
+				{% else %}
+				<a href="{% url 'productos_list' %}" class="btn btn-secondary">Volver</a>
+				{% endif %}
+			</div>
+		</form>
+	</div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+	(function () {
+		// Preview de imagen
+		const input = document.getElementById('id_image');
+		const img = document.getElementById('preview-img');
+		function setPreview(file) {
+			if (!file) { img.style.display = 'none'; img.src = ''; return; }
+			const reader = new FileReader();
+			reader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
+			reader.readAsDataURL(file);
+		}
+		if (input) {
+			input.addEventListener('change', function () {
+				const f = this.files && this.files[0];
+				setPreview(f);
+			});
+		}
+
+		// Drag & drop para imagen
+		const dz = document.getElementById('image-dropzone');
+		if (dz && input) {
+			['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('is-over'); }));
+			['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('is-over'); }));
+			dz.addEventListener('drop', e => {
+				const file = e.dataTransfer.files && e.dataTransfer.files[0];
+				if (file) {
+					const dt = new DataTransfer();
+					dt.items.add(file);
+					input.files = dt.files;
+					setPreview(file);
+				}
+			});
+			// Focus click zona
+			dz.addEventListener('click', () => input.click());
+		}
+
+		// Contador de descripción
+		const desc = document.getElementById('id_description');
+		const counter = document.getElementById('desc-counter');
+		if (desc && counter) {
+			const update = () => { counter.textContent = `${desc.value.length}/600`; };
+			desc.addEventListener('input', update);
+			update();
+		}
+
+		// Formateo ligero de precio al perder foco (no altera el valor real)
+		const price = document.getElementById('id_price');
+		if (price) {
+			price.addEventListener('blur', () => {
+				const v = price.value.replace(/,/g, '').trim();
+				if (v && !isNaN(Number(v))) {
+					const num = Number(v);
+					price.value = num.toFixed(2);
+				}
+			});
+		}
+	})();
+</script>
+{% endblock %}

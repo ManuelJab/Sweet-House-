@@ -1,0 +1,187 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+ 
+
+/* Contenedor principal */
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Título */
+.contact-container h1 {
+  text-align: center;
+  color: #ff4081;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.contact-container h1::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: #e91e63;
+  margin: 1rem auto 0;
+  border-radius: 2px;
+}
+
+/* Grid */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* Tarjetas de contacto */
+.contact-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 16px 36px rgba(255,64,129,0.24);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.contact-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 26px 60px rgba(233,30,99,0.35);
+  border-color: #ff4081;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: #ff4081;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #ff4081;
+}
+
+.card-content p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.card-content a {
+  color: #e91e63;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.card-content a:hover {
+  color: #ff4081;
+}
+
+/* CTA */
+.cta-section {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.cta-section h2 {
+  font-size: 2rem;
+  color: #ff4081;
+  margin-bottom: 0.5rem;
+}
+
+.cta-section p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.cta-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  color: #fff;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.cta-button:hover {
+  transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 3rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+/* WhatsApp flotante */
+.whatsapp-flotante {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 1000;
+}
+
+.whatsapp-flotante img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease;
+  border: 2px solid #fff;
+}
+
+.whatsapp-flotante img:hover {
+  transform: scale(1.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 0 1rem;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.5rem;
+  }
+
+  .whatsapp-flotante {
+    width: 50px;
+    height: 50px;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .whatsapp-flotante img {
+    width: 50px;
+    height: 50px;
+  }
+}
