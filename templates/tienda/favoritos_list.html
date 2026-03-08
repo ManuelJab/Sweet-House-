@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tus favoritos{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+{% endblock %}
+{% block content %}
+<section class="favoritos-section">
+  <div class="container favoritos-header">
+    <h1 class="favoritos-title"><i class="bi bi-heart-fill" style="color:#e91e63"></i> Favoritos de tus postres</h1>
+    <p class="favoritos-subtitle">Aquí están los postres que marcaste con el corazón.</p>
+  </div>
+  {% if productos %}
+    <div class="favoritos-grid container">
+      {% for p in productos %}
+      <div class="producto card-ui">
+        {% if p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}">
+        {% else %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}">
+        {% endif %}
+        <div class="producto-info">
+          <h3>{{ p.name }}</h3>
+          <p class="precio">${{ p.price }}</p>
+          {% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}
+            <form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--primary">Agregar al Carrito</button>
+            </form>
+          {% elif request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn btn--secondary" style="margin-left:8px;"><i class="bi bi-pencil-fill"></i> Editar</a>
+          {% elif request.user.is_authenticated and request.user.is_superuser %}
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn btn--secondary" style="margin-left:8px;"><i class="bi bi-pencil-fill"></i> Editar</a>
+          {% else %}
+            {% if not request.user.is_authenticated %}
+              <a href="{% url 'login' %}" class="btn btn--primary">Agregar al Carrito</a>
+            {% endif %}
+          {% endif %}
+          <div style="margin-top:8px;">
+            {% if not request.user.is_staff and not request.user.is_superuser %}
+              <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary">❌ Quitar</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="container">
+      <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-heart" style="font-size:3rem;color:#e91e63"></i></div>
+        <h2 class="empty-title">Aún no tienes favoritos</h2>
+        <p class="empty-text">Ve al catálogo y marca tus preferidos.</p>
+        <a class="empty-cta" href="{% url 'catalogo_publico' %}">Ir al catálogo</a>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

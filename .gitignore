@@ -1,0 +1,55 @@
+# ============================================
+# Stiman Dessert - .gitignore
+# ============================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+env/
+venv/
+.venv/
+ENV/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media/
+
+# Environment variables (NEVER commit this!)
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+docker-compose.override.yml
+
+# Static files collected
+/staticfiles/
+/static_collected/
+
+# Temporary files
+temp_*.py
+temp_*.html
+temp_*.js
+*.tmp

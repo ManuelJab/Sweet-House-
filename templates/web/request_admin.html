@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Solicitar permiso de administrador{% endblock %}
+{% block content %}
+<div class="container" style="max-width:640px;margin:40px auto;">
+  <div style="border:2px solid #ff4081;padding:28px;border-radius:10px;background:#fff;">
+    <h2>Solicitar acceso de administrador</h2>
+    {% if existing and existing.status == 'pending' %}
+      <div style="background:#fff6f9;border-left:4px solid #ff9fb9;padding:10px;margin-bottom:12px;">Tienes una solicitud en revisión (estado: pendiente).</div>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div>
+        {{ form.reason.errors }}
+        {{ form.reason }}
+      </div>
+      <div style="margin-top:12px;">
+        <button class="signup-btn" type="submit">Enviar solicitud</button>
+        <a href="{% url 'dashboard' %}" style="margin-left:10px;color:#ff4081;">Volver</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

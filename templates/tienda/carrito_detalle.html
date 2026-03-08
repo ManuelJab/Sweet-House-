@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Carrito{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=3">
+{% endblock %}
+{% block content %}
+<section class="cart-page">
+  <h1 class="cart-title">Carrito</h1>
+  {% if items %}
+    <div class="cart-items-grid">
+      {% for it in items %}
+      <div class="cart-item">
+        <div>
+          {% if it.product.image %}
+            <img src="{{ it.product.image.url }}" alt="{{ it.product.name }}">
+          {% else %}
+            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ it.product.name }}">
+          {% endif %}
+        </div>
+        <div>
+          <div class="cart-item-title">{{ it.product.name }}</div>
+          <div class="cart-item-price">$ {{ it.product.price }}</div>
+          <div class="cart-item-price">Subtotal: $ {{ it.subtotal }}</div>
+        </div>
+        {% if not request.user.is_staff and not request.user.is_superuser %}
+          <div class="cart-controls">
+            <form action="{% url 'carrito_actualizar' it.product.id %}" method="post">
+              {% csrf_token %}
+              <input type="number" class="qty-input" name="qty" value="{{ it.qty }}" min="0">
+              <button type="submit" class="btn btn--primary">Actualizar</button>
+            </form>
+            <form action="{% url 'carrito_eliminar' it.product.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn-delete">Eliminar</button> 
+            </form>
+          </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="cart-total-bar">
+      <div class="cart-total-amount">Total: $ {{ total }}</div>
+      {% if not request.user.is_staff and not request.user.is_superuser %}
+      <div style="display:flex; gap:10px;">
+        <form action="{% url 'carrito_vaciar' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn-vaciar">Vaciar</button>
+        </form>
+        <a href="{% url 'checkout' %}" class="btn-checkout">Proceder al pago</a>
+      </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <img src="{% static 'img/carrito-de-compras.png' %}" alt="Carrito" class="empty-cart-illustration">
+      </div>
+      <h2 class="empty-title">Tu carrito está vacío</h2>
+      <p class="empty-text">Agrega tus postres favoritos para proceder al pago.</p>
+      <div class="empty-actions">
+        <a class="empty-cta" href="{% url 'catalogo_publico' %}">Ver catálogo</a>
+        <a class="empty-cta empty-cta--secondary" href="{% url 'login' %}">Ingresar</a>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

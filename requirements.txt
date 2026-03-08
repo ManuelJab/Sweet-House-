@@ -1,0 +1,25 @@
+# ============================================
+# Stiman Dessert - Production Dependencies
+# ============================================
+
+# Django Framework
+Django==6.0.2
+asgiref==3.11.1
+sqlparse==0.5.5
+tzdata==2025.3
+
+# PostgreSQL Driver (for Supabase)
+psycopg2-binary==2.9.10
+dj-database-url==2.3.0
+
+# Environment variables management 
+python-dotenv==1.1.0
+
+# Image handling
+pillow==12.1.0
+
+# Production WSGI Server
+gunicorn==23.0.0
+
+# Static files serving in production
+whitenoise==6.9.0
