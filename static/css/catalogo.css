@@ -12,10 +12,10 @@ body {
 
 /* Hero Catálogo */
 .hero-catalogo {
-  margin-top: 0;
-  background-color: #f8bbd9; /* Rosado bajito */
+  margin-top: calc(-1 * var(--header-height));
+  background-color: #fce4ec; /* Rosado más bajito */
   color: #c2185b; /* Texto en un tono de rosa más oscuro para contraste */
-  padding: 4rem 2rem;
+  padding: calc(4rem + var(--header-height)) 2rem 4rem;
   text-align: center;
 }
 
