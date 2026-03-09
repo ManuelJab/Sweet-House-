@@ -1,5 +1,5 @@
 /* ============================================
-   Stiman Dessert – Chatbot Atención al Cliente
+   Sweet House – Chatbot Atención al Cliente
    ============================================ */
 (function () {
     'use strict';
@@ -9,7 +9,7 @@
 
     const RESPONSES = {
         welcome: {
-            text: '¡Hola! <i class="bi bi-hand-wave-fill"></i> Soy <strong>Dulce Bot</strong>, tu asistente virtual de <strong>Stiman Dessert</strong>. ¿En qué puedo ayudarte hoy?',
+            text: '¡Hola! <i class="bi bi-hand-wave-fill"></i> Soy <strong>Dulce Bot</strong>, tu asistente virtual de <strong>Sweet House</strong>. ¿En qué puedo ayudarte hoy?',
             options: ['horarios', 'delivery', 'pagos', 'productos', 'pedidos', 'contacto']
         },
 
@@ -67,9 +67,9 @@
         contacto: {
             text: '<i class="bi bi-telephone-fill"></i> <strong>Contáctanos:</strong><br><br>' +
                 '<i class="bi bi-whatsapp"></i> <strong>WhatsApp:</strong> +58 412-555-1234<br>' +
-                '<i class="bi bi-envelope-fill"></i> <strong>Email:</strong> stiman.dessert@gmail.com<br>' +
-                '<i class="bi bi-instagram"></i> <strong>Instagram:</strong> @stimandessert<br>' +
-                '<i class="bi bi-facebook"></i> <strong>Facebook:</strong> Stiman Dessert<br><br>' +
+                '<i class="bi bi-envelope-fill"></i> <strong>Email:</strong> sweet.house@gmail.com<br>' +
+                '<i class="bi bi-instagram"></i> <strong>Instagram:</strong> @sweethouse<br>' +
+                '<i class="bi bi-facebook"></i> <strong>Facebook:</strong> Sweet House<br><br>' +
                 '<i class="bi bi-chat-dots-fill"></i> ¡Responderemos lo antes posible!',
             options: ['horarios', 'productos', 'pedidos', 'volver']
         },

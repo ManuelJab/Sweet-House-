@@ -174,10 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const mensaje = document.getElementById("mensaje").value
 
       // Crear mailto para envío por email
-      const subject = encodeURIComponent("Consulta desde Stiman Dessert")
+      const subject = encodeURIComponent("Consulta desde Sweet House")
       const body = encodeURIComponent(`Nombre: ${nombre}\nTeléfono: ${telefono}\nMensaje: ${mensaje}`)
 
-      window.location.href = `mailto:contacto@stimandessert.com?subject=${subject}&body=${body}`
+      window.location.href = `mailto:contacto@sweethouse.com?subject=${subject}&body=${body}`
 
       // Mostrar mensaje de confirmación
       alert("¡Gracias por tu mensaje! Te contactaremos pronto.")

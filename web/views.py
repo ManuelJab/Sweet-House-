@@ -167,7 +167,7 @@ def solicitud_pedido(request):
                 f"Mensaje personalizado: {data.get('event_message','')}\n\n"
                 f"Detalles adicionales:\n{data.get('notes','')}\n"
             )
-            sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@stimandessert.local')
+            sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
             recipient = sender
             try:
                 send_mail(subject, body, sender, [recipient], fail_silently=False)
@@ -180,7 +180,7 @@ def solicitud_pedido(request):
                         qty = 1
                     if producto:
                         total_est = (producto.price or 0) * qty
-                    comp_subject = f"Comprobante de solicitud #{getattr(sol, 'pk', '')} - Stiman Dessert"
+                    comp_subject = f"Comprobante de solicitud #{getattr(sol, 'pk', '')} - Sweet House"
                     comp_body = (
                         f"¡Hola {data.get('name')}!\n\n"
                         "Hemos recibido tu solicitud de pedido. Estos son los detalles:\n\n"
@@ -193,7 +193,7 @@ def solicitud_pedido(request):
                         f"• Fecha del evento: {data.get('event_date','')}\n"
                         f"• Mensaje: {data.get('event_message','')}\n\n"
                         "Nos pondremos en contacto contigo para confirmar detalles y la forma de pago.\n"
-                        "Gracias por preferir Stiman Dessert."
+                        "Gracias por preferir Sweet House."
                     )
                     if data.get('email'):
                         send_mail(comp_subject, comp_body, sender, [data.get('email')], fail_silently=True)

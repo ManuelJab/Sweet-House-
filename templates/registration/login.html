@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Ingresar - Stiman Dessert{% endblock %}
+{% block title %}Ingresar - {{ project_name }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 <style>
@@ -34,7 +34,7 @@
 <div class="login-container">
   <div class="login-header">
     <h1> Ingresar</h1>
-    <p>Accede a tu cuenta en Stiman Dessert</p>
+    <p>Accede a tu cuenta en {{ project_name }}</p>
   </div>
 
   <div class="login-body">

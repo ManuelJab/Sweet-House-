@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Registro completo - Stiman Dessert{% endblock %}
+{% block title %}Registro completo - {{ project_name }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 <style>
@@ -164,7 +164,7 @@
   <div class="success-container">
     <div class="success-icon">✓</div>
     <div class="success-title">¡Registro completado!</div>
-    <div class="success-sub">Tu cuenta se creó correctamente en Stiman Dessert.</div>
+    <div class="success-sub">Tu cuenta se creó correctamente en {{ project_name }}.</div>
     
     <div class="user-info">
       <label>Tu nombre de usuario</label>

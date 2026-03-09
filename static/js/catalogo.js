@@ -424,15 +424,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="./img/nequi-logo.png" alt="Nequi" class="nequi-logo">
           <p><strong>Total a pagar: $${total.toLocaleString()}</strong></p>
           <div class="nequi-datos">
-            <p>📱 <strong>Número Nequi:</strong> 300 123 4567</p>
-            <p>👤 <strong>Nombre:</strong> Stiman Dessert</p>
+            <p>📱 <strong>Número Nequi:</strong> 301 509 6797</p>
+            <p>👤 <strong>Nombre:</strong> Sweet House</p>
           </div>
           <div class="instrucciones">
             <h4>Instrucciones:</h4>
             <ol>
               <li>Abre tu app Nequi</li>
               <li>Selecciona "Enviar plata"</li>
-              <li>Ingresa el número: <strong>300 123 4567</strong></li>
+              <li>Ingresa el número: <strong>301 509 6797</strong></li>
               <li>Envía: <strong>$${total.toLocaleString()}</strong></li>
               <li>Toma captura del comprobante</li>
             </ol>

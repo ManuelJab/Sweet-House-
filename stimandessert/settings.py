@@ -187,7 +187,7 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Email configuration
 EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-PROJECT_NAME = os.environ.get('PROJECT_NAME', 'SWEET HOUSE')
+PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
 
 # ============================================

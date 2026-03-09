@@ -53,6 +53,6 @@ def cart_summary(request) -> Dict[str, object]:
 
 def branding(request) -> Dict[str, object]:
     return {
-        'project_name': getattr(settings, 'PROJECT_NAME', 'SWEET HOUSE'),
+        'project_name': getattr(settings, 'PROJECT_NAME', 'Sweet House'),
         'support_email': getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local'),
     }

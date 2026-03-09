@@ -736,9 +736,9 @@ def solicitud_avanzar_estado(request, pk: int):
 						f"Tu solicitud #{s.pk} cambió al estado: {s.get_status_display()}.\n"
 						f"Producto: {s.product_name}  x{s.quantity}\n"
 						f"Gracias por tu confianza.\n"
-						f"Stiman Dessert"
+						f"Sweet House"
 					)
-					sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@stimandessert.local')
+					sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
 					send_mail(subject, body, sender, [s.email], fail_silently=True)
 			except Exception:
 				pass
