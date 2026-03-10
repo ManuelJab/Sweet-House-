@@ -89,50 +89,20 @@ WSGI_APPLICATION = 'stimandessert.wsgi.application'
 
 
 # ============================================
-# Database Configuration - Supabase PostgreSQL
+# Database Configuration
 # ============================================
-# Priority: 1) Individual DB_* env vars (recommended for Supabase)
-#           2) DATABASE_URL (full connection string)
-#           3) SQLite fallback (local dev without any config)
+# Use dj-database-url to parse the DATABASE_URL environment variable
+# Fallback to a local SQLite database if DATABASE_URL is not set.
 
-_db_name = os.environ.get('DB_NAME', '')
-_db_host = os.environ.get('DB_HOST', '')
-_db_password = os.environ.get('DB_PASSWORD', '')
 _database_url = os.environ.get('DATABASE_URL', '')
 
-if _db_name and _db_host and _db_password:
-    # Supabase via individual env vars (recommended)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': _db_name,
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': _db_password,
-            'HOST': _db_host,
-            'PORT': os.environ.get('DB_PORT', '5432'),
-            'OPTIONS': {
-                'sslmode': 'require',
-            },
-        }
-    }
-elif _database_url and '[' not in _database_url:
-    # DATABASE_URL is set and looks valid (no placeholder brackets)
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=_database_url,
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,
-        )
-    }
-else:
-    # Local development fallback: SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=os.environ.get('DJANGO_DEBUG', 'False').lower() not in ('true', '1', 'yes')
+    )
+}
 
 
 # Password validation
