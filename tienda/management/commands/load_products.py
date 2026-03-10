@@ -18,6 +18,7 @@ class Command(BaseCommand):
             'description': 'Delicioso cheesecake clásico con base de galleta y topping de frutos rojos.',
             'price': 25000.00,
             'category': 'postre',
+            'is_special': True,
             'image_file': 'static/img/cheesecake.jpeg'
         },
         {
@@ -25,6 +26,7 @@ class Command(BaseCommand):
             'description': 'Flan tradicional con caramelo derretido. Suave, cremoso y delicioso.',
             'price': 12000.00,
             'category': 'postre',
+            'is_special': False,
             'image_file': 'static/img/Flan.jpg'
         },
         {
@@ -32,27 +34,31 @@ class Command(BaseCommand):
             'description': 'Brownie con núcleo de chocolate derretido. Irresistible y tentador.',
             'price': 18000.00,
             'category': 'postre',
+            'is_special': True,
             'image_file': 'static/img/lava_chocolate.jpg'
         },
         {
             'name': 'Mousse de Maracuyá',
             'description': 'Mousse ligero y refrescante de maracuyá con toque de vainilla.',
             'price': 16000.00,
-            'category': 'postre',
+            'category': 'pudin',
+            'is_special': False,
             'image_file': 'static/img/mousse_maracuya.jpg'
         },
         {
             'name': 'Panna Cotta Italiana',
             'description': 'Postre italiano cremoso con toque de vainilla y frutos del bosque.',
             'price': 20000.00,
-            'category': 'postre',
+            'category': 'pudin',
+            'is_special': False,
             'image_file': 'static/img/panna_Italiana.jpg'
         },
         {
             'name': 'Postre de Chocolate',
             'description': 'Combinación exquisita de chocolate derretido con galleta y frutos secos.',
             'price': 17000.00,
-            'category': 'postre',
+            'category': 'pudin',
+            'is_special': False,
             'image_file': 'static/img/postre_chocolate.jpeg'
         },
         {
@@ -60,6 +66,7 @@ class Command(BaseCommand):
             'description': 'Galletas crujientes de avena y miel. Saludables y deliciosas.',
             'price': 8000.00,
             'category': 'galleta',
+            'is_special': False,
             'image_file': 'static/img/postre_galleta.jpg'
         },
         {
@@ -67,20 +74,23 @@ class Command(BaseCommand):
             'description': 'Tartas decoradas con frutas frescas y crema pastelera artesanal.',
             'price': 35000.00,
             'category': 'postre',
+            'is_special': True,
             'image_file': 'static/img/tartas_frutas.jpg'
         },
         {
             'name': 'Red Velvet',
             'description': 'Clásico pastel rojo aterciopelado con cobertura de queso crema.',
             'price': 28000.00,
-            'category': 'postre',
+            'category': 'torta_fria',
+            'is_special': True,
             'image_file': 'static/img/tortared velvet.jpg'
         },
         {
             'name': 'Tres Leches',
             'description': 'Bizcocho bañado en tres tipos de leche. Húmedo, esponjoso y adictivo.',
             'price': 22000.00,
-            'category': 'postre',
+            'category': 'torta_fria',
+            'is_special': True,
             'image_file': 'static/img/tres leches.jpg'
         },
         {
@@ -88,6 +98,7 @@ class Command(BaseCommand):
             'description': 'Trufas artesanales de chocolate puro recubiertas de cacao. Pura decadencia.',
             'price': 15000.00,
             'category': 'otro',
+            'is_special': False,
             'image_file': 'static/img/trufas.jpg'
         },
     ]
@@ -101,13 +112,14 @@ class Command(BaseCommand):
             try:
                 image_path = Path(data['image_file'])
 
-                # Verificar si el producto ya existe
-                producto, created = Producto.objects.get_or_create(
+                # Verificar si el producto ya existe o crearlo/actualizarlo
+                producto, created = Producto.objects.update_or_create(
                     name=data['name'],
                     defaults={
                         'description': data['description'],
                         'price': data['price'],
                         'category': data['category'],
+                        'is_special': data.get('is_special', False),
                         'is_active': True,
                     }
                 )
