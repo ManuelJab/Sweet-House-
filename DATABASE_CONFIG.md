@@ -7,7 +7,7 @@ Tu proyecto ahora está configurado para usar **PostgreSQL en Supabase Cloud**.
 ### 📊 Detalles de la Base de Datos
 
 - **Proveedor:** Supabase (PostgreSQL)
-- **Base de Datos:** `stiman_dessert`
+- **Base de Datos:** `sweet_house`
 - **Host:** `db.ypqywzdpghsmhqslifwz.supabase.co`
 - **Puerto:** `5432`
 - **Usuario:** `postgres.ypqywzdpghsmhqslifwz`
@@ -71,7 +71,7 @@ Usa `.env.example` como referencia.
 
 **Opción 2: Terminal psql**
 ```powershell
-psql "postgresql://postgres.ypqywzdpghsmhqslifwz:[PASSWORD]@db.ypqywzdpghsmhqslifwz.supabase.co:5432/stiman_dessert"
+psql "postgresql://postgres.ypqywzdpghsmhqslifwz:[PASSWORD]@db.ypqywzdpghsmhqslifwz.supabase.co:5432/sweet_house"
 ```
 
 ### 🔄 Comandos útiles Django
