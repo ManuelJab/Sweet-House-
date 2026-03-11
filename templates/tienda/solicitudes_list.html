@@ -129,43 +129,45 @@
       </div>
       <div class="section-body">
         {% if solicitudes %}
-          <table class="solicitudes-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Teléfono</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for solicitud in solicitudes %}
+          <div class="table-responsive">
+            <table class="solicitudes-table">
+              <thead>
                 <tr>
-                  <td>
-                    <div class="solicitud-name">{{ solicitud.name }}</div>
-                    <div class="solicitud-email">{{ solicitud.email }}</div>
-                  </td>
-                  <td>
-                    <div class="solicitud-producto">{{ solicitud.product_name }}</div>
-                  </td>
-                  <td>
-                    <span class="solicitud-qty">{{ solicitud.quantity }}</span>
-                  </td>
-                  <td>{{ solicitud.phone|default:"—" }}</td>
-                  <td>
-                    <div class="solicitud-fecha">{{ solicitud.created_at|date:"d/m/Y H:i" }}</div>
-                  </td>
-                  <td>
-                    <div class="actions">
-                      <a href="{% url 'solicitud_detail' solicitud.pk %}" class="action-link">Ver</a>
-                    </div>
-                  </td>
+                  <th>Cliente</th>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Teléfono</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for solicitud in solicitudes %}
+                  <tr>
+                    <td>
+                      <div class="solicitud-name">{{ solicitud.name }}</div>
+                      <div class="solicitud-email">{{ solicitud.email }}</div>
+                    </td>
+                    <td>
+                      <div class="solicitud-producto">{{ solicitud.product_name }}</div>
+                    </td>
+                    <td>
+                      <span class="solicitud-qty">{{ solicitud.quantity }}</span>
+                    </td>
+                    <td>{{ solicitud.phone|default:"—" }}</td>
+                    <td>
+                      <div class="solicitud-fecha">{{ solicitud.created_at|date:"d/m/Y H:i" }}</div>
+                    </td>
+                    <td>
+                      <div class="actions">
+                        <a href="{% url 'solicitud_detail' solicitud.pk %}" class="action-link">Ver</a>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
           <!-- Paginación -->
           {% if page_obj.has_other_pages %}

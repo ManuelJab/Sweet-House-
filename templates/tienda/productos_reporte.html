@@ -33,37 +33,39 @@
   <div class="report-actions">
     <button class="btn-print" onclick="window.print()"><i class="bi bi-printer-fill"></i> Imprimir / PDF</button>
   </div>
-  <table class="report-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nombre</th>
-        <th>Categoría</th>
-        <th>Precio</th>
-        <th>Estado</th>
-        <th>Creado</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in productos %}
-      <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ p.name }}</td>
-        <td>{{ p.category|title }}</td>
-        <td>${{ p.price }}</td>
-        <td>
-          {% if p.is_active %}
-            <span class="status-pill status-on">Activo</span>
-          {% else %}
-            <span class="status-pill status-off">Inactivo</span>
-          {% endif %}
-        </td>
-        <td>{{ p.created_at|date:"d/m/Y" }}</td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="6" style="text-align:center; color:#777;">No hay productos para mostrar.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Creado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productos %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.category|title }}</td>
+          <td>${{ p.price }}</td>
+          <td>
+            {% if p.is_active %}
+              <span class="status-pill status-on">Activo</span>
+            {% else %}
+              <span class="status-pill status-off">Inactivo</span>
+            {% endif %}
+          </td>
+          <td>{{ p.created_at|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center; color:#777;">No hay productos para mostrar.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
