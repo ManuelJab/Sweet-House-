@@ -117,25 +117,15 @@ for data in PRODUCTOS_DATA:
                 'category': data['category'],
                 'is_special': data.get('is_special', False),
                 'is_active': True,
-                'image': None, # IMPORTANTE: Ponemos la imagen en None para forzar el uso de static en Render
+                'image': None, # IMPORTANTE: Limpiamos la imagen para que use static en Render
             }
         )
         
-        # Asignar imagen si existe el archivo
-        if image_path.exists():
-            with open(image_path, 'rb') as f:
-                producto.image.save(
-                    image_path.name,
-                    ContentFile(f.read()),
-                    save=True
-                )
-            print(f"🖼️  Imagen actualizada para: {data['name']}")
-        
         if created:
-            print(f"✅ Creado: {data['name']}")
+            print(f"✅ Creado: {data['name']} con precio ${data['price']}")
             created_count += 1
         else:
-            print(f"ℹ️  Existe: {data['name']}")
+            print(f"🔄 Actualizado: {data['name']} con precio ${data['price']}")
             updated_count += 1
             
     except Exception as e:
