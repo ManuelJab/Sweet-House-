@@ -22,7 +22,7 @@ class Command(BaseCommand):
             'image_file': 'static/img/cheesecake.jpeg'
         },
         {
-            'name': 'Flan Casero',
+            'name': 'Flan',
             'description': 'Flan tradicional con caramelo derretido. Suave, cremoso y delicioso.',
             'price': 12000.00,
             'category': 'postre',
@@ -83,7 +83,7 @@ class Command(BaseCommand):
             'price': 28000.00,
             'category': 'torta_fria',
             'is_special': True,
-            'image_file': 'static/img/tortared velvet.jpg'
+            'image_file': 'static/img/torta_red_velvet.jpg'
         },
         {
             'name': 'Tres Leches',
@@ -91,7 +91,7 @@ class Command(BaseCommand):
             'price': 22000.00,
             'category': 'torta_fria',
             'is_special': True,
-            'image_file': 'static/img/tres leches.jpg'
+            'image_file': 'static/img/tres_leches.jpg'
         },
         {
             'name': 'Trufas de Chocolate',

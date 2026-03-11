@@ -14,25 +14,33 @@
     <div class="favoritos-grid container">
       {% for p in productos %}
       <div class="producto card-ui">
-        {% if p.image %}
+      {% if 'flan' in p.name|lower %}
+        <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'cheesecake' in p.name|lower %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'lava' in p.name|lower %}
+        <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'mousse' in p.name|lower %}
+        <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'panna' in p.name|lower %}
+        <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+        <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'tarta' in p.name|lower %}
+        <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'velvet' in p.name|lower %}
+        <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'leches' in p.name|lower %}
+        <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'trufa' in p.name|lower %}
+        <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'chocolate' in p.name|lower %}
+        <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif p.image %}
         <img src="{{ p.image.url }}" alt="{{ p.name }}">
-        {% else %}
-          {% if 'flan' in p.name|lower %}
-            <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
-          {% elif 'tarta' in p.name|lower or 'frutas' in p.name|lower %}
-            <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
-          {% elif 'trufa' in p.name|lower %}
-            <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
-          {% elif 'panna' in p.name|lower %}
-            <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
-          {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
-            <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
-          {% elif 'chocolate' in p.name|lower %}
-            <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
-          {% else %}
-            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
-          {% endif %}
-        {% endif %}
+      {% else %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% endif %}
         <div class="producto-info">
           <h3>{{ p.name }}</h3>
           <p class="precio">${{ p.price }}</p>
