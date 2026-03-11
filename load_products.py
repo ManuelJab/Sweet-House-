@@ -117,6 +117,7 @@ for data in PRODUCTOS_DATA:
                 'category': data['category'],
                 'is_special': data.get('is_special', False),
                 'is_active': True,
+                'image': None, # IMPORTANTE: Ponemos la imagen en None para forzar el uso de static en Render
             }
         )
         
