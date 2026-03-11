@@ -366,12 +366,14 @@ header nav {
 
   .mobile-menu-btn {
     display: block;
-    order: 2;
+    order: 1; /* El botón de hamburguesa ahora es el primero (izquierda) */
+    margin-right: 15px;
   }
 
   header .logo {
-    order: 1;
+    order: 2; /* El logo ahora es el segundo (después del botón) */
     font-size: 1.2rem;
+    flex: 1; /* Permite que el logo tome el espacio restante si es necesario */
   }
 
   header nav {
@@ -384,7 +386,7 @@ header nav {
     flex-direction: column;
     padding: 2rem 5%;
     gap: 1.5rem;
-    transform: translateX(100%);
+    transform: translateX(-100%); /* Cambiado a -100% para que salga desde la izquierda */
     transition: transform 0.3s ease-in-out;
     z-index: 999;
     overflow-y: auto;
