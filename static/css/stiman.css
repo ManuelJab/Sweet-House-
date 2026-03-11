@@ -448,8 +448,16 @@ header nav {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 20px; /* Mayor separación entre carrito y perfil */
   flex-shrink: 0;
+}
+
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px; /* Espacio extra a la derecha del carrito */
 }
 
 .cupcake-icon {
