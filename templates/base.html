@@ -9,6 +9,24 @@
   <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=15">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    /* Estilos de emergencia para forzar cambios que no se ven por caché */
+    .nav-right {
+      display: flex !important;
+      align-items: center !important;
+      gap: 25px !important;
+    }
+    .cart-link {
+      margin-right: 10px !important;
+    }
+    .user-dropdown-menu {
+      min-width: 200px !important;
+    }
+    .dropdown-logout {
+      color: #dc3545 !important;
+      font-weight: bold !important;
+    }
+  </style>
   {% block extra_css %}{% endblock %}
   <style>
     body {
