@@ -489,14 +489,22 @@
   }
 
   /* Sección Creadores */
-  .creators-section { padding: 20px 10%; }
-  .creators-title { color:#e91e63; font-weight:800; font-size:28px; text-align:center; margin:0 0 14px; }
-  .creators-grid { display:grid; grid-template-columns: repeat(2, minmax(220px, 320px)); gap:18px; justify-content:center; }
-  .creator-card { background:#fff; border-radius:18px; box-shadow:0 12px 30px rgba(233,30,99,.12); padding:16px; text-align:center; border:2px solid #f3d1df; }
-  .creator-avatar { width:110px; height:110px; border-radius:50%; overflow:hidden; margin:0 auto 10px; box-shadow:0 8px 20px rgba(0,0,0,.12); }
+  .creators-section { padding: 50px 10%; background: linear-gradient(135deg, #fce4ec, #f8bbd9); margin-bottom: 80px; }
+  .creators-title { color:#e91e63; font-weight:800; font-size:2.5rem; text-align:center; margin-bottom:2rem; position:relative; }
+  .creators-title::after { content:""; display:block; width:100px; height:5px; background:#e91e63; margin:10px auto 0; border-radius:3px; }
+  .creators-grid { display:grid; grid-template-columns: repeat(2, minmax(220px, 320px)); gap:30px; justify-content:center; }
+  .creator-card { background:#fff; border-radius:20px; box-shadow:0 16px 36px rgba(233,30,99,.15); padding:24px; text-align:center; border:2px solid #ff4081; transition: transform 0.3s ease; }
+  .creator-card:hover { transform: translateY(-8px); }
+  .creator-avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin:0 auto 15px; box-shadow:0 8px 20px rgba(0,0,0,.15); border:3px solid #ff4081; }
   .creator-avatar img { width:100%; height:100%; object-fit:cover; }
-  .creator-name { color:#e91e63; font-weight:700; margin:4px 0; }
-  .creator-role { color:#777; font-size:14px; }
+  .creator-name { color:#e91e63; font-weight:700; margin-bottom:5px; font-size:1.2rem; }
+  .creator-role { color:#666; font-size:0.9rem; font-weight:500; }
+
+  @media (max-width: 768px) {
+    .creators-grid { grid-template-columns: 1fr; max-width: 350px; margin: 0 auto; gap: 20px; }
+    .creators-title { font-size: 2rem; }
+    .creators-section { padding: 40px 5%; }
+  }
 </style>
 
 {% endblock %}
