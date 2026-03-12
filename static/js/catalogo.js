@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             especialesSection.style.display = ""
             if (catalogRegulares) catalogRegulares.style.display = "none"
           } else {
-            especialesSection.style.display = effectiveFiltro === "todos" ? "" : "none"
+            especialesSection.style.display = "none"
             if (catalogRegulares) catalogRegulares.style.display = ""
           }
         }
