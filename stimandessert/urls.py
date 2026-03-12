@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-from tienda.views import admin_dashboard, CustomLoginView, home
+from tienda.views import admin_dashboard, CustomLoginView, home, ajax_login
 from web.views import solicitud_pedido, request_admin, feedback
 from tienda.forms import EmailAuthenticationForm
 from django.conf import settings
@@ -22,6 +22,7 @@ urlpatterns = [
         template_name='registration/login.html',
         authentication_form=EmailAuthenticationForm
     ), name='login'),
+    path('accounts/ajax-login/', ajax_login, name='ajax_login'),
     path('accounts/request-admin/', request_admin, name='request_admin'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tienda/', include('tienda.urls')),

@@ -889,11 +889,14 @@ footer .social-links a:active {
   margin-left: 1.5rem;
   font-weight: 600;
   font-size: 0.95rem;
+  font-family: inherit;
   border-radius: 25px;
   transition: all 0.3s ease;
   text-decoration: none;
   backdrop-filter: blur(10px);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 

@@ -449,6 +449,36 @@ class CustomLoginView(LoginView):
 		return response
 
 
+from django.contrib.auth import authenticate
+from django.views.decorators.http import require_POST as require_post_method
+
+@require_post_method
+def ajax_login(request):
+	"""AJAX login endpoint for the modal. Returns JSON."""
+	username = request.POST.get('username', '').strip()
+	password = request.POST.get('password', '')
+
+	if not username or not password:
+		return JsonResponse({'success': False, 'error': 'Por favor, completa todos los campos.'})
+
+	user = authenticate(request, username=username, password=password)
+	if user is not None:
+		if user.is_active:
+			auth_login(request, user)
+			first_name = user.first_name if user.first_name else user.username
+			messages.success(request, f'¡Bienvenido {first_name}! Has iniciado sesión correctamente.')
+			# Determine redirect URL
+			if user.is_staff or user.is_superuser:
+				redirect_url = reverse('dashboard')
+			else:
+				redirect_url = reverse('home')
+			return JsonResponse({'success': True, 'redirect_url': redirect_url})
+		else:
+			return JsonResponse({'success': False, 'error': 'Tu cuenta está desactivada.'})
+	else:
+		return JsonResponse({'success': False, 'error': 'Usuario o contraseña incorrectos.'})
+
+
 # Carrito en sesión
 
 def _get_cart(session):

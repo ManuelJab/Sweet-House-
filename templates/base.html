@@ -267,8 +267,7 @@
           </div>
         </div>
         {% else %}
-        <a href="{% url 'login' %}" class="btn-login"><i class="bi bi-box-arrow-in-right"></i> Ingresar</a>
-        <a href="{% url 'signup' %}" class="btn-signup"><i class="bi bi-person-plus"></i> Registro</a>
+        <button type="button" class="btn-login" id="openLoginModal"><i class="bi bi-box-arrow-in-right"></i> Ingresar</button>
         {% endif %}
       </div>
     </nav>
@@ -350,6 +349,312 @@
     <i class="bi bi-house-fill"></i>
     Volver al inicio
   </a>
+  <!-- Login Modal -->
+  {% if not request.user.is_authenticated %}
+  <div class="login-modal-overlay" id="loginModalOverlay">
+    <div class="login-modal">
+      <button class="login-modal-close" id="closeLoginModal" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <div class="login-modal-header">
+        <div class="login-modal-icon">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <h2>Ingresar</h2>
+        <p>Accede a tu cuenta en {{ project_name }}</p>
+      </div>
+      <div class="login-modal-body">
+        <form method="post" id="loginModalForm" novalidate>
+          {% csrf_token %}
+          <div class="login-modal-error" id="loginModalError" style="display:none;"></div>
+          <div class="login-modal-field">
+            <label for="modal_username"><i class="bi bi-person"></i> Nombre de usuario</label>
+            <input type="text" id="modal_username" name="username" placeholder="Tu nombre de usuario" maxlength="30" required autocomplete="username">
+          </div>
+          <div class="login-modal-field">
+            <label for="modal_password"><i class="bi bi-lock"></i> Contraseña</label>
+            <div class="password-wrapper">
+              <input type="password" id="modal_password" name="password" placeholder="Tu contraseña" required autocomplete="current-password">
+              <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="login-modal-btn" id="loginModalBtn">
+            <span class="btn-text">Entrar</span>
+            <span class="btn-loader" style="display:none;"><i class="bi bi-arrow-repeat spin"></i></span>
+          </button>
+        </form>
+      </div>
+      <div class="login-modal-footer">
+        <p>¿No tienes cuenta? <a href="{% url 'signup' %}">Regístrate aquí</a></p>
+      </div>
+    </div>
+  </div>
+  <style>
+    /* Login Modal Styles */
+    .login-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      padding: 20px;
+    }
+    .login-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .login-modal {
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 60px rgba(233, 30, 99, 0.25), 0 10px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(30px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+      position: relative;
+    }
+    .login-modal-overlay.active .login-modal {
+      transform: translateY(0) scale(1);
+    }
+    .login-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.25);
+      border: none;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 2;
+      font-size: 16px;
+    }
+    .login-modal-close:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: rotate(90deg);
+    }
+    .login-modal-header {
+      background: linear-gradient(135deg, #ff4081, #e91e63, #c2185b);
+      color: #fff;
+      padding: 32px 28px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-modal-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: modalShimmer 3s ease-in-out infinite;
+    }
+    @keyframes modalShimmer {
+      0%, 100% { transform: translate(-20%, -20%); }
+      50% { transform: translate(20%, 20%); }
+    }
+    .login-modal-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 28px;
+    }
+    .login-modal-header h2 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      position: relative;
+    }
+    .login-modal-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 14px;
+      position: relative;
+    }
+    .login-modal-body {
+      padding: 28px;
+    }
+    .login-modal-error {
+      background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+      border-left: 4px solid #ef4444;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      color: #991b1b;
+      font-weight: 500;
+      font-size: 13px;
+      animation: shakeError 0.4s ease-in-out;
+    }
+    @keyframes shakeError {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .login-modal-field {
+      margin-bottom: 18px;
+    }
+    .login-modal-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+      color: #333;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .login-modal-field label i {
+      margin-right: 5px;
+      color: #e91e63;
+    }
+    .login-modal-field input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #fafafa;
+      box-sizing: border-box;
+    }
+    .login-modal-field input:focus {
+      outline: none;
+      border-color: #ff6ea6;
+      box-shadow: 0 0 0 4px rgba(255, 110, 166, 0.12);
+      background: #fff;
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-wrapper input {
+      padding-right: 48px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 18px;
+      transition: color 0.2s;
+    }
+    .toggle-password:hover {
+      color: #e91e63;
+    }
+    .login-modal-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff4081, #e91e63);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-modal-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+    }
+    .login-modal-btn:hover::before {
+      transform: translateX(100%);
+    }
+    .login-modal-btn:hover {
+      background: linear-gradient(135deg, #e91e63, #c2185b);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(233, 30, 99, 0.35);
+    }
+    .login-modal-btn:active {
+      transform: translateY(0);
+    }
+    .login-modal-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin {
+      display: inline-block;
+      animation: spin 0.8s linear infinite;
+    }
+    .login-modal-footer {
+      text-align: center;
+      padding: 18px 28px;
+      border-top: 1px solid #f5e0e9;
+      background: #fdf5f8;
+    }
+    .login-modal-footer p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+    .login-modal-footer a {
+      color: #e91e63;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .login-modal-footer a:hover {
+      color: #c2185b;
+      text-decoration: underline;
+    }
+    @media (max-width: 480px) {
+      .login-modal {
+        border-radius: 16px;
+        max-width: 100%;
+      }
+      .login-modal-header {
+        padding: 24px 20px 20px;
+      }
+      .login-modal-body {
+        padding: 20px;
+      }
+      .login-modal-header h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+  {% endif %}
   {% block extra_js %}{% endblock %}
   <script>
     // Mobile Menu Toggle
@@ -401,5 +706,111 @@
       });
     });
   </script>
+  {% if not request.user.is_authenticated %}
+  <script>
+    // Login Modal Logic
+    (function() {
+      const overlay = document.getElementById('loginModalOverlay');
+      const openBtn = document.getElementById('openLoginModal');
+      const closeBtn = document.getElementById('closeLoginModal');
+      const form = document.getElementById('loginModalForm');
+      const errorDiv = document.getElementById('loginModalError');
+      const submitBtn = document.getElementById('loginModalBtn');
+      const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+      const btnLoader = submitBtn ? submitBtn.querySelector('.btn-loader') : null;
+      const togglePwd = document.getElementById('togglePassword');
+      const pwdInput = document.getElementById('modal_password');
+
+      if (!overlay || !openBtn) return;
+
+      function openModal() {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+          const firstInput = document.getElementById('modal_username');
+          if (firstInput) firstInput.focus();
+        }, 400);
+      }
+
+      function closeModal() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        if (errorDiv) { errorDiv.style.display = 'none'; errorDiv.textContent = ''; }
+        if (form) form.reset();
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+
+      // Close on overlay click
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+      });
+
+      // Toggle password visibility
+      if (togglePwd && pwdInput) {
+        togglePwd.addEventListener('click', () => {
+          const isPassword = pwdInput.type === 'password';
+          pwdInput.type = isPassword ? 'text' : 'password';
+          togglePwd.querySelector('i').classList.toggle('bi-eye');
+          togglePwd.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+      }
+
+      // AJAX Login Submit
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (submitBtn.disabled) return;
+
+          // Show loading
+          submitBtn.disabled = true;
+          if (btnText) btnText.style.display = 'none';
+          if (btnLoader) btnLoader.style.display = 'inline-block';
+          if (errorDiv) { errorDiv.style.display = 'none'; }
+
+          try {
+            const formData = new FormData(form);
+            const response = await fetch('{% url "ajax_login" %}', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+              // Redirect to appropriate page
+              window.location.href = data.redirect_url || '/';
+            } else {
+              // Show error
+              if (errorDiv) {
+                errorDiv.textContent = data.error || 'Usuario o contraseña incorrectos.';
+                errorDiv.style.display = 'block';
+              }
+              submitBtn.disabled = false;
+              if (btnText) btnText.style.display = 'inline';
+              if (btnLoader) btnLoader.style.display = 'none';
+            }
+          } catch (err) {
+            if (errorDiv) {
+              errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+              errorDiv.style.display = 'block';
+            }
+            submitBtn.disabled = false;
+            if (btnText) btnText.style.display = 'inline';
+            if (btnLoader) btnLoader.style.display = 'none';
+          }
+        });
+      }
+    })();
+  </script>
+  {% endif %}
 </body>
 </html>
