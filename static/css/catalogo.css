@@ -31,7 +31,11 @@ body {
   }
   
   .hero-catalogo {
-    padding: calc(2rem + var(--header-height)) 1rem 2rem;
+    margin-top: calc(-1 * var(--header-height)) !important;
+    padding-top: calc(2rem + var(--header-height)) !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 2rem;
   }
 }
 
@@ -116,6 +120,15 @@ body {
   z-index: 1000;
   overflow: hidden;
   border: 2px solid rgba(255, 64, 129, 0.2);
+}
+
+@media (max-width: 768px) {
+  .categoria-dropdown {
+    position: relative;
+    top: auto;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .categoria-dropdown.show {
