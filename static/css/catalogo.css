@@ -44,17 +44,16 @@ body {
 .catalogo-filtro-container {
   position: relative;
   display: block;
-  margin: 2rem 0 1rem 1rem;
-  width: auto;
-  max-width: 280px;
-  text-align: left;
+  margin: 1.5rem auto 2rem;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
   .catalogo-filtro-container {
-    margin: 1rem 15px 1.5rem 15px;
-    max-width: calc(100% - 170px); /* Deja espacio para el botón de volver al inicio a la derecha */
-    z-index: 100;
+    margin: 1rem auto 1.5rem;
+    z-index: 800; /* Alto para que no sea cubierto */
   }
 }
 
