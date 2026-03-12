@@ -252,67 +252,58 @@
 		</div>
 	</section>
 	{% endif %}
-	<div class="especiales-list container">
-		{% for p in productos %}
-		<div class="especial-card producto"
-			data-categoria="{% if 'flan' in p.name|lower %}flanes{% elif p.category == 'galleta' %}galletas{% elif p.category == 'pudin' %}pudines{% else %}postres{% endif %}"
-			data-ingredients="{% if p.ingredients %}{{ p.ingredients }}{% endif %}"
-			data-product-name="{{ p.name }}" data-description="{{ p.description|default:'' }}" data-price="{{ p.price }}"
-			data-product-id="{{ p.id }}">
-			{% if p.is_special %}
-			<span class="badge-especial">Especial</span>
-			{% endif %}
-			<a class="especial-thumb" href="#" aria-label="{{ p.name }}">
-				{% if p.image %}
-					<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">
-				{% else %}
-					{% if 'flan' in p.name|lower %}
-						<img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
-					{% elif 'tarta' in p.name|lower or 'frutas' in p.name|lower %}
-						<img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
-					{% elif 'trufa' in p.name|lower %}
-						<img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
-					{% elif 'panna' in p.name|lower %}
-						<img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
-					{% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
-						<img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
-					{% elif 'chocolate' in p.name|lower %}
-						<img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
-					{% else %}
-						<img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+	<div class="catalogo-regulares container" id="productos-regulares" style="margin-bottom: 40px; margin-top: 20px;">
+		<!-- Postres -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="postres">
+			<h3 class="evento-title"><i class="bi bi-cake2-fill"></i> Postres</h3>
+			<p class="evento-desc">Nuestros clásicos y deliciosos postres</p>
+			<div class="especiales-list">
+				{% for p in productos %}
+					{% if p.category == 'postre' and 'flan' not in p.name|lower %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='postres' %}
 					{% endif %}
-				{% endif %}
-			</a>
-			<div class="especial-body">
-				<h4 class="especial-title">{{ p.name }}</h4>
-				<p class="especial-price">${{ p.price }}</p>
-				{% if request.user.is_staff or request.user.is_superuser %}
-				<div style="margin-bottom: 4px;">
-					<a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn-admin-edit"
-						style="font-size: 0.8rem; padding: 4px 8px;">
-						<i class="bi bi-pencil-fill"></i> Editar
-					</a>
-				</div>
-				{% endif %}
-				<form action="{% url 'carrito_agregar' p.id %}" method="post" class="producto-actions">
-					{% csrf_token %}
-					<input type="number" name="qty" value="1" min="1" class="qty-input">
-					<button type="submit" class="btn btn--secondary">Agregar</button>
-				</form>
-				{% if not request.user.is_staff and not request.user.is_superuser %}
-				<div class="card-fav-action">
-					{% if favorites_ids and p.id|stringformat:"s" in favorites_ids %}
-						<a href="{% url 'favoritos_toggle' p.id %}" class="btn-fav-link">❌ Quitar</a>
-					{% else %}
-						<a href="{% url 'favoritos_toggle' p.id %}" class="btn-fav-link">❤️ Favorito</a>
-					{% endif %}
-				</div>
-				{% endif %}
+				{% endfor %}
 			</div>
 		</div>
-		{% empty %}
-		<p>No hay productos disponibles.</p>
-		{% endfor %}
+
+		<!-- Flanes -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="flanes">
+			<h3 class="evento-title"><i class="bi bi-pie-chart-fill"></i> Flanes</h3>
+			<p class="evento-desc">Suaves y cremosos flanes tradicionales</p>
+			<div class="especiales-list">
+				{% for p in productos %}
+					{% if 'flan' in p.name|lower %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='flanes' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Tortas frías -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="tortas_frias">
+			<h3 class="evento-title"><i class="bi bi-snow"></i> Tortas frías</h3>
+			<p class="evento-desc">Refrescantes y dulces para cualquier ocasión</p>
+			<div class="especiales-list">
+				{% for p in productos %}
+					{% if p.category == 'torta_fria' %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='tortas_frias' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Pudines -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="pudines">
+			<h3 class="evento-title"><i class="bi bi-cup-fill"></i> Pudines</h3>
+			<p class="evento-desc">Irresistibles pudines artesanales</p>
+			<div class="especiales-list">
+				{% for p in productos %}
+					{% if p.category == 'pudin' %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='pudines' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
 	</div>
 
 

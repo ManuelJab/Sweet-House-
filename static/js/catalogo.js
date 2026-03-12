@@ -63,24 +63,36 @@ document.addEventListener("DOMContentLoaded", () => {
         // Determinar filtro efectivo si no existe sección de especiales
         const effectiveFiltro = (!especialesSection && filtro === "especiales") ? "todos" : filtro
 
+        const catalogRegulares = document.getElementById("productos-regulares")
+        const categoriaSecciones = document.querySelectorAll(".categoria-seccion")
+
         // Mostrar/ocultar sección de especiales y el grid según filtro
         if (especialesSection) {
           if (effectiveFiltro === "especiales") {
             especialesSection.style.display = ""
-            if (productosGridContainer) productosGridContainer.style.display = "none"
+            if (catalogRegulares) catalogRegulares.style.display = "none"
           } else {
             especialesSection.style.display = effectiveFiltro === "todos" ? "" : "none"
-            if (productosGridContainer) productosGridContainer.style.display = ""
+            if (catalogRegulares) catalogRegulares.style.display = ""
           }
         }
 
-        // Filtrar productos del grid
-        productosGrid.forEach((card) => {
-          const categoria = card.dataset.categoria
-          const visible = effectiveFiltro === "todos" || categoria === effectiveFiltro
-          card.classList.toggle("hidden", !visible)
-          card.setAttribute("aria-hidden", visible ? "false" : "true")
-        })
+        // Filtrar productos por sección
+        if (categoriaSecciones.length > 0) {
+            categoriaSecciones.forEach(sec => {
+                const secCat = sec.dataset.categoriaSeccion
+                const isMatch = effectiveFiltro === "todos" || secCat === effectiveFiltro
+                sec.style.display = isMatch ? "" : "none"
+            })
+        } else {
+            // Fallback para grid antiguo
+            productosGrid.forEach((card) => {
+              const categoria = card.dataset.categoria
+              const visible = effectiveFiltro === "todos" || categoria === effectiveFiltro
+              card.classList.toggle("hidden", !visible)
+              card.setAttribute("aria-hidden", visible ? "false" : "true")
+            })
+        }
 
         // Cerrar menú después de seleccionar
         if (btnCatalogo && dropdownMenu) {
