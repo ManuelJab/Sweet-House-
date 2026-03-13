@@ -2300,8 +2300,8 @@ footer {
 .creator-card,
 .cart-item,
 .empty-state {
-  opacity: 0;
-  animation: flutterIn 0.6s ease-out forwards;
+  opacity: 1;
+  animation: flutterIn 0.6s ease-out backwards;
 }
 
 /* Escalonar las animaciones para efecto cascada */
@@ -2315,12 +2315,15 @@ footer {
 .especial-card:nth-child(8), .product-card:nth-child(8), .producto:nth-child(8) { animation-delay: 0.4s; }
 .especial-card:nth-child(n+9), .product-card:nth-child(n+9), .producto:nth-child(n+9) { animation-delay: 0.45s; }
 
-/* ── Flotamiento sutil al hacer hover en cards ── */
+/* ── Zoom sutil al hacer hover en cards ── */
 .especial-card:hover,
 .product-card:hover,
 .producto-card:hover,
 .creator-card:hover {
-  animation: flutterFloat 1.5s ease-in-out infinite;
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  position: relative;
 }
 
 /* ── Badges con pulso continuo ── */
