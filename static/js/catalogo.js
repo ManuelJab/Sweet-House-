@@ -516,17 +516,19 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.position = "relative";
     card.appendChild(ingredientsModal);
 
-    // Ajustar estilos para que encaje perfectamente abajo
+    // Ajustar estilos para que encaje perfectamente como un overlay (encima del contenido)
     ingredientsModal.style.position = "absolute";
-    ingredientsModal.style.top = "auto";
+    ingredientsModal.style.top = "0";
     ingredientsModal.style.left = "0";
     ingredientsModal.style.right = "0";
     ingredientsModal.style.bottom = "0";
     ingredientsModal.style.width = "100%";
+    ingredientsModal.style.height = "100%";
     ingredientsModal.style.maxWidth = "none"; // Eliminar restricción de CSS
-    ingredientsModal.style.maxHeight = "100%";
+    ingredientsModal.style.maxHeight = "none";
     ingredientsModal.style.overflowY = "auto";
-    ingredientsModal.style.borderRadius = "0 0 16px 16px";
+    ingredientsModal.style.borderRadius = "16px";
+    ingredientsModal.style.zIndex = "10";
     ingredientsModal.style.boxSizing = "border-box";
     ingredientsModal.style.visibility = "visible";
     ingredientsModal.style.margin = "0"; // Asegurar que no haya márgenes que lo descuadren
