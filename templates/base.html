@@ -6,28 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ project_name }}{% endblock %}</title>
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=17">
+  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=18">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <style>
-    /* Estilos de emergencia para forzar cambios que no se ven por caché */
+    /* Mobile header layout */
     @media (max-width: 992px) {
       header {
         display: flex !important;
-        justify-content: flex-start !important;
+        justify-content: space-between !important;
         align-items: center !important;
         padding: 0 15px !important;
       }
-      .mobile-menu-btn {
-        display: block !important;
-        order: 1 !important;
-        margin-right: 15px !important;
-      }
       .logo {
+        order: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      .header-right-controls {
         order: 2 !important;
         display: flex !important;
         align-items: center !important;
-        flex: 1 !important;
+        gap: 8px !important;
+      }
+      .mobile-menu-btn {
+        display: block !important;
       }
       nav#mainNav {
         display: flex !important;
@@ -43,33 +46,22 @@
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        order: 2 !important; /* Enlaces de navegación abajo */
       }
       .nav-right {
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        order: 1 !important; /* Botones de login/logout ARRIBA */
-        border-bottom: 1px solid rgba(255,255,255,0.2) !important;
-        padding-bottom: 15px !important;
-        margin-bottom: 15px !important;
       }
-      .user-dropdown, .btn-login, .btn-signup {
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-bottom: 10px !important;
+    }
+    /* Desktop: hide header-right-controls cart, show in nav */
+    @media (min-width: 993px) {
+      .header-right-controls .cart-link {
+        display: none !important;
       }
-      /* Forzar que el menú de usuario esté siempre visible en móvil si está logueado */
-      .user-dropdown-menu {
-        position: static !important;
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        background: rgba(255,255,255,0.1) !important;
-        box-shadow: none !important;
-        transform: none !important;
+      .mobile-menu-btn {
+        display: none !important;
       }
-      .user-chevron {
+      .nav-user-info {
         display: none !important;
       }
     }
@@ -80,16 +72,6 @@
     }
     .cart-link {
       margin-right: 10px !important;
-    }
-    .user-dropdown-menu.open {
-      display: block !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      transform: translateY(0) !important;
-    }
-    .dropdown-logout {
-      color: #dc3545 !important;
-      font-weight: bold !important;
     }
   </style>
   {% block extra_css %}{% endblock %}
@@ -230,10 +212,22 @@
       <img src="{% static 'img/logo.jpg' %}" alt="{{ project_name }} Logo" class="cupcake-icon">
       <span>{{ project_name }}</span>
     </div>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
-      <i class="bi bi-list"></i>
-    </button>
+    <div class="header-right-controls">
+      <a href="{% url 'carrito_detalle' %}" class="cart-link {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
+        <i class="bi bi-cart3 cart-icon" aria-hidden="true"></i>
+        <span class="cart-count">{{ cart_count|default:0 }}</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
     <nav id="mainNav">
+      {% if request.user.is_authenticated %}
+      <div class="nav-user-info">
+        <i class="bi bi-person-circle"></i>
+        <span>{{ request.user.first_name|default:request.user.username }}</span>
+      </div>
+      {% endif %}
       <div class="nav-links">
         <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
         <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
@@ -243,32 +237,19 @@
         <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
       </div>
       <div class="nav-right">
-        <a href="{% url 'carrito_detalle' %}" class="cart-link {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
-          <i class="bi bi-cart3 cart-icon" aria-hidden="true"></i>
-          <span class="cart-count">{{ cart_count|default:0 }}</span>
-        </a>
         {% if request.user.is_authenticated %}
-        <div class="user-dropdown">
-          <button class="user-dropdown-btn" id="userDropdownBtn" type="button">
-            <i class="bi bi-person-circle"></i>
-            {{ request.user.first_name|default:request.user.username }}
-            <i class="bi bi-chevron-down user-chevron"></i>
-          </button>
-          <div class="user-dropdown-menu" id="userDropdownMenu">
-            {% if request.user.is_staff or request.user.is_superuser %}
-            <a href="{% url 'dashboard' %}" class="dropdown-item">
-              <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-            <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
-            {% endif %}
-            
-            <form action="{% url 'logout' %}" method="post" id="logout-form" style="margin:0; width: 100%;">
-              {% csrf_token %}
-              <button type="submit" class="dropdown-item" style="color: #dc3545; width: 100%; text-align: left; background: none; border: none; padding: 10px 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit;">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-              </button>
-            </form>
-          </div>
+        <div class="nav-auth-actions">
+          {% if request.user.is_staff or request.user.is_superuser %}
+          <a href="{% url 'dashboard' %}" class="nav-action-btn">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+          {% endif %}
+          <form action="{% url 'logout' %}" method="post" style="margin:0; width: 100%;">
+            {% csrf_token %}
+            <button type="submit" class="nav-action-btn nav-logout-btn">
+              <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+            </button>
+          </form>
         </div>
         {% else %}
         <button type="button" class="btn-login" id="openLoginModal"><i class="bi bi-box-arrow-in-right"></i> Ingresar</button>
@@ -676,26 +657,6 @@
         }
       });
     }
-
-    // User Dropdown
-    (function() {
-      const userDropdownBtn = document.getElementById('userDropdownBtn');
-      const userDropdownMenu = document.getElementById('userDropdownMenu');
-      
-      if (userDropdownBtn && userDropdownMenu) {
-        userDropdownBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          console.log("Dropdown clicked"); // Debug
-          userDropdownMenu.classList.toggle('open');
-          userDropdownBtn.classList.toggle('active');
-        });
-        
-        document.addEventListener('click', () => {
-          userDropdownMenu.classList.remove('open');
-          userDropdownBtn.classList.remove('active');
-        });
-      }
-    })();
 
     // Auto-hide messages
     document.addEventListener('DOMContentLoaded', () => {
