@@ -887,7 +887,7 @@ body {
 }
 
 /* Main catalog grid using especiales-list layout */
-.catalogo-section > .especiales-list {
+.especiales-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.2rem;
@@ -897,26 +897,26 @@ body {
 }
 
 @media (max-width: 1100px) {
-  .catalogo-section > .especiales-list {
+  .especiales-list {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .catalogo-section > .especiales-list {
+  .especiales-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
-  .catalogo-section > .especiales-list {
+  .especiales-list {
     grid-template-columns: 1fr;
   }
 }
 
 .especial-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -931,7 +931,7 @@ body {
 
 .especial-thumb img {
   width: 100%;
-  height: 160px;
+  height: 280px;
   object-fit: cover;
   display: block;
 }
@@ -1025,7 +1025,7 @@ body {
 
 @media (max-width: 600px) {
   .especial-thumb img {
-    height: 140px;
+    height: 200px;
   }
 
   .especiales-title {
