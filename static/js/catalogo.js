@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCatalogo = document.getElementById("btn-catalogo-dropdown")
   const dropdownMenu = document.getElementById("categoria-dropdown")
   const categoriaOptions = document.querySelectorAll(".categoria-option")
-  const productosGrid = document.querySelectorAll(".catalogo-section > .especiales-list .producto")
-  const productosGridContainer = document.querySelector(".catalogo-section > .especiales-list")
+  const productosGrid = document.querySelectorAll(".catalogo-section .products-grid .product-card")
+  const productosGridContainer = document.querySelector(".catalogo-section .products-grid")
   const especialesSection = document.querySelector(".especiales-section")
 
   // Toggle del menú desplegable
@@ -551,7 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ingredientsModal.classList.remove("show")
   }
 
-  const cards = document.querySelectorAll(".product-card, .especial-card")
+  const cards = document.querySelectorAll(".product-card")
   cards.forEach(card => {
     // Al entrar (hover o tap en móvil), iniciamos el contador de 3 segundos
     const handleEnter = () => {

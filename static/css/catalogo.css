@@ -886,115 +886,139 @@ body {
   gap: 1rem;
 }
 
-/* Main catalog grid using especiales-list layout */
-.especiales-list {
+/* ═══ Catalog products grid (matches homepage "Más vendidos") ═══ */
+.catalogo-section .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.2rem;
+  gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
 @media (max-width: 1100px) {
-  .especiales-list {
+  .catalogo-section .products-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
   }
 }
 
 @media (max-width: 768px) {
-  .especiales-list {
+  .catalogo-section .products-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .especiales-list {
+  .catalogo-section .products-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 }
 
-.especial-card {
+/* ═══ Product card (standard design — shared with homepage) ═══ */
+.catalogo-section .product-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.especial-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
+.catalogo-section .product-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
-.especial-thumb img {
+.catalogo-section .product-card img {
   width: 100%;
-  height: 280px;
+  height: 200px;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.especial-body {
-  padding: 0.9rem 1rem 1.2rem 1rem;
+.catalogo-section .product-card:hover img {
+  transform: scale(1.08);
+}
+
+.product-card-body {
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 6px;
   flex: 1 1 auto;
 }
 
-.especial-body .especial-title {
-  color: #ff4081;
+.product-card-name {
+  margin: 0 0 8px 0;
   font-size: 1.05rem;
-  margin: 0;
   font-weight: 700;
+  color: #333;
 }
 
-.especial-body .especial-price {
-  color: #222;
-  font-weight: 700;
+.product-card-price {
+  margin: 0 0 10px 0;
+  color: #c2185b;
+  font-weight: 600;
   font-size: 1.05rem;
 }
 
-.especial-body .producto-actions {
+.product-card-actions {
   margin-top: auto;
   display: flex;
-  gap: 0.5rem;
-  align-items: stretch;
-  width: 100%;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.especial-body .qty-input {
-  width: 60px;
-  padding: 8px 4px;
-  border: 1px solid #ff4081;
-  border-radius: 8px;
-  text-align: center;
+.product-card-actions form {
+  display: inline;
+}
+
+.product-card-actions .btn.btn--primary {
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
   font-weight: 600;
-  color: #333;
-  background: #fff;
-  outline: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
 }
 
-.especial-body .btn.btn--secondary {
-  flex: 1;
+.product-card-actions .btn.btn--primary:hover {
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(255, 64, 129, 0.4);
+}
+
+.product-card-actions .btn.btn--secondary {
   background: #fce4ec;
   color: #e91e63;
   border: 1px solid #ff4081;
-  padding: 8px 0;
-  border-radius: 8px;
+  border-radius: 999px;
+  padding: 8px 16px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 0.85rem;
+  text-decoration: none;
   cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.especial-body .btn.btn--secondary:hover {
+.product-card-actions .btn.btn--secondary:hover {
   background: #ff4081;
   color: white;
+  transform: translateY(-2px);
 }
 
 .card-fav-action {
@@ -1055,7 +1079,8 @@ body {
 
 /* Badge para productos especiales */
 .producto,
-.especial-card {
+.especial-card,
+.product-card {
   position: relative;
 }
 

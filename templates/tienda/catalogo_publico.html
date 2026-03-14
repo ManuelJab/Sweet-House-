@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Catálogo - {{ project_name }}{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=7">
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=8">
 {% endblock %}
 {% block content %}
 
@@ -51,7 +51,7 @@
 		<div class="evento-category categoria-seccion" data-categoria-seccion="especiales">
 			<h3 class="evento-title"><i class="bi bi-star-fill"></i> Especiales</h3>
 			<p class="evento-desc">Postres perfectos para tus eventos y celebraciones más importantes</p>
-			<div class="especiales-list">
+			<div class="products-grid">
 				{% for p in postres_especiales %}
 					{% include 'tienda/catalogo_producto_card.html' with categoria_str='especiales' %}
 				{% endfor %}
@@ -64,7 +64,7 @@
 		<div class="evento-category categoria-seccion" data-categoria-seccion="postres">
 			<h3 class="evento-title"><i class="bi bi-cake2-fill"></i> Postres</h3>
 			<p class="evento-desc">Nuestros clásicos y deliciosos postres</p>
-			<div class="especiales-list">
+			<div class="products-grid">
 				{% for p in productos %}
 					{% if p.category == 'postre' and 'flan' not in p.name|lower %}
 						{% include 'tienda/catalogo_producto_card.html' with categoria_str='postres' %}
@@ -77,7 +77,7 @@
 		<div class="evento-category categoria-seccion" data-categoria-seccion="flanes">
 			<h3 class="evento-title"><i class="bi bi-pie-chart-fill"></i> Flanes</h3>
 			<p class="evento-desc">Suaves y cremosos flanes tradicionales</p>
-			<div class="especiales-list">
+			<div class="products-grid">
 				{% for p in productos %}
 					{% if 'flan' in p.name|lower %}
 						{% include 'tienda/catalogo_producto_card.html' with categoria_str='flanes' %}
@@ -90,7 +90,7 @@
 		<div class="evento-category categoria-seccion" data-categoria-seccion="tortas_frias">
 			<h3 class="evento-title"><i class="bi bi-snow"></i> Tortas frías</h3>
 			<p class="evento-desc">Refrescantes y dulces para cualquier ocasión</p>
-			<div class="especiales-list">
+			<div class="products-grid">
 				{% for p in productos %}
 					{% if p.category == 'torta_fria' %}
 						{% include 'tienda/catalogo_producto_card.html' with categoria_str='tortas_frias' %}
@@ -103,7 +103,7 @@
 		<div class="evento-category categoria-seccion" data-categoria-seccion="pudines">
 			<h3 class="evento-title"><i class="bi bi-cup-fill"></i> Pudines</h3>
 			<p class="evento-desc">Irresistibles pudines artesanales</p>
-			<div class="especiales-list">
+			<div class="products-grid">
 				{% for p in productos %}
 					{% if p.category == 'pudin' %}
 						{% include 'tienda/catalogo_producto_card.html' with categoria_str='pudines' %}
@@ -126,5 +126,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/catalogo.js' %}?v=6"></script>
+<script src="{% static 'js/catalogo.js' %}?v=7"></script>
 {% endblock %}
