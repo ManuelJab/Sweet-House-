@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ project_name }}{% endblock %}</title>
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=19">
+  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=20">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <style>
@@ -152,6 +152,64 @@
       }
       .mobile-menu-btn {
         display: block !important;
+      }
+      /* User dropdown menu */
+      .header-user-dropdown {
+        position: relative;
+        z-index: 1002;
+      }
+      .header-user-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        min-width: 180px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        overflow: hidden;
+        z-index: 2000;
+      }
+      .header-user-dropdown-menu.open {
+        display: block;
+      }
+      .header-dropdown-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        font-weight: 700;
+        color: #e91e63;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.9rem;
+      }
+      .header-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        color: #333;
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+      .header-dropdown-item:hover {
+        background: #fff0f3;
+        color: #e91e63;
+      }
+      .header-dropdown-logout {
+        color: #c62828;
+        border-top: 1px solid #f0f0f0;
+      }
+      .header-dropdown-logout:hover {
+        background: #fce4ec;
+        color: #b71c1c;
       }
       /* Hide desktop cart on mobile */
       .cart-desktop-only {
@@ -336,9 +394,21 @@
         <span class="cart-count">{{ cart_count|default:0 }}</span>
       </a>
       {% if request.user.is_authenticated %}
-      <span class="header-user-icon" title="{{ request.user.first_name|default:request.user.username }}">
-        <i class="bi bi-person-circle"></i>
-      </span>
+      <div class="header-user-dropdown">
+        <button type="button" class="header-user-icon" id="headerUserDropdownBtn" title="{{ request.user.first_name|default:request.user.username }}" aria-label="Menú de usuario">
+          <i class="bi bi-person-circle"></i>
+        </button>
+        <div class="header-user-dropdown-menu" id="headerUserDropdownMenu">
+          <span class="header-dropdown-name"><i class="bi bi-person"></i> {{ request.user.first_name|default:request.user.username }}</span>
+          {% if request.user.is_staff or request.user.is_superuser %}
+          <a href="{% url 'dashboard' %}" class="header-dropdown-item"><i class="bi bi-speedometer2"></i> Dashboard</a>
+          {% endif %}
+          <form action="{% url 'logout' %}" method="post" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="header-dropdown-item header-dropdown-logout"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+          </form>
+        </div>
+      </div>
       {% else %}
       <button type="button" class="header-user-icon header-login-btn" id="openLoginModalHeader" title="Ingresar" aria-label="Ingresar" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}">
         <i class="bi bi-person-circle"></i>
@@ -796,6 +866,19 @@
         }, 4000);
       });
     });
+
+    // User dropdown toggle
+    const userDropdownBtn = document.getElementById('headerUserDropdownBtn');
+    const userDropdownMenu = document.getElementById('headerUserDropdownMenu');
+    if (userDropdownBtn && userDropdownMenu) {
+      userDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdownMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', () => {
+        userDropdownMenu.classList.remove('open');
+      });
+    }
   </script>
   {% if not request.user.is_authenticated %}
   <script>
