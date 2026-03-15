@@ -437,20 +437,10 @@ header nav {
     display: block;
   }
 
-  .header-right-controls {
+  /* Header left controls for mobile */
+  .header-left-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
-  }
-
-  .header-right-controls .cart-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none !important;
-    padding: 8px;
-    margin-right: 0;
   }
 
   header .logo {
@@ -479,9 +469,10 @@ header nav {
     transform: translateX(0);
   }
 
-  .nav-user-info {
-    display: flex;
+  /* nav-mobile-top handles user info display on mobile */
+  .nav-mobile-top {
     order: 0;
+    width: 100%;
   }
 
   .nav-links, .nav-right {
@@ -498,18 +489,19 @@ header nav {
     order: 2;
   }
 
-  /* Hide the cart from the nav-right on mobile since it's in header */
+  /* Hide the desktop cart from the nav-right on mobile */
   .nav-right .cart-link {
     display: none !important;
   }
 
-  .nav-auth-actions,
-  .btn-login, .btn-signup {
+  .nav-auth-actions {
     width: 100%;
     order: 3;
   }
 
   .btn-login, .btn-signup {
+    width: 100%;
+    order: 1 !important;
     text-align: center;
     justify-content: center;
     margin-left: 0 !important;

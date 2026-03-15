@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ project_name }}{% endblock %}</title>
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=18">
+  <link rel="stylesheet" href="{% static 'css/stiman.css' %}?v=19">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <style>
@@ -19,33 +19,48 @@
       align-items: center !important;
     }
 
-    .header-right-controls {
-      display: flex !important;
-      align-items: center !important;
-      gap: 12px !important;
+    /* Left controls (mobile menu button) - hidden on desktop */
+    .header-left-controls {
+      display: none;
+      align-items: center;
     }
 
-    /* Cart always visible in header-right-controls */
-    .header-right-controls .cart-link {
-      position: relative !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      border: none !important;
-      padding: 8px !important;
-      margin: 0 !important;
+    /* Mobile top row inside nav (username + cart) - hidden on desktop */
+    .nav-mobile-top {
+      display: none;
     }
 
     /* Desktop specifics */
     @media (min-width: 993px) {
+      .header-left-controls {
+        display: none !important;
+      }
       .mobile-menu-btn {
+        display: none !important;
+      }
+      .nav-mobile-top {
+        display: none !important;
+      }
+      /* Hide mobile header controls on desktop */
+      .header-right-controls {
         display: none !important;
       }
       .nav-user-info {
         display: none !important;
       }
-      .header-right-controls {
-        gap: 6px !important;
+      .nav-user-section {
+        display: none !important;
+      }
+      .btn-login-mobile {
+        display: none !important;
+      }
+      /* Show desktop cart (next to username) */
+      .cart-desktop-only {
+        display: inline-flex !important;
+      }
+      /* Hide mobile cart on desktop */
+      .nav-mobile-cart {
+        display: none !important;
       }
       /* On desktop, nav-auth-actions should display inline */
       .nav-auth-actions {
@@ -59,29 +74,107 @@
         font-size: 0.85rem !important;
         border-radius: 25px !important;
       }
+      /* Desktop username next to cart */
+      .user-name-desktop {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 5px 14px;
+        border-radius: 25px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+      }
+      .user-name-desktop i {
+        font-size: 1.1rem;
+      }
     }
 
     /* Mobile specifics */
     @media (max-width: 992px) {
       header {
         padding: 0 15px !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
       }
-      .logo {
+      /* Menu button on the LEFT */
+      .header-left-controls {
+        display: flex !important;
         order: 1 !important;
-        flex: 1 !important;
+        align-items: center;
       }
-      .header-right-controls {
+      /* Logo center-left */
+      .logo {
         order: 2 !important;
+        flex: 1 1 auto !important;
+      }
+      /* Cart + User on the RIGHT */
+      .header-right-controls {
+        display: flex !important;
+        order: 3 !important;
+        align-items: center;
+        gap: 12px;
+      }
+      .header-right-controls .header-cart-link {
+        position: relative;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        border: none !important;
+        padding: 4px;
+        color: white;
+        font-size: 1.4rem;
+        text-decoration: none;
+      }
+      .header-right-controls .header-user-icon {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.4rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
       }
       .mobile-menu-btn {
         display: block !important;
       }
+      /* Hide desktop cart on mobile */
+      .cart-desktop-only {
+        display: none !important;
+      }
+      /* Hide desktop username on mobile */
+      .user-name-desktop {
+        display: none !important;
+      }
+      /* Nav panel - slide from left */
       nav#mainNav {
         transform: translateX(-100%) !important;
         transition: transform 0.3s ease-in-out !important;
       }
       nav#mainNav.active {
         transform: translateX(0) !important;
+      }
+      /* Mobile login button at top of nav */
+      .btn-login-mobile {
+        display: flex !important;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        margin-left: 0 !important;
+        padding: 12px !important;
+        margin-bottom: 0.5rem;
+      }
+      /* Hide original login button in nav-right on mobile */
+      .nav-right .btn-login {
+        display: none !important;
       }
     }
   </style>
@@ -218,27 +311,35 @@
 
 <body class="{% block body_class %}has-bg-pattern{% endblock %}">
   <header>
+    <!-- Mobile menu button (left side on mobile) -->
+    <div class="header-left-controls">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
     <div class="logo">
       <!-- Logo principal -->
       <img src="{% static 'img/logo.jpg' %}" alt="{{ project_name }} Logo" class="cupcake-icon">
       <span>{{ project_name }}</span>
     </div>
+    <!-- Right controls: cart + user icon (always visible on mobile) -->
     <div class="header-right-controls">
-      <a href="{% url 'carrito_detalle' %}" class="cart-link {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
+      <a href="{% url 'carrito_detalle' %}" class="cart-link header-cart-link {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
         <i class="bi bi-cart3 cart-icon" aria-hidden="true"></i>
         <span class="cart-count">{{ cart_count|default:0 }}</span>
       </a>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
-        <i class="bi bi-list"></i>
+      {% if request.user.is_authenticated %}
+      <span class="header-user-icon" title="{{ request.user.first_name|default:request.user.username }}">
+        <i class="bi bi-person-circle"></i>
+      </span>
+      {% else %}
+      <button type="button" class="header-user-icon header-login-btn" id="openLoginModalHeader" title="Ingresar" aria-label="Ingresar">
+        <i class="bi bi-person-circle"></i>
       </button>
+      {% endif %}
     </div>
     <nav id="mainNav">
-      {% if request.user.is_authenticated %}
-      <div class="nav-user-info">
-        <i class="bi bi-person-circle"></i>
-        <span>{{ request.user.first_name|default:request.user.username }}</span>
-      </div>
-      {% endif %}
+
       <div class="nav-links">
         <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
         <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
@@ -247,8 +348,15 @@
         <a href="{% url 'feedback' %}" class="{% if request.resolver_match.url_name == 'feedback' %}active{% endif %}">Comentarios</a>
         <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
       </div>
+
       <div class="nav-right">
+        <!-- Cart for desktop only (next to username) -->
+        <a href="{% url 'carrito_detalle' %}" class="cart-link cart-desktop-only {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
+          <i class="bi bi-cart3 cart-icon" aria-hidden="true"></i>
+          <span class="cart-count">{{ cart_count|default:0 }}</span>
+        </a>
         {% if request.user.is_authenticated %}
+        <span class="user-name-desktop"><i class="bi bi-person-circle"></i> {{ request.user.first_name|default:request.user.username }}</span>
         <div class="nav-auth-actions">
           {% if request.user.is_staff or request.user.is_superuser %}
           <a href="{% url 'dashboard' %}" class="nav-action-btn">
@@ -688,6 +796,7 @@
     (function() {
       const overlay = document.getElementById('loginModalOverlay');
       const openBtn = document.getElementById('openLoginModal');
+      const openBtnHeader = document.getElementById('openLoginModalHeader');
       const closeBtn = document.getElementById('closeLoginModal');
       const form = document.getElementById('loginModalForm');
       const errorDiv = document.getElementById('loginModalError');
@@ -697,7 +806,7 @@
       const togglePwd = document.getElementById('togglePassword');
       const pwdInput = document.getElementById('modal_password');
 
-      if (!overlay || !openBtn) return;
+      if (!overlay || (!openBtn && !openBtnHeader)) return;
 
       function openModal() {
         overlay.classList.add('active');
@@ -715,7 +824,8 @@
         if (form) form.reset();
       }
 
-      openBtn.addEventListener('click', openModal);
+      if (openBtn) openBtn.addEventListener('click', openModal);
+      if (openBtnHeader) openBtnHeader.addEventListener('click', openModal);
       closeBtn.addEventListener('click', closeModal);
 
       // Close on overlay click
