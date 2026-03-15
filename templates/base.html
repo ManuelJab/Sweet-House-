@@ -333,7 +333,7 @@
         <i class="bi bi-person-circle"></i>
       </span>
       {% else %}
-      <button type="button" class="header-user-icon header-login-btn" id="openLoginModalHeader" title="Ingresar" aria-label="Ingresar">
+      <button type="button" class="header-user-icon header-login-btn" id="openLoginModalHeader" title="Ingresar" aria-label="Ingresar" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}">
         <i class="bi bi-person-circle"></i>
       </button>
       {% endif %}
