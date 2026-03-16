@@ -25,6 +25,8 @@ class SolicitudPedido(models.Model):
 	email = models.EmailField()
 	phone = models.CharField(max_length=40, blank=True)
 	address = models.TextField(blank=True)
+	address_lat = models.DecimalField(max_digits=12, decimal_places=9, null=True, blank=True)
+	address_lng = models.DecimalField(max_digits=12, decimal_places=9, null=True, blank=True)
 	# keep a nullable FK to Producto (string reference to avoid circular import issues at import time)
 	product = models.ForeignKey('tienda.Producto', null=True, blank=True, on_delete=models.SET_NULL)
 	product_name = models.CharField(max_length=200, blank=True)

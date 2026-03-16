@@ -140,6 +140,8 @@ def solicitud_pedido(request):
                     email=data.get('email'),
                     phone=data.get('phone') or '',
                     address=data.get('address') or '',
+                    address_lat=data.get('address_lat'),
+                    address_lng=data.get('address_lng'),
                     product=producto,
                     product_name=producto_name,
                     quantity=int(data.get('quantity') or 1),

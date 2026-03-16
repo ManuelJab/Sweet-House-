@@ -3,12 +3,93 @@
 
 {% block title %}Solicitud de pedido - {{ project_name }}{% endblock %}
 
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Coordenadas iniciales (Since the user mentioned COP, let's use a central location in Colombia or Bogotá)
+    // Default: Bogotá (4.624335, -74.063644)
+    const initialLat = 4.624335;
+    const initialLng = -74.063644;
+    
+    const map = L.map('map').setView([initialLat, initialLng], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    let marker;
+
+    // Campos ocultos
+    const latInput = document.getElementById('id_address_lat');
+    const lngInput = document.getElementById('id_address_lng');
+
+    function updateMarker(lat, lng) {
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(e) {
+          const pos = marker.getLatLng();
+          latInput.value = pos.lat.toFixed(9);
+          lngInput.value = pos.lng.toFixed(9);
+        });
+      }
+      latInput.value = lat.toFixed(9);
+      lngInput.value = lng.toFixed(9);
+    }
+
+    // Click en el mapa para poner el marcador
+    map.on('click', function(e) {
+      updateMarker(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Intentar obtener la ubicación actual del usuario
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        map.setView([userLat, userLng], 16);
+        updateMarker(userLat, userLng);
+      }, function(error) {
+        console.log("Error obteniendo ubicación:", error);
+      });
+    }
+  });
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
   /* Contenedor principal */
   body {
     background: linear-gradient(135deg, #f5f7fa 0%, #f0e6f0 100%);
+  }
+
+  /* Mapa */
+  #map {
+    height: 350px;
+    width: 100%;
+    border-radius: 12px;
+    border: 2px solid #ffe0ed;
+    margin-top: 10px;
+    z-index: 1;
+  }
+
+  .map-container {
+    margin-top: 15px;
+  }
+
+  .map-help {
+    font-size: 0.85rem;
+    color: #e91e63;
+    margin-bottom: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   /* Card del formulario */
@@ -354,9 +435,15 @@
           {{ form.phone.label_tag }}
           {{ form.phone }}
         </div>
-        <div>
+        <div class="full">
           {{ form.address.label_tag }}
           {{ form.address }}
+          <div class="map-container">
+            <label class="map-help"><i class="bi bi-geo-alt-fill"></i> Ubica tu dirección en el mapa para mayor precisión:</label>
+            <div id="map"></div>
+            {{ form.address_lat }}
+            {{ form.address_lng }}
+          </div>
         </div>
 
         <div>
