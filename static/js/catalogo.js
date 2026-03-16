@@ -60,20 +60,23 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         option.classList.add("active")
 
-        // Determinar filtro efectivo si no existe sección de especiales
-        const effectiveFiltro = (!especialesSection && filtro === "especiales") ? "todos" : filtro
+        const effectiveFiltro = filtro
 
         const catalogRegulares = document.getElementById("productos-regulares")
         const categoriaSecciones = document.querySelectorAll(".categoria-seccion")
+        const especialesSection = document.querySelector(".especiales-section")
 
         // Mostrar/ocultar sección de especiales y el grid según filtro
         if (especialesSection) {
           if (effectiveFiltro === "especiales") {
-            especialesSection.style.display = ""
+            especialesSection.style.display = "block"
             if (catalogRegulares) catalogRegulares.style.display = "none"
+          } else if (effectiveFiltro === "todos") {
+            especialesSection.style.display = "block"
+            if (catalogRegulares) catalogRegulares.style.display = "block"
           } else {
             especialesSection.style.display = "none"
-            if (catalogRegulares) catalogRegulares.style.display = ""
+            if (catalogRegulares) catalogRegulares.style.display = "block"
           }
         }
 

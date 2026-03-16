@@ -598,9 +598,11 @@ def favoritos_list(request):
 
 def catalogo_publico(request):
 	productos = Producto.objects.filter(is_active=True).order_by('name')
+	postres_especiales = Producto.objects.filter(is_active=True, is_special=True).order_by('name')
 	favorites_ids = _get_favorites(request.session)
 	return render(request, 'tienda/catalogo_publico.html', {
 		'productos': productos,
+		'postres_especiales': postres_especiales,
 		'favorites_ids': favorites_ids
 	})
 
