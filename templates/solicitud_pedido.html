@@ -40,20 +40,26 @@
       lngInput.value = lng.toFixed(9);
     }
 
-    // Configurar el buscador (Geocodificador)
+    // Configurar el buscador (Geocodificador usando Esri/ArcGIS para evitar bloqueos)
     const geocoder = L.Control.geocoder({
       defaultMarkGeocode: false,
       placeholder: "Buscar dirección...",
       errorMessage: "No se encontró la ubicación",
-      showUniqueResult: true
+      showUniqueResult: true,
+      geocoder: L.Control.geocoder.arcgis() // Usamos ArcGIS que es más permisivo y profesional
     })
     .on('markgeocode', function(e) {
-      const bbox = e.geocode.bbox;
       const center = e.geocode.center;
       
       // Ajustar vista y marcador
-      map.fitBounds(bbox);
+      map.setView(center, 17);
       updateMarker(center.lat, center.lng);
+      
+      // Opcional: llenar el campo de texto de dirección con el resultado
+      const addressInput = document.querySelector('input[name="address"]');
+      if (addressInput) {
+        addressInput.value = e.geocode.name;
+      }
     })
     .addTo(map);
 
