@@ -339,12 +339,12 @@
 
 			<!-- Precio -->
 			<div class="form-item">
-				<label for="id_price" class="form-label"><i class="bi bi-currency-dollar"></i> {{ form.price.label }}</label>
+				<label for="id_price" class="form-label"><i class="bi bi-currency-dollar"></i> {{ form.price.label }} (COP)</label>
 				<div class="price-input-wrapper">
 					<span class="currency-chip">$</span>
 					{{ form.price }}
 				</div>
-				<small class="hint">{{ form.price.help_text }}</small>
+				<small class="hint">Ingresa el valor total en pesos colombianos. Ej: 25000</small>
 				{% if form.price.errors %}
 				<small class="error-msg">{{ form.price.errors|striptags }}</small>
 				{% endif %}
@@ -477,14 +477,21 @@
 			update();
 		}
 
-		// Formateo ligero de precio al perder foco (no altera el valor real)
+		// Formateo de precio para COP (evitar decimales forzados)
 		const price = document.getElementById('id_price');
 		if (price) {
+			// Cambiar tipo a text temporalmente si es necesario para manejar separadores visuales
+			// o mantenerlo como number pero sin forzar .00
 			price.addEventListener('blur', () => {
-				const v = price.value.replace(/,/g, '').trim();
+				let v = price.value.replace(/,/g, '').trim();
 				if (v && !isNaN(Number(v))) {
 					const num = Number(v);
-					price.value = num.toFixed(2);
+					// Si es un número entero (común en COP), no forzar decimales
+					if (num % 1 === 0) {
+						price.value = num.toString();
+					} else {
+						price.value = num.toFixed(2);
+					}
 				}
 			});
 		}
