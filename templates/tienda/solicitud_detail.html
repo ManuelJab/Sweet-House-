@@ -5,28 +5,35 @@
 
 {% block extra_js %}
 {% if solicitud.address_lat and solicitud.address_lng %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const lat = {{ solicitud.address_lat|stringformat:"f" }};
-    const lng = {{ solicitud.address_lng|stringformat:"f" }};
+  function initMap() {
+    const pos = { 
+      lat: {{ solicitud.address_lat|stringformat:"f" }}, 
+      lng: {{ solicitud.address_lng|stringformat:"f" }} 
+    };
     
-    const map = L.map('map-detail').setView([lat, lng], 16);
+    const map = new google.maps.Map(document.getElementById("map-detail"), {
+      center: pos,
+      zoom: 16,
+      mapTypeControl: false,
+      streetViewControl: true,
+      fullscreenControl: true
+    });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    L.marker([lat, lng]).addTo(map)
-      .bindPopup('Ubicación de entrega: {{ solicitud.name|escapejs }}')
-      .openPopup();
-  });
+    new google.maps.Marker({
+      position: pos,
+      map: map,
+      title: "Ubicación de entrega",
+      animation: google.maps.Animation.DROP
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initMap);
 </script>
 {% endif %}
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
   .detail-container {
     max-width: 800px;
@@ -38,12 +45,11 @@
 
   /* Map styling */
   #map-detail {
-    height: 300px;
+    height: 350px;
     width: 100%;
     border-radius: 12px;
     border: 2px solid #fce4ec;
     margin-top: 10px;
-    z-index: 1;
   }
   
   .map-wrapper {
