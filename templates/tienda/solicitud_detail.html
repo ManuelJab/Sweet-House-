@@ -3,36 +3,6 @@
 
 {% block title %}Detalle de Solicitud - {{ project_name }}{% endblock %}
 
-{% block extra_js %}
-{% if solicitud.address_lat and solicitud.address_lng %}
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE"></script>
-<script>
-  function initMap() {
-    const pos = { 
-      lat: {{ solicitud.address_lat|stringformat:"f" }}, 
-      lng: {{ solicitud.address_lng|stringformat:"f" }} 
-    };
-    
-    const map = new google.maps.Map(document.getElementById("map-detail"), {
-      center: pos,
-      zoom: 16,
-      mapTypeControl: false,
-      streetViewControl: true,
-      fullscreenControl: true
-    });
-
-    new google.maps.Marker({
-      position: pos,
-      map: map,
-      title: "Ubicación de entrega",
-      animation: google.maps.Animation.DROP
-    });
-  }
-  document.addEventListener('DOMContentLoaded', initMap);
-</script>
-{% endif %}
-{% endblock %}
-
 {% block extra_css %}
 <style>
   .detail-container {
@@ -41,33 +11,6 @@
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
-  }
-
-  /* Map styling */
-  #map-detail {
-    height: 350px;
-    width: 100%;
-    border-radius: 12px;
-    border: 2px solid #fce4ec;
-    margin-top: 10px;
-  }
-  
-  .map-wrapper {
-    margin-top: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .location-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 8px;
   }
 
   .detail-header {
@@ -248,15 +191,9 @@
           <label>Teléfono</label>
           <p>{{ solicitud.phone|default:"—" }}</p>
         </div>
-        <div class="field field-full">
+        <div class="field">
           <label>Dirección</label>
           <p>{{ solicitud.address|default:"—" }}</p>
-          {% if solicitud.address_lat and solicitud.address_lng %}
-          <div class="map-wrapper">
-            <span class="location-badge"><i class="bi bi-geo-alt-fill"></i> Ubicación exacta del cliente</span>
-            <div id="map-detail"></div>
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>

@@ -7,8 +7,6 @@ class SolicitudPedidoForm(forms.Form):
     email = forms.EmailField(label='Correo electrónico')
     phone = forms.CharField(label='Número de teléfono', max_length=30, required=False)
     address = forms.CharField(label='Dirección de envío', max_length=250, required=False)
-    address_lat = forms.DecimalField(widget=forms.HiddenInput(), required=False)
-    address_lng = forms.DecimalField(widget=forms.HiddenInput(), required=False)
     product = forms.ChoiceField(label='Producto', choices=[], required=True)
     quantity = forms.IntegerField(label='Cantidad', min_value=1, initial=1)
     notes = forms.CharField(label='Detalles / Observaciones', required=False, widget=forms.Textarea(attrs={'rows':4}))
