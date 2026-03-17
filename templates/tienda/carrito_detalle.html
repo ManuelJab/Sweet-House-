@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+<<<<<<< HEAD
 {% load static humanize %}
 {% block title %}Carrito{% endblock %}
 
@@ -265,6 +266,74 @@
         {% if not request.user.is_authenticated %}
           <a href="{% url 'login' %}" class="btn-light-pink">Ingresar</a>
         {% endif %}
+=======
+{% load static %}
+{% block title %}Carrito{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=4">
+{% endblock %}
+{% block content %}
+<section class="cart-page">
+  <h1 class="cart-title">Carrito</h1>
+  {% if items %}
+    <div class="cart-items-grid">
+      {% for it in items %}
+      <div class="cart-item">
+        <div>
+          {% if it.product.image %}
+            <img src="{{ it.product.image.url }}" alt="{{ it.product.name }}">
+          {% else %}
+            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ it.product.name }}">
+          {% endif %}
+        </div>
+        <div>
+          <div class="cart-item-title">{{ it.product.name }}</div>
+          <div class="cart-item-price">$ {{ it.product.price }}</div>
+          <div class="cart-item-price">Subtotal: $ {{ it.subtotal }}</div>
+        </div>
+        {% if not request.user.is_staff and not request.user.is_superuser %}
+          <div class="cart-item-actions">
+            <div class="qty-input-wrapper">
+              <input type="number" form="update-form-{{ it.product.id }}" class="qty-input" name="qty" value="{{ it.qty }}" min="0">
+            </div>
+            <div class="cart-btns-wrapper">
+              <form action="{% url 'carrito_actualizar' it.product.id %}" method="post" id="update-form-{{ it.product.id }}">
+                {% csrf_token %}
+                <button type="submit" class="btn-cart btn-actualizar">Actualizar</button>
+              </form>
+              <form action="{% url 'carrito_eliminar' it.product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-cart btn-eliminar">Eliminar</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="cart-total-bar">
+      <div class="cart-total-amount">Total: $ {{ total }}</div>
+      {% if not request.user.is_staff and not request.user.is_superuser %}
+      <div style="display:flex; gap:10px; align-items:stretch;">
+        <form action="{% url 'carrito_vaciar' %}" method="post" style="flex:1; display:flex;">
+          {% csrf_token %}
+          <button type="submit" class="btn-vaciar" style="flex:1;">Vaciar</button>
+        </form>
+        <a href="{% url 'checkout' %}" class="btn-checkout" style="flex:1; display:flex; align-items:center; justify-content:center; text-align:center;">Proceder al pago</a>
+      </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <img src="{% static 'img/carrito-de-compras.png' %}" alt="Carrito" class="empty-cart-illustration">
+      </div>
+      <h2 class="empty-title">Tu carrito está vacío</h2>
+      <p class="empty-text">Agrega tus postres favoritos para proceder al pago.</p>
+      <div class="empty-actions">
+        <a class="empty-cta" href="{% url 'catalogo_publico' %}">Ver catálogo</a>
+        <a class="empty-cta empty-cta--secondary" href="{% url 'login' %}">Ingresar</a>
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
       </div>
     </div>
   {% endif %}

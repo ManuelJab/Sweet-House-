@@ -163,6 +163,7 @@
       grid-template-columns: 1fr;
     }
   }
+<<<<<<< HEAD
   .email-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -191,6 +192,8 @@
     justify-content: flex-end;
     gap: 10px;
   }
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 </style>
 {% endblock %}
 
@@ -212,7 +215,12 @@
         </div>
         <div class="field">
           <label>Email</label>
+<<<<<<< HEAD
           <p><a href="mailto:{{ solicitud.email }}" style="color:#ff6ea6; text-decoration:none;">{{ solicitud.email }}</a></p>
+=======
+          <p><a href="mailto:{{ solicitud.email }}" style="color:#ff6ea6; text-decoration:none;">{{ solicitud.email
+              }}</a></p>
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
         </div>
         <div class="field">
           <label>Teléfono</label>
@@ -235,13 +243,23 @@
         </div>
         <div class="field">
           <label>Cantidad</label>
+<<<<<<< HEAD
           <p style="background:#fff0f5; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{ solicitud.quantity }} unidad{{ solicitud.quantity|pluralize }}</p>
+=======
+          <p style="background:#fff0f5; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{
+            solicitud.quantity }} unidad{{ solicitud.quantity|pluralize }}</p>
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
         </div>
       </div>
       <div class="field-row">
         <div class="field">
           <label>Estado</label>
+<<<<<<< HEAD
           <p style="background:#eaf7ff; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{ solicitud.get_status_display }}</p>
+=======
+          <p style="background:#eaf7ff; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{
+            solicitud.get_status_display }}</p>
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
         </div>
       </div>
     </div>
@@ -271,6 +289,7 @@
       </div>
     </div>
 
+<<<<<<< HEAD
     {% if request.user.is_staff or request.user.is_superuser %}
     <div class="detail-section">
       <h3><i class="bi bi-envelope-fill"></i> Responder por email</h3>
@@ -298,10 +317,21 @@
     <!-- Acciones -->
     <div class="detail-footer">
       <a href="{% url 'solicitudes_list' %}" class="btn btn-secondary">← Volver a solicitudes</a>
+=======
+    <!-- Acciones -->
+    <div class="detail-footer">
+      <a href="{% url 'solicitudes_list' %}" class="btn btn-secondary">← Volver a solicitudes</a>
+      <a href="mailto:{{ solicitud.email }}?subject=Re: Solicitud de Pedido #{{ solicitud.pk }}"
+        class="btn btn-primary">Responder por email</a>
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
       {% if request.user.is_staff or request.user.is_superuser %}
       <a href="{% url 'solicitud_avanzar_estado' solicitud.pk %}" class="btn btn-primary">Avanzar estado</a>
       {% endif %}
     </div>
   </div>
 </div>
+<<<<<<< HEAD
 {% endblock %}
+=======
+{% endblock %}
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7

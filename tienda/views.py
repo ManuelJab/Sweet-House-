@@ -12,11 +12,14 @@ from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from .models import Producto
 from django.core.mail import send_mail
+<<<<<<< HEAD
 from django.core.mail import EmailMessage
 from django.core.mail import get_connection
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.mail import get_connection
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 
 
 from django.contrib.auth.decorators import login_required
@@ -640,6 +643,7 @@ def checkout(request):
 		items.append({'product': product, 'qty': qty, 'subtotal': subtotal})
 	if request.method == 'POST':
 		# Aquí podrías registrar el pedido y limpiar el carrito
+<<<<<<< HEAD
 		from web.models import SolicitudPedido
 		# Creamos una solicitud por cada item en el carrito
 		created_ids = []
@@ -683,6 +687,10 @@ def checkout(request):
 				EmailMessage(subject, body, sender, [request.user.email], connection=conn).send(fail_silently=True)
 		except Exception:
 			pass
+=======
+		request.session['cart'] = {}
+		request.session.modified = True
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 		return render(request, 'tienda/checkout_exito.html', {'total': total})
 	# Tomar Nequi del entorno si está disponible para reflejar cambios sin reiniciar
 	nequi_number = os.environ.get('NEQUI_NUMBER', getattr(settings, 'NEQUI_NUMBER', '3000000000'))
@@ -729,6 +737,7 @@ def checkout(request):
 	})
 
 
+<<<<<<< HEAD
 @login_required
 def pedidos_usuario(request):
 	"""Listar los pedidos realizados por el usuario logueado."""
@@ -745,6 +754,8 @@ def pedidos_usuario(request):
 	return render(request, 'tienda/pedidos_usuario.html', context)
 
 
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 # Gestión de Solicitudes de Pedido
 
 @staff_member_required
@@ -849,6 +860,7 @@ def solicitud_avanzar_estado(request, pk: int):
 		messages.error(request, "No se pudo avanzar el estado.")
 	return redirect('solicitud_detail', pk=pk)
 
+<<<<<<< HEAD
 @staff_member_required
 @require_post_method
 def solicitud_enviar_email(request, pk: int):
@@ -907,6 +919,8 @@ def solicitud_enviar_email(request, pk: int):
 	except Exception as e:
 		messages.error(request, f"No se pudo enviar el email: {e}")
 	return redirect('solicitud_detail', pk=pk)
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 
 @staff_member_required
 def clientes_list(request):

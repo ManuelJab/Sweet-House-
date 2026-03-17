@@ -10,8 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+<<<<<<< HEAD
 from pathlib import Path
 import os
+=======
+import os
+from pathlib import Path
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 from dotenv import load_dotenv
 import dj_database_url
 
@@ -42,13 +47,20 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
+=======
+    'import_export',
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'django.contrib.humanize',
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
     'tienda',
     'web',
 ]
@@ -122,9 +134,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+<<<<<<< HEAD
 # Default email
 DEFAULT_FROM_EMAIL = os.environ.get('DJANGO_DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
 
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 # Internationalization
 LANGUAGE_CODE = 'es'
 TIME_ZONE = 'America/Bogota'
@@ -182,6 +197,7 @@ LOGOUT_REDIRECT_URL = 'home'
 EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
+<<<<<<< HEAD
 # SMTP (cuando EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
 try:
@@ -194,6 +210,8 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1',
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
 if EMAIL_HOST and EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and EMAIL_BACKEND.endswith('console.EmailBackend'):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 
 # ============================================
 # Security settings for production

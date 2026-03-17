@@ -48,7 +48,11 @@ body {
 
 .site-footer .footer-grid {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: repeat(4, minmax(250px, 1fr));
+=======
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
   gap: 24px;
 }
 
@@ -112,7 +116,11 @@ body {
 
 .site-footer .footer-list li {
   display: flex;
+<<<<<<< HEAD
   align-items: center;
+=======
+  align-items: flex-start;
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
   gap: 10px;
   color: #666;
 }
@@ -124,11 +132,18 @@ body {
   color: #1a73e8;
   text-decoration: underline;
   font-weight: 600;
+<<<<<<< HEAD
   white-space: nowrap;
+=======
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 }
 
 .site-footer .footer-list li i {
   color: #ff4081;
+<<<<<<< HEAD
+=======
+  margin-top: 2px;
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 }
 
 .site-footer .social-links {

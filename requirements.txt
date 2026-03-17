@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 django
 dj-database-url
 whitenoise
@@ -7,3 +8,15 @@ psycopg2-binary
 pillow
 django-import-export
 gunicorn
+=======
+Django==5.1.7
+django-import-export==4.4.0
+tablib[xlsx]==3.7.0
+dj-database-url==2.3.0
+whitenoise==6.9.0
+python-dotenv==1.0.1
+mysql-connector-python==9.2.0
+psycopg2-binary==2.9.10
+pillow==11.1.0
+gunicorn==23.0.0
+>>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
