@@ -182,6 +182,18 @@ LOGOUT_REDIRECT_URL = 'home'
 EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
+# SMTP (cuando EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+try:
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+except ValueError:
+    EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
+if EMAIL_HOST and EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and EMAIL_BACKEND.endswith('console.EmailBackend'):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # ============================================
 # Security settings for production

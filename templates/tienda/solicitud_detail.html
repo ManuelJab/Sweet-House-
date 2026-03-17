@@ -163,6 +163,34 @@
       grid-template-columns: 1fr;
     }
   }
+  .email-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .email-form .field-full {
+    grid-column: 1 / -1;
+  }
+  .email-form input,
+  .email-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  .email-form textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+  .email-form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
 </style>
 {% endblock %}
 
@@ -184,8 +212,7 @@
         </div>
         <div class="field">
           <label>Email</label>
-          <p><a href="mailto:{{ solicitud.email }}" style="color:#ff6ea6; text-decoration:none;">{{ solicitud.email
-              }}</a></p>
+          <p><a href="mailto:{{ solicitud.email }}" style="color:#ff6ea6; text-decoration:none;">{{ solicitud.email }}</a></p>
         </div>
         <div class="field">
           <label>Teléfono</label>
@@ -208,15 +235,13 @@
         </div>
         <div class="field">
           <label>Cantidad</label>
-          <p style="background:#fff0f5; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{
-            solicitud.quantity }} unidad{{ solicitud.quantity|pluralize }}</p>
+          <p style="background:#fff0f5; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{ solicitud.quantity }} unidad{{ solicitud.quantity|pluralize }}</p>
         </div>
       </div>
       <div class="field-row">
         <div class="field">
           <label>Estado</label>
-          <p style="background:#eaf7ff; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{
-            solicitud.get_status_display }}</p>
+          <p style="background:#eaf7ff; padding:8px 12px; border-radius:6px; display:inline-block; font-weight:600;">{{ solicitud.get_status_display }}</p>
         </div>
       </div>
     </div>
@@ -246,11 +271,33 @@
       </div>
     </div>
 
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <div class="detail-section">
+      <h3><i class="bi bi-envelope-fill"></i> Responder por email</h3>
+      <form action="{% url 'solicitud_enviar_email' solicitud.pk %}" method="post" class="email-form">
+        {% csrf_token %}
+        <div class="field">
+          <label>Para (email)</label>
+          <input type="email" name="to_email" value="{{ solicitud.email }}" placeholder="destinatario@correo.com">
+        </div>
+        <div class="field">
+          <label>Asunto</label>
+          <input type="text" name="subject" value="Re: Solicitud #{{ solicitud.pk }} - {{ solicitud.product_name }}">
+        </div>
+        <div class="field field-full">
+          <label>Mensaje</label>
+          <textarea name="message">Hola {{ solicitud.name }}, tu pedido {{ solicitud.product_name }} x{{ solicitud.quantity }} está en estado: {{ solicitud.get_status_display }}.</textarea>
+        </div>
+        <div class="email-form-actions">
+          <button type="submit" class="btn btn-primary">Responder por email</button>
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
     <!-- Acciones -->
     <div class="detail-footer">
       <a href="{% url 'solicitudes_list' %}" class="btn btn-secondary">← Volver a solicitudes</a>
-      <a href="mailto:{{ solicitud.email }}?subject=Re: Solicitud de Pedido #{{ solicitud.pk }}"
-        class="btn btn-primary">Responder por email</a>
       {% if request.user.is_staff or request.user.is_superuser %}
       <a href="{% url 'solicitud_avanzar_estado' solicitud.pk %}" class="btn btn-primary">Avanzar estado</a>
       {% endif %}

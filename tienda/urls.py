@@ -21,10 +21,12 @@ urlpatterns = [
 	# checkout nequi
 	path('checkout/', views.checkout, name='checkout'),
 	# solicitudes de pedido
+	path('mis-pedidos/', views.pedidos_usuario, name='pedidos_usuario'),
 	path('solicitudes/', views.solicitudes_list, name='solicitudes_list'),
     path('clientes/', views.clientes_list, name='clientes_list'),
 	path('solicitudes/<int:pk>/', views.solicitud_detail, name='solicitud_detail'),
 	path('solicitudes/<int:pk>/avanzar/', views.solicitud_avanzar_estado, name='solicitud_avanzar_estado'),
+    path('solicitudes/<int:pk>/enviar-email/', views.solicitud_enviar_email, name='solicitud_enviar_email'),
     # dashboard metrics (json)
     path('dashboard/metrics/', views.dashboard_metrics, name='dashboard_metrics'),
 	# favoritos

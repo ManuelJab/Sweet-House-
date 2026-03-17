@@ -12,6 +12,10 @@ from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from .models import Producto
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.core.mail import get_connection
 
 
 from django.contrib.auth.decorators import login_required
@@ -695,6 +699,22 @@ def checkout(request):
 	})
 
 
+@login_required
+def pedidos_usuario(request):
+	"""Listar los pedidos realizados por el usuario logueado."""
+	if request.user.is_staff or request.user.is_superuser:
+		messages.info(request, 'Los administradores no tienen pedidos.')
+		return redirect('dashboard')
+	from web.models import SolicitudPedido
+	# Filtramos por el email del usuario logueado
+	pedidos = SolicitudPedido.objects.filter(email=request.user.email).order_by('-created_at')
+	
+	context = {
+		'pedidos': pedidos,
+	}
+	return render(request, 'tienda/pedidos_usuario.html', context)
+
+
 # Gestión de Solicitudes de Pedido
 
 @staff_member_required
@@ -799,6 +819,68 @@ def solicitud_avanzar_estado(request, pk: int):
 		messages.error(request, "No se pudo avanzar el estado.")
 	return redirect('solicitud_detail', pk=pk)
 
+@staff_member_required
+@require_post_method
+def solicitud_enviar_email(request, pk: int):
+	from web.models import SolicitudPedido
+	s = get_object_or_404(SolicitudPedido, pk=pk)
+	subject = (request.POST.get('subject') or '').strip() or f"Actualización de solicitud #{s.pk}"
+	message = (request.POST.get('message') or '').strip()
+	to_override = (request.POST.get('to_email') or '').strip()
+	dest_email = s.email
+	if to_override:
+		try:
+			validate_email(to_override)
+			dest_email = to_override
+		except ValidationError:
+			messages.error(request, "El email del destinatario no es válido.")
+			return redirect('solicitud_detail', pk=pk)
+	if not s.email and not to_override:
+		messages.error(request, "La solicitud no tiene email.")
+		return redirect('solicitud_detail', pk=pk)
+	if not message:
+		messages.error(request, "Debes escribir un mensaje.")
+		return redirect('solicitud_detail', pk=pk)
+	sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
+	backend = getattr(settings, 'EMAIL_BACKEND', '')
+	console_mode = 'console.EmailBackend' in (backend or '')
+	reply_to_email = (request.user.email or sender)
+	# Preparar conexión de correo: si el backend es consola pero hay credenciales SMTP, usar SMTP
+	smtp_ready = bool(getattr(settings, 'EMAIL_HOST', '') and getattr(settings, 'EMAIL_HOST_USER', '') and getattr(settings, 'EMAIL_HOST_PASSWORD', ''))
+	try:
+		if console_mode and smtp_ready:
+			connection = get_connection(
+				'django.core.mail.backends.smtp.EmailBackend',
+				host=getattr(settings, 'EMAIL_HOST', ''),
+				port=getattr(settings, 'EMAIL_PORT', 587),
+				username=getattr(settings, 'EMAIL_HOST_USER', ''),
+				password=getattr(settings, 'EMAIL_HOST_PASSWORD', ''),
+				use_tls=getattr(settings, 'EMAIL_USE_TLS', True),
+				use_ssl=getattr(settings, 'EMAIL_USE_SSL', False),
+			)
+			console_mode = False  # for feedback purposes
+		else:
+			connection = get_connection(backend or 'django.core.mail.backends.console.EmailBackend')
+	except Exception:
+		connection = get_connection(backend or 'django.core.mail.backends.console.EmailBackend')
+	try:
+		msg = EmailMessage(subject, message, sender, [dest_email], reply_to=[reply_to_email], connection=connection)
+		msg.send(fail_silently=False)
+		if console_mode:
+			_preview = (message or '')[:240]
+			missing = []
+			if not getattr(settings, 'EMAIL_HOST', ''): missing.append('EMAIL_HOST')
+			if not getattr(settings, 'EMAIL_HOST_USER', ''): missing.append('EMAIL_HOST_USER')
+			if not getattr(settings, 'EMAIL_HOST_PASSWORD', ''): missing.append('EMAIL_HOST_PASSWORD')
+			msg_txt = f"Correo en modo consola. Para {dest_email} · Asunto: {subject}. Vista previa: {_preview}"
+			if missing:
+				msg_txt += f". Falta configurar: {', '.join(missing)} en .env"
+			messages.warning(request, msg_txt)
+		else:
+			messages.success(request, f"Mensaje enviado a {dest_email}. Respuestas llegarán a {reply_to_email}.")
+	except Exception as e:
+		messages.error(request, f"No se pudo enviar el email: {e}")
+	return redirect('solicitud_detail', pk=pk)
 
 @staff_member_required
 def clientes_list(request):
