@@ -10,7 +10,7 @@ django-import-export
 gunicorn
 =======
 Django==5.1.7
-django-import-export==4.4.0
+django-import-export==4.0.0
 tablib[xlsx]==3.7.0
 dj-database-url==2.3.0
 whitenoise==6.9.0
