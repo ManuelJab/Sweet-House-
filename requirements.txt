@@ -1,5 +1,5 @@
-django-import-export
-django
+Django==6.0.3
+django-import-export==4.0.0
 dj-database-url
 whitenoise
 python-dotenv
