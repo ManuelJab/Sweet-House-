@@ -8,44 +8,26 @@
 	<span class="badge-especial">Especial</span>
 	{% endif %}
 	{% if p.image %}
-<<<<<<< HEAD
-		<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">
-	{% else %}
-		{% if 'flan' in p.name|lower %}
-			<img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
-		{% elif 'tarta' in p.name|lower or 'frutas' in p.name|lower %}
-=======
 		<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy" onerror="this.onerror=null; this.src='{% static 'img/cheesecake.jpeg' %}';">
 	{% else %}
 		{% if 'flan' in p.name|lower %}
 			<img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
-		{% elif 'tarta' in p.name|lower or 'fruta' in p.name|lower %}
->>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
+		{% elif 'tarta' in p.name|lower or 'frutas' in p.name|lower %}
 			<img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
 		{% elif 'trufa' in p.name|lower %}
 			<img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
 		{% elif 'panna' in p.name|lower %}
 			<img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
-<<<<<<< HEAD
-		{% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
-			<img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
-		{% elif 'chocolate' in p.name|lower %}
-			<img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
-=======
 		{% elif 'maracuya' in p.name|lower or 'mousse' in p.name|lower %}
 			<img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
->>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
+		{% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+			<img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'chocolate' in p.name|lower or 'lava' in p.name|lower %}
+			<img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
 		{% elif 'leches' in p.name|lower %}
 			<img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
 		{% elif 'velvet' in p.name|lower %}
 			<img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
-<<<<<<< HEAD
-=======
-		{% elif 'chocolate' in p.name|lower or 'lava' in p.name|lower %}
-			<img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
-		{% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
-			<img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
->>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 		{% else %}
 			<img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
 		{% endif %}

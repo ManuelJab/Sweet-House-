@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %}Contacto - {{ project_name }}{% endblock %}
 {% block extra_css %}
-<<<<<<< HEAD
 <link rel="stylesheet" href="{% static 'css/contacto.css' %}?v=4">
 {% endblock %}
 {% block content %}
@@ -74,7 +73,7 @@
             </div>
             <div class="creator-card">
                 <div class="creator-avatar">
-                    <img src="{% static 'img/' %}" alt="Creador 2">
+                    <img src="{% static 'img/logo.jpg' %}" alt="Creador 2">
                 </div>
                 <div class="creator-name">Creador 2</div>
                 <div class="creator-role">Desarrollador Back-end</div>
@@ -83,99 +82,7 @@
     </section>
 </div>
 
-=======
-<link rel="stylesheet" href="{% static 'css/contacto.css' %}?v=3">
-<style>
-  .card-header h3 { transition: transform .25s ease; cursor:pointer; }
-  .card-header:hover h3 { transform: translateX(12px); }
-  .creators-title { position: relative; }
-  .creators-title::after { content:""; display:block; width:100px; height:5px; background:#e91e63; margin:10px auto 0; border-radius:3px; }
-  .creator-card { background:#fff; border-radius:20px; border:2px solid #ff4081; box-shadow:0 16px 36px rgba(255,64,129,.24); padding:16px; text-align:center; }
-</style>
-{% endblock %}
-{% block content %}
-
-<!-- SECCIÓN DE CONTACTO -->
-<section id="contacto" class="contact-container">
-    <h1>¡Contáctanos!</h1>
-
-    <div class="contact-grid">
-        <!-- Oficina -->
-        <div class="contact-card">
-            <div class="card-header">
-                <span class="card-icon"><i class="bi bi-building"></i></span>
-                <h3>Nuestra Oficina</h3>
-            </div>
-            <div class="card-content">
-                <p><strong><i class="bi bi-geo-alt-fill"></i> Dirección:</strong></p>
-                <p>Calle 123 # 45-67</p>
-                <p>Cartagena, Colombia</p>
-            </div>
-        </div>
-
-        <!-- Contacto directo -->
-        <div class="contact-card">
-            <div class="card-header">
-                <h3>Contáctanos</h3>
-            </div>
-            <div class="card-content">
-                <p><strong><i class="bi bi-envelope-fill"></i> Email:</strong></p>
-                <p><a href="mailto:contacto@stimandessert.com" style="display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word;">contacto@stimandessert.com</a></p>
-                <p><strong><i class="bi bi-telephone-fill"></i> Teléfono:</strong></p>
-                <p><a href="tel:+573000000000">+57 300 000 0000</a></p>
-            </div>
-        </div>
-
-        <!-- Horarios -->
-        <div class="contact-card">
-            <div class="card-header">
-                <span class="card-icon"><i class="bi bi-clock-fill"></i></span>
-                <h3>Horarios de Atención</h3>
-            </div>
-            <div class="card-content">
-                <p><strong>Lunes a Viernes:</strong> 9:00 AM - 5:00 PM</p>
-                <p><strong>Sábado:</strong> 09:00 AM - 4:00 PM</p>
-                <p><strong>Domingo:</strong> 10:00 AM - 2:00 PM</p>
-                <p><strong>Feriados:</strong> 10:00 AM - 2:00 PM</p>
-            </div>
-        </div>
-
-        <!-- Entregas -->
-        <div class="contact-card delivery-card">
-            <div class="card-header">
-                <span class="card-icon"><i class="bi bi-truck"></i></span>
-                <h3>Horario de Entrega</h3>
-            </div>
-            <div class="card-content">
-                <p><strong><i class="bi bi-truck"></i> Entregas:</strong> 9:00 AM - 5:00 PM</p>
-                <p><strong><i class="bi bi-box-seam-fill"></i> Tiempo estimado:</strong>30 minutos</p>
-                <p><strong><i class="bi bi-star-fill"></i> Pedidos especiales:</strong> Con 24h de anticipación</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="creators-section">
-    <h2 class="creators-title">Creadores</h2>
-    <div class="creators-grid">
-        <div class="creator-card">
-            <div class="creator-avatar">
-                <img src="{% static 'img/stiven.jpg' %}" alt="Creador 1">
-            </div>
-            <div class="creator-name">Stiven Hernandez Vega</div>
-            <div class="creator-role">Desarrollador Front-end</div>
-        </div>
-        <div class="creator-card">
-            <div class="creator-avatar">
-                <img src="{% static 'img/logo.jpg' %}" alt="Creador 2">
-            </div>
-            <div class="creator-name">Creador 2</div>
-            <div class="creator-role">Desarrollador Back-end</div>
-        </div>
-    </div>
-</section>
 {% endblock %}
 {% block extra_js %}
 <script src="{% static 'js/app.js' %}"></script>
->>>>>>> 85c5f30a333f9f633c0fb5db4582ad78519e85a7
 {% endblock %}
