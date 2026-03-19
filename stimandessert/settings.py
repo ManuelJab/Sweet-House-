@@ -90,6 +90,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'tienda.context_processors.cart_summary',
                 'tienda.context_processors.branding',
+                'tienda.context_processors.cart_summary',
             ],
         },
     },
