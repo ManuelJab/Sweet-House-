@@ -1,44 +1,38 @@
 from decimal import Decimal
-from collections import defaultdict
-
+from django.conf import settings
 from django.db import connection
 from django.db.utils import ProgrammingError
-from django.conf import settings
-
 from .models import Producto
 
 
 def cart_summary(request):
 
+    # No ejecutar en admin
     if request.path.startswith('/admin'):
         return {}
 
-    default_context = {
-        'cart_count': 0,
-        'cart_total': Decimal('0.00'),
-        'productos_por_categoria': {},
-        'postres_especiales': []
-    }
-
     try:
-        table_name = Producto._meta.db_table
-        if table_name not in connection.introspection.table_names():
-            return default_context
-
         cart = request.session.get('cart', {}) or {}
-        cart_count = sum(cart.values()) if cart else 0
+        cart_count = int(sum(cart.values())) if cart else 0
 
         return {
-            **default_context,
             'cart_count': cart_count,
+            'cart_total': float(0),
+            'productos_por_categoria': {},
+            'postres_especiales': []
         }
 
-    except (ProgrammingError, Exception):
-        return default_context
+    except Exception:
+        return {
+            'cart_count': 0,
+            'cart_total': 0,
+            'productos_por_categoria': {},
+            'postres_especiales': []
+        }
 
 
 def branding(request):
     return {
-        'project_name': getattr(settings, 'PROJECT_NAME', 'Sweet House'),
-        'support_email': getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local'),
+        'project_name': 'Sweet House',
+        'support_email': 'no-reply@sweethouse.local',
     }
