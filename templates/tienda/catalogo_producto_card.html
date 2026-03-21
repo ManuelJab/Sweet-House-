@@ -36,23 +36,28 @@
 		<h3 class="product-card-name">{{ p.name }}</h3>
 		<p class="product-card-price">${{ p.price }}</p>
 		{% if request.user.is_staff or request.user.is_superuser %}
-		<div style="margin-bottom: 4px;">
+		<div style="margin-bottom: 4px; display:flex; gap:8px;">
 			<a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn-admin-edit"
-				style="font-size: 0.8rem; padding: 4px 8px;">
+				style="font-size: 0.8rem; padding: 4px 8px; flex: 1; text-align: center;">
 				<i class="bi bi-pencil-fill"></i> Editar
 			</a>
 		</div>
-		{% endif %}
 		<div class="product-card-actions" style="display:flex; flex-direction:column; gap:8px;">
-		<form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:flex;">
-			{% csrf_token %}
-			<button class="btn btn--primary" style="flex:1; text-align:center;">Agregar al carrito</button>
-		</form>
-		{% if not request.user.is_staff and not request.user.is_superuser %}
-		<a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
-			<i class="bi bi-heart-fill"></i> Favorito
-		</a>
+			<a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" 
+				style="flex:1; text-align:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:30px; padding:10px; font-weight: 600;">
+				Eliminar
+			</a>
+		</div>
+		{% else %}
+		<div class="product-card-actions" style="display:flex; flex-direction:column; gap:8px;">
+			<form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:flex;">
+				{% csrf_token %}
+				<button class="btn btn--primary" style="flex:1; text-align:center;">Agregar al carrito</button>
+			</form>
+			<a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+				<i class="bi bi-heart-fill"></i> Favorito
+			</a>
+		</div>
 		{% endif %}
-	</div>
 	</div>
 </div>

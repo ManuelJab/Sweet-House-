@@ -462,6 +462,15 @@
                 class="bi bi-heart-fill"></i>
               Favorito</a>
           </div>
+        {% else %}
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+              <i class="bi bi-pencil-fill"></i> Editar
+            </a>
+            <a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:30px; padding:10px; font-weight:600;">
+              Eliminar
+            </a>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -517,6 +526,15 @@
             <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;"><i
                 class="bi bi-heart-fill"></i>
               Favorito</a>
+          </div>
+        {% else %}
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+              <i class="bi bi-pencil-fill"></i> Editar
+            </a>
+            <a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:30px; padding:10px; font-weight:600;">
+              Eliminar
+            </a>
           </div>
         {% endif %}
       </div>
