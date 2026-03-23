@@ -12,324 +12,250 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
   <style>
-    /* ═══ Header layout fixes ═══ */
 
-    /* Desktop: logo left, nav center, cart+auth right */
+
+
+    /* ═══ Header Unified Design ═══ */
     header {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 0.7rem 2% !important; /* Move logo and right section closer to corners */
+      padding: 0 15px !important;
+      background-color: #e91e63 !important; /* Intense Pink from Image */
+      height: 70px !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    /* Desktop Logout Button (PC only) */
-    .btn-logout-desktop {
-      display: none; /* Hidden by default, shown on desktop only */
+    /* Left: Menu & Logo */
+    .header-left-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* Left controls (mobile menu button) - hidden on desktop */
-    .header-left-controls {
-      display: none;
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
       align-items: center;
     }
 
-    /* Mobile top row inside nav (username + cart) - hidden on desktop */
-    .nav-mobile-top {
+    .cupcake-icon-mobile {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      object-fit: cover;
+    }
+
+    /* Center: Desktop Nav */
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 18px;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a.active {
+      background: white;
+      color: #e91e63 !important;
+      border-color: white;
+    }
+
+    /* Right: Cart & User Pill */
+    .header-right-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cart-mobile-link {
+      position: relative;
+      color: white;
+      font-size: 1.6rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -8px;
+      background: white;
+      color: #e91e63;
+      font-size: 0.75rem;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e91e63;
+      padding: 2px;
+    }
+
+    /* User Pill Button (White like image) */
+    .user-pill-container {
+      position: relative;
+    }
+
+    .user-pill-button {
+      background: white;
+      color: #333;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .user-pill-button i:first-child {
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    .user-pill-button i:last-child {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    /* User Dropdown Menu */
+    .user-pill-dropdown {
       display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 190px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 2100;
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
     }
 
-    /* Desktop specifics */
-    @media (min-width: 993px) {
-      .header-left-controls {
-        display: none !important;
-      }
-      .mobile-menu-btn {
-        display: none !important;
-      }
-      .nav-mobile-top {
-        display: none !important;
-      }
-      /* Hide mobile header controls on desktop */
-      .header-right-controls {
-        display: none !important;
-      }
-      .nav-user-info {
-        display: none !important;
-      }
-      .nav-user-section {
-        display: none !important;
-      }
-      .btn-login-mobile {
-        display: none !important;
-      }
-      /* Show desktop cart (next to username) */
-      .cart-desktop-only {
-        display: inline-flex !important;
-      }
-      /* Hide mobile cart on desktop */
-      .nav-mobile-cart {
-        display: none !important;
-      }
-      /* On desktop, nav-auth-actions should display inline */
-      .nav-auth-actions {
-        flex-direction: row !important;
-        width: auto !important;
-        gap: 8px !important;
-      }
-      .nav-action-btn {
-        width: auto !important;
-        padding: 6px 14px !important;
-        font-size: 0.85rem !important;
-        border-radius: 25px !important;
-      }
-      /* Desktop username next to cart */
-      .user-name-desktop {
-        display: inline-flex !important;
-        align-items: center;
-        gap: 6px;
-        color: white;
-        font-weight: 600;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        background: rgba(255, 255, 255, 0.15);
-        padding: 5px 14px;
-        border-radius: 25px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-      }
-      .user-name-desktop:hover, .user-name-desktop.active {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: white;
-      }
-      .user-name-desktop i {
-        font-size: 1.1rem;
-      }
-
-      /* Desktop User Dropdown Menu */
-      .desktop-user-dropdown {
-        position: relative;
-        display: inline-block;
-      }
-      .desktop-dropdown-menu {
-        display: none;
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        min-width: 200px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        z-index: 2000;
-        overflow: hidden;
-        border: 1px solid #f0f0f0;
-      }
-      .desktop-dropdown-menu.show {
-        display: block;
-        animation: slideInDropdown 0.2s ease-out;
-      }
-      @keyframes slideInDropdown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .desktop-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 18px;
-        color: #333;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: background 0.2s;
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        font-family: inherit;
-      }
-      .desktop-dropdown-item:hover {
-        background: #fff0f3;
-        color: #e91e63;
-      }
-      .desktop-dropdown-item i {
-        font-size: 1.1rem;
-        color: #e91e63;
-      }
-      .desktop-dropdown-logout {
-        border-top: 1px solid #f0f0f0;
-        color: #dc3545;
-      }
-      .desktop-dropdown-logout:hover {
-        background: #fff5f5;
-        color: #c62828;
-      }
-      .desktop-dropdown-logout i {
-        color: #dc3545;
-      }
-
-      /* Hide the old PC logout button */
-      .btn-logout-desktop {
-        display: none !important;
-      }
+    .user-pill-dropdown.show {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
     }
 
-    /* Mobile specifics */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item-new {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .dropdown-item-new:hover {
+      background: #fff0f3;
+      color: #e91e63;
+    }
+
+    .logout-item {
+      border-top: 1px solid #f0f0f0;
+      color: #dc3545;
+    }
+
+    /* Responsive */
     @media (max-width: 992px) {
-      header {
-        padding: 0 15px !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        justify-content: space-between !important;
-        align-items: center !important;
+      .desktop-only {
+        display: none !important;
       }
-      /* Menu button on the LEFT */
-      .header-left-controls {
-        display: flex !important;
-        order: 1 !important;
-        align-items: center;
-      }
-      /* Logo center-left */
-      .logo {
-        order: 2 !important;
-        flex: 1 1 auto !important;
-      }
-      /* Cart + User on the RIGHT */
-      .header-right-controls {
-        display: flex !important;
-        order: 3 !important;
-        align-items: center;
-        gap: 8px;
-        z-index: 1002;
-        position: relative;
-      }
-      .header-right-controls .header-cart-link {
-        position: relative;
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        border: none !important;
-        padding: 4px;
-        color: white;
-        font-size: 1.4rem;
-        text-decoration: none;
-      }
-      .header-user-icon {
-        background: white;
-        color: #333;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      }
-      .header-user-icon i:first-child {
-        color: #333;
-        font-size: 1.2rem;
-      }
-      .header-user-icon::after {
-        content: "\f282"; /* bootstrap-icons chevron-down */
-        font-family: "bootstrap-icons";
-        font-size: 0.8rem;
-        color: #888;
-      }
-      .header-user-icon.header-login-btn::after {
-        display: none;
-      }
-      .mobile-menu-btn {
-        display: block !important;
-      }
-      /* User dropdown menu */
-      .header-user-dropdown {
-        position: relative;
-        z-index: 1002;
-      }
-      .header-user-dropdown-menu {
-        display: none;
-        position: absolute;
-        top: calc(100% + 8px);
-        right: 0;
-        min-width: 180px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        overflow: hidden;
-        z-index: 2000;
-        border: none;
-        padding: 8px 0;
-      }
-      .header-user-dropdown-menu.open {
-        display: block;
-      }
-      .header-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 20px;
-        color: #333;
-        font-size: 1.05rem;
-        font-weight: 600;
-        text-decoration: none;
-        border: none;
-        background: none;
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
         width: 100%;
-        font-family: inherit;
-        cursor: pointer;
-        transition: background 0.2s ease;
+        background: #e91e63;
+        flex-direction: column;
+        padding: 20px;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1999;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       }
-      .header-dropdown-item i {
-        font-size: 1.2rem;
-        color: #555;
+      .nav-links.active {
+        transform: translateY(0);
       }
-      .header-dropdown-item:hover {
-        background: #f8f9fa;
-      }
-      .header-dropdown-logout {
-        color: #8b1a1a;
-        margin-top: 5px;
-      }
-      .header-dropdown-logout i {
-        color: #8b1a1a;
-      }
-      .header-dropdown-logout:hover {
-        background: #fff5f5;
-      }
-      /* Hide desktop cart on mobile */
-      .cart-desktop-only {
-        display: none !important;
-      }
-      /* Hide desktop username on mobile */
-      .user-name-desktop {
-        display: none !important;
-      }
-      /* Nav panel - slide from left */
-      nav#mainNav {
-        transform: translateX(-100%) !important;
-        transition: transform 0.3s ease-in-out !important;
-      }
-      nav#mainNav.active {
-        transform: translateX(0) !important;
-      }
-      /* Mobile login button at top of nav */
-      .btn-login-mobile {
-        display: flex !important;
+      .nav-links a {
         width: 100%;
         text-align: center;
-        justify-content: center;
-        margin-left: 0 !important;
-        padding: 12px !important;
-        margin-bottom: 0.5rem;
+        border-color: rgba(255,255,255,0.3);
       }
-      /* Hide original login button in nav-right on mobile */
-      .nav-right .btn-login {
+      .user-name-text {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    @media (min-width: 993px) {
+      .mobile-logo-link, .mobile-menu-btn {
         display: none !important;
+      }
+    }
+
+        margin-left: 5px;
+        color: #888;
+      }
+
+      /* Desktop User Dropdown Menu position on mobile */
+      .desktop-dropdown-menu {
+        top: 50px !important;
+        right: 0 !important;
+        left: auto !important;
+        width: 180px !important;
+        min-width: 180px !important;
+      }
+
+      /* Nav panel */
+      nav#mainNav {
+        top: 60px !important; /* Match header height */
       }
     }
   </style>
@@ -339,6 +265,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      padding-top: 70px; /* Offset for fixed header */
     }
 
     main {
@@ -466,44 +393,21 @@
 
 <body class="{% block body_class %}has-bg-pattern{% endblock %}">
   <header>
-    <!-- Logo -->
-    <div class="logo">
-      <a href="{% url 'home' %}" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
-        <img src="{% static 'img/logo.jpg' %}" alt="{{ project_name }} Logo" class="cupcake-icon">
-        <span class="logo-text">{{ project_name }}</span>
+    <!-- Mobile Menu Button & Logo -->
+    <div class="header-left-area">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+      </button>
+      <a href="{% url 'home' %}" class="mobile-logo-link">
+        <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="cupcake-icon-mobile">
       </a>
-    </div>
-
-    <!-- Auth Pill (Desktop) -->
-    <div class="header-auth-container">
-      {% if request.user.is_authenticated %}
-      <div class="desktop-user-dropdown" id="desktopUserDropdown">
-        <button type="button" class="user-name-desktop" id="desktopUserBtn">
-          <i class="bi bi-person-circle"></i> 
-          {{ request.user.first_name|default:request.user.username }}
-        </button>
-        <div class="desktop-dropdown-menu" id="desktopDropdownMenu">
-          {% if not request.user.is_staff and not request.user.is_superuser %}
-          <a href="{% url 'pedidos_usuario' %}" class="desktop-dropdown-item">
-            <i class="bi bi-bag-check"></i> Mis Pedidos
-          </a>
-          {% endif %}
-          {% if request.user.is_staff or request.user.is_superuser %}
-          <a href="{% url 'dashboard' %}" class="desktop-dropdown-item">
-            <i class="bi bi-speedometer2"></i> Dashboard
-          </a>
-          {% endif %}
-          <form action="{% url 'logout' %}" method="post" style="margin:0;">
-            {% csrf_token %}
-            <button type="submit" class="desktop-dropdown-item desktop-dropdown-logout">
-              <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </button>
-          </form>
-        </div>
+      <!-- Desktop Logo -->
+      <div class="logo desktop-only">
+        <a href="{% url 'home' %}" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
+          <img src="{% static 'img/logo.jpg' %}" alt="{{ project_name }} Logo" class="cupcake-icon">
+          <span class="logo-text">{{ project_name }}</span>
+        </a>
       </div>
-      {% else %}
-      <button type="button" class="btn-login" id="openLoginModal" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}"><i class="bi bi-box-arrow-in-right"></i> Ingresar</button>
-      {% endif %}
     </div>
 
     <!-- Nav Links (Center) -->
@@ -516,16 +420,48 @@
       <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
     </nav>
 
-    <!-- Cart Pill (Right) -->
-    <div class="header-cart-container">
-      <a href="{% url 'carrito_detalle' %}" class="cart-pill {% if request.resolver_match.url_name == 'carrito_detalle' %}active{% endif %}" aria-label="Carrito">
-        <i class="bi bi-cart3 cart-icon" aria-hidden="true"></i>
-        <span class="cart-count">{{ cart_count|default:0 }}</span>
+    <!-- Right Controls: Cart & User Pill -->
+    <div class="header-right-area">
+      <!-- Cart -->
+      <a href="{% url 'carrito_detalle' %}" class="cart-mobile-link">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-badge">{{ cart_count|default:0 }}</span>
       </a>
-      <!-- Mobile menu button -->
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
-        <i class="bi bi-list"></i>
-      </button>
+
+      <!-- User Pill -->
+      <div class="header-auth-container">
+        {% if request.user.is_authenticated %}
+        <div class="user-pill-container" id="mobileUserDropdown">
+          <button type="button" class="user-pill-button" id="mobileUserBtn">
+            <i class="bi bi-person-circle"></i> 
+            <span class="user-name-text">{{ request.user.first_name|default:request.user.username }}</span>
+            <i class="bi bi-chevron-down"></i>
+          </button>
+          <div class="user-pill-dropdown" id="mobileDropdownMenu">
+            {% if not request.user.is_staff and not request.user.is_superuser %}
+            <a href="{% url 'pedidos_usuario' %}" class="dropdown-item-new">
+              <i class="bi bi-bag-check"></i> Mis Pedidos
+            </a>
+            {% endif %}
+            {% if request.user.is_staff or request.user.is_superuser %}
+            <a href="{% url 'dashboard' %}" class="dropdown-item-new">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            {% endif %}
+            <form action="{% url 'logout' %}" method="post" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item-new logout-item">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+              </button>
+            </form>
+          </div>
+        </div>
+        {% else %}
+        <button type="button" class="user-pill-button login-trigger" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}">
+          <i class="bi bi-box-arrow-in-right"></i> Ingresar
+        </button>
+        {% endif %}
+      </div>
     </div>
   </header>
 
@@ -1189,34 +1125,19 @@
       });
     });
 
-    // User dropdown toggle (Mobile)
-    const userDropdownBtn = document.getElementById('headerUserDropdownBtn');
-    const userDropdownMenu = document.getElementById('headerUserDropdownMenu');
-    if (userDropdownBtn && userDropdownMenu) {
-      userDropdownBtn.addEventListener('click', (e) => {
+    // User pill toggle (Unified)
+    const mobileUserBtn = document.getElementById('mobileUserBtn');
+    const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+    if (mobileUserBtn && mobileDropdownMenu) {
+      mobileUserBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        userDropdownMenu.classList.toggle('open');
-      });
-    }
-
-    // User dropdown toggle (Desktop/PC)
-    const desktopUserBtn = document.getElementById('desktopUserBtn');
-    const desktopDropdownMenu = document.getElementById('desktopDropdownMenu');
-    if (desktopUserBtn && desktopDropdownMenu) {
-      desktopUserBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        desktopDropdownMenu.classList.toggle('show');
-        desktopUserBtn.classList.toggle('active');
+        mobileDropdownMenu.classList.toggle('show');
       });
     }
 
     // Close all dropdowns on outside click
     document.addEventListener('click', () => {
-      if (userDropdownMenu) userDropdownMenu.classList.remove('open');
-      if (desktopDropdownMenu) {
-        desktopDropdownMenu.classList.remove('show');
-        if (desktopUserBtn) desktopUserBtn.classList.remove('active');
-      }
+      if (mobileDropdownMenu) mobileDropdownMenu.classList.remove('show');
     });
   </script>
   {% if not request.user.is_authenticated %}
