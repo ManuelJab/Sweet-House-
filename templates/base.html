@@ -19,7 +19,7 @@
       align-items: center !important;
       padding: 0 25px !important;
       background-color: #e91e63 !important;
-      height: 75px !important;
+      height: 80px !important;
       position: fixed;
       top: 0;
       left: 0;
@@ -137,6 +137,11 @@
     @media (max-width: 992px) {
       .desktop-only { display: none !important; }
       
+      header {
+        height: 80px !important;
+        padding: 0 15px !important;
+      }
+
       .header-left-area {
         display: flex;
         align-items: center;
@@ -146,7 +151,7 @@
         background: none;
         border: none;
         color: white;
-        font-size: 2.2rem;
+        font-size: 2.8rem;
         cursor: pointer;
         padding: 0;
         display: flex;
@@ -169,6 +174,13 @@
         height: 100%;
         object-fit: cover;
       }
+      
+      .header-right-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
       .user-profile-btn-mobile {
         background: white;
         border: 2px solid white;
@@ -184,6 +196,7 @@
         font-size: 2.2rem;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       }
+      
       .cart-mobile {
         position: relative;
         color: white;
@@ -208,16 +221,6 @@
         justify-content: center;
         border: 2px solid #e91e63;
         padding: 2px;
-      }
-      .mobile-menu-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 2.8rem;
-        cursor: pointer;
-        padding: 0;
-        display: flex;
-        align-items: center;
       }
     }
 
@@ -519,14 +522,12 @@
       .login-modal-body { padding: 20px; }
       .login-modal-header h2 { font-size: 22px; }
     }
-  </style>
-  {% block extra_css %}{% endblock %}
-  <style>
+
     body {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      padding-top: 70px; /* Offset for fixed header */
+      padding-top: 80px; /* Adjusted to match header height */
     }
 
     main {
@@ -544,7 +545,7 @@
 
     .messages {
       position: fixed;
-      top: 85px;
+      top: 90px;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
@@ -570,40 +571,14 @@
     }
 
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .message.success {
-      background: linear-gradient(135deg, #e3fcef 0%, #f0fdf4 100%);
-      color: #0a3622;
-      border-left-color: #10b981;
-    }
-
-    .message.error {
-      background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
-      color: #991b1b;
-      border-left-color: #ef4444;
-    }
-
-    .message.warning {
-      background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
-      color: #92400e;
-      border-left-color: #f59e0b;
-    }
-
-    .message.info {
-      background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
-      color: #0c2d48;
-      border-left-color: #3b82f6;
-    }
+    .message.success { background: linear-gradient(135deg, #e3fcef 0%, #f0fdf4 100%); color: #0a3622; border-left-color: #10b981; }
+    .message.error { background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%); color: #991b1b; border-left-color: #ef4444; }
+    .message.warning { background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); color: #92400e; border-left-color: #f59e0b; }
+    .message.info { background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%); color: #0c2d48; border-left-color: #3b82f6; }
 
     .back-to-home {
       position: fixed;
@@ -622,32 +597,13 @@
       transition: all 0.3s ease;
       z-index: 1000;
     }
-
     .back-to-home:hover {
       background: linear-gradient(135deg, #e91e63, #c2185b);
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(255, 64, 129, 0.3);
     }
-
-    .back-to-home i {
-      font-size: 1.2em;
-    }
-
     @media (max-width: 768px) {
-      .back-to-home {
-        bottom: 20px;
-        top: auto;
-        right: 20px;
-        padding: 8px 14px;
-        font-size: 0.8rem;
-        gap: 5px;
-        z-index: 900;
-        border-radius: 30px;
-      }
-      .back-to-home i {
-        font-size: 1.1em;
-        margin: 0;
-      }
+      .back-to-home { bottom: 20px; right: 20px; padding: 8px 14px; font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -656,15 +612,9 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <header>
-    <!-- Left Area -->
-    <div class="header-left-area">
-      <!-- Desktop Logo -->
-      <a href="{% url 'home' %}" class="logo-link-desktop desktop-only">
-        <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="cupcake-icon-desktop">
-        <span class="logo-text-desktop">Sweet House</span>
-      </a>
-      <!-- Mobile Menu & Logo -->
-      <div class="header-mobile-left mobile-only" style="display: flex; align-items: center; gap: 15px;">
+    <!-- 📱 Mobile Header (Hidden on PC) -->
+    <div class="mobile-only" style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 15px;">
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menú">
           <i class="bi bi-list"></i>
         </button>
@@ -672,22 +622,63 @@
           <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="cupcake-icon-header">
         </a>
       </div>
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div class="user-profile-container">
+          {% if request.user.is_authenticated %}
+          <button type="button" class="user-profile-btn-mobile" id="userProfileBtnMobile">
+            <i class="bi bi-person-circle"></i>
+          </button>
+          {% else %}
+          <button type="button" class="user-profile-btn-mobile" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}">
+            <i class="bi bi-person-circle"></i>
+          </button>
+          {% endif %}
+          <!-- Mobile Dropdown -->
+          <div class="user-profile-dropdown" id="userProfileDropdownMobile" style="right: 0; top: 60px;">
+            {% if request.user.is_authenticated %}
+              {% if not request.user.is_staff and not request.user.is_superuser %}
+              <a href="{% url 'pedidos_usuario' %}" class="dropdown-item-new">
+                <i class="bi bi-bag-check"></i> Mis Pedidos
+              </a>
+              {% endif %}
+              {% if request.user.is_staff or request.user.is_superuser %}
+              <a href="{% url 'dashboard' %}" class="dropdown-item-new">
+                <i class="bi bi-speedometer2"></i> Dashboard
+              </a>
+              {% endif %}
+              <form action="{% url 'logout' %}" method="post" style="margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item-new logout-item">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+        <a href="{% url 'carrito_detalle' %}" class="cart-mobile">
+          <i class="bi bi-cart3"></i>
+          <span class="cart-badge-mobile">{{ cart_count|default:0 }}</span>
+        </a>
+      </div>
     </div>
 
-    <!-- Center: Desktop Nav (Pills) -->
-    <nav class="nav-desktop desktop-only">
-      <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
-      <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
-      <a href="{% url 'favoritos_list' %}" class="{% if request.resolver_match.url_name == 'favoritos_list' %}active{% endif %}">Favoritos</a>
-      <a href="{% url 'contacto' %}" class="{% if request.resolver_match.url_name == 'contacto' %}active{% endif %}">Contacto</a>
-      <a href="{% url 'feedback' %}" class="{% if request.resolver_match.url_name == 'feedback' %}active{% endif %}">Comentarios</a>
-      <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
-    </nav>
+    <!-- 💻 PC Header (Hidden on Mobile) -->
+    <div class="desktop-only" style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+      <a href="{% url 'home' %}" class="logo-link-desktop">
+        <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="cupcake-icon-desktop">
+        <span class="logo-text-desktop">Sweet House</span>
+      </a>
+      
+      <nav class="nav-desktop">
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
+        <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
+        <a href="{% url 'favoritos_list' %}" class="{% if request.resolver_match.url_name == 'favoritos_list' %}active{% endif %}">Favoritos</a>
+        <a href="{% url 'contacto' %}" class="{% if request.resolver_match.url_name == 'contacto' %}active{% endif %}">Contacto</a>
+        <a href="{% url 'feedback' %}" class="{% if request.resolver_match.url_name == 'feedback' %}active{% endif %}">Comentarios</a>
+        <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
+      </nav>
 
-    <!-- Right Area -->
-    <div class="header-right-area">
-      <!-- Desktop Right -->
-      <div class="header-right-desktop desktop-only" style="display: flex; align-items: center; gap: 20px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
         <a href="{% url 'carrito_detalle' %}" class="cart-desktop">
           <i class="bi bi-cart3"></i>
           <span class="cart-badge-desktop">{{ cart_count|default:0 }}</span>
@@ -705,8 +696,8 @@
             <span>Ingresar</span>
           </button>
           {% endif %}
-          <!-- Dropdown (Shared logic) -->
-          <div class="user-profile-dropdown" id="userProfileDropdown">
+          <!-- PC Dropdown -->
+          <div class="user-profile-dropdown" id="userProfileDropdownDesktop">
             {% if request.user.is_authenticated %}
               {% if not request.user.is_staff and not request.user.is_superuser %}
               <a href="{% url 'pedidos_usuario' %}" class="dropdown-item-new">
@@ -728,19 +719,9 @@
           </div>
         </div>
       </div>
-
-      <!-- Mobile Right -->
-      <div class="header-right-mobile mobile-only" style="display: flex; align-items: center; gap: 15px;">
-        <button type="button" class="user-profile-btn-mobile" id="userProfileBtnMobile">
-          <i class="bi bi-person-circle"></i>
-        </button>
-        <a href="{% url 'carrito_detalle' %}" class="cart-mobile">
-          <i class="bi bi-cart3"></i>
-          <span class="cart-badge-mobile">{{ cart_count|default:0 }}</span>
-        </a>
-      </div>
     </div>
   </header>
+
 
   <!-- Sidebar Navigation Panel (Mobile Only) -->
   <nav class="nav-links-sidebar mobile-only" id="mainNav">
@@ -919,27 +900,28 @@
 
     // User Profile Dropdown Toggle (Desktop & Mobile)
     const userProfileBtnDesktop = document.getElementById('userProfileBtnDesktop');
+    const userProfileDropdownDesktop = document.getElementById('userProfileDropdownDesktop');
     const userProfileBtnMobile = document.getElementById('userProfileBtnMobile');
-    const userProfileDropdown = document.getElementById('userProfileDropdown');
+    const userProfileDropdownMobile = document.getElementById('userProfileDropdownMobile');
     
-    if (userProfileDropdown) {
-      if (userProfileBtnDesktop) {
-        userProfileBtnDesktop.addEventListener('click', (e) => {
-          e.stopPropagation();
-          userProfileDropdown.classList.toggle('show');
-        });
-      }
-      if (userProfileBtnMobile) {
-        userProfileBtnMobile.addEventListener('click', (e) => {
-          e.stopPropagation();
-          userProfileDropdown.classList.toggle('show');
-        });
-      }
+    if (userProfileBtnDesktop && userProfileDropdownDesktop) {
+      userProfileBtnDesktop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userProfileDropdownDesktop.classList.toggle('show');
+      });
+    }
+    
+    if (userProfileBtnMobile && userProfileDropdownMobile) {
+      userProfileBtnMobile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userProfileDropdownMobile.classList.toggle('show');
+      });
     }
 
     // Close dropdowns on outside click
     document.addEventListener('click', () => {
-      if (userProfileDropdown) userProfileDropdown.classList.remove('show');
+      if (userProfileDropdownDesktop) userProfileDropdownDesktop.classList.remove('show');
+      if (userProfileDropdownMobile) userProfileDropdownMobile.classList.remove('show');
     });
 
     // Auto-hide messages
