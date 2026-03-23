@@ -377,9 +377,9 @@
 
     .chatbot-toggle {
         bottom: 18px;
-        left: 18px;
-        width: 56px;
-        height: 56px;
+        right: 18px;
+        width: 54px;
+        height: 54px;
         font-size: 1.5rem;
     }
 }

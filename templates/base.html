@@ -1013,12 +1013,13 @@
     .desktop-dropdown-menu {
       position: absolute;
       top: 100%;
-      left: 0;
+      right: 0;
+      left: auto;
       background: white;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       padding: 10px 0;
-      min-width: 180px;
+      min-width: 200px;
       display: none;
       z-index: 1100;
       margin-top: 10px;
@@ -1027,13 +1028,17 @@
       display: block;
     }
     .desktop-dropdown-item {
-      display: block;
-      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
       color: #333;
       text-decoration: none;
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 600;
       transition: background 0.2s;
+      white-space: nowrap;
+      width: auto;
     }
     .desktop-dropdown-item:hover {
       background: #fdf2f5;
