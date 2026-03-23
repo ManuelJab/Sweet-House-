@@ -20,7 +20,7 @@
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 0 15px !important;
+      padding: 0 20px !important;
       background-color: #e91e63 !important; /* Intense Pink from Image */
       height: 70px !important;
       position: fixed;
@@ -28,52 +28,72 @@
       left: 0;
       right: 0;
       z-index: 2000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 15px rgba(0,0,0,0.15);
     }
 
     /* Left: Menu & Logo */
     .header-left-area {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 15px;
     }
 
     .mobile-menu-btn {
       background: none;
       border: none;
       color: white;
-      font-size: 1.8rem;
+      font-size: 2.2rem;
       cursor: pointer;
       padding: 5px;
       display: flex;
       align-items: center;
+      transition: opacity 0.2s;
+    }
+    
+    .mobile-menu-btn:hover {
+      opacity: 0.8;
     }
 
     .cupcake-icon-mobile {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      border: 1.5px solid white;
+      border: 2px solid white;
       object-fit: cover;
     }
 
-    /* Center: Desktop Nav */
+    /* Navigation Panel (Sidebar for both PC and Mobile) */
     .nav-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100vh;
+      background: #e91e63;
+      flex-direction: column;
+      padding: 80px 25px 25px;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1999;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.2);
       display: flex;
-      gap: 12px;
-      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-links.active {
+      transform: translateX(0);
     }
 
     .nav-links a {
       color: white;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.85rem;
-      padding: 8px 18px;
-      border: 1.5px solid rgba(255, 255, 255, 0.4);
-      border-radius: 25px;
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 30px;
       transition: all 0.3s ease;
-      white-space: nowrap;
+      text-align: center;
     }
 
     .nav-links a.active {
@@ -81,18 +101,23 @@
       color: #e91e63 !important;
       border-color: white;
     }
+    
+    .nav-links a:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: white;
+    }
 
-    /* Right: Cart & User Pill */
+    /* Right: Cart & User */
     .header-right-area {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
 
     .cart-mobile-link {
       position: relative;
       color: white;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -100,75 +125,64 @@
 
     .cart-badge {
       position: absolute;
-      top: -5px;
-      right: -8px;
+      top: -6px;
+      right: -10px;
       background: white;
       color: #e91e63;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 800;
-      min-width: 18px;
-      height: 18px;
+      min-width: 20px;
+      height: 20px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #e91e63;
+      border: 1.5px solid #e91e63;
       padding: 2px;
     }
 
-    /* User Pill Button (White like image) */
-    .user-pill-container {
+    /* User Profile Icon (Circle person like image) */
+    .user-profile-container {
       position: relative;
     }
 
-    .user-pill-button {
-      background: white;
-      color: #333;
+    .user-profile-btn {
+      background: none;
       border: none;
-      padding: 6px 16px;
-      border-radius: 30px;
+      color: white;
+      font-size: 2.2rem;
+      cursor: pointer;
+      padding: 0;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-      white-space: nowrap;
+      transition: transform 0.2s;
     }
-
-    .user-pill-button i:first-child {
-      font-size: 1.2rem;
-      color: #555;
-    }
-
-    .user-pill-button i:last-child {
-      font-size: 0.8rem;
-      color: #888;
+    
+    .user-profile-btn:hover {
+      transform: scale(1.05);
     }
 
     /* User Dropdown Menu */
-    .user-pill-dropdown {
+    .user-profile-dropdown {
       display: none;
       position: absolute;
-      top: calc(100% + 10px);
+      top: calc(100% + 15px);
       right: 0;
-      min-width: 190px;
+      min-width: 200px;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      border-radius: 15px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.2);
       z-index: 2100;
       overflow: hidden;
       border: 1px solid #f0f0f0;
     }
 
-    .user-pill-dropdown.show {
+    .user-profile-dropdown.show {
       display: block;
-      animation: fadeIn 0.2s ease-out;
+      animation: dropdownFadeIn 0.3s ease-out;
     }
 
-    @keyframes fadeIn {
+    @keyframes dropdownFadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
     }
@@ -177,11 +191,11 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 20px;
+      padding: 14px 20px;
       color: #333;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       transition: background 0.2s;
       border: none;
       background: none;
@@ -201,43 +215,21 @@
       color: #dc3545;
     }
 
-    /* Responsive */
-    @media (max-width: 992px) {
-      .desktop-only {
-        display: none !important;
-      }
-      .nav-links {
-        position: fixed;
-        top: 70px;
-        left: 0;
-        width: 100%;
-        background: #e91e63;
-        flex-direction: column;
-        padding: 20px;
-        transform: translateY(-150%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 1999;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      }
-      .nav-links.active {
-        transform: translateY(0);
-      }
-      .nav-links a {
-        width: 100%;
-        text-align: center;
-        border-color: rgba(255,255,255,0.3);
-      }
-      .user-name-text {
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+    /* Overlay for sidebar */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1998;
+      backdrop-filter: blur(3px);
     }
-
-    @media (min-width: 993px) {
-      .mobile-logo-link, .mobile-menu-btn {
-        display: none !important;
-      }
+    
+    .sidebar-overlay.active {
+      display: block;
     }
 
         margin-left: 5px;
@@ -392,52 +384,35 @@
 </head>
 
 <body class="{% block body_class %}has-bg-pattern{% endblock %}">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <header>
-    <!-- Mobile Menu Button & Logo -->
+    <!-- Left: Menu Button & Logo -->
     <div class="header-left-area">
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menú">
         <i class="bi bi-list"></i>
       </button>
-      <a href="{% url 'home' %}" class="mobile-logo-link">
-        <img src="{% static 'img/logo.jpg' %}" alt="Logo" class="cupcake-icon-mobile">
+      <a href="{% url 'home' %}" class="logo-link">
+        <img src="{% static 'img/logo.jpg' %}" alt="Sweet House Logo" class="cupcake-icon-mobile">
       </a>
-      <!-- Desktop Logo -->
-      <div class="logo desktop-only">
-        <a href="{% url 'home' %}" style="text-decoration: none; display: flex; align-items: center; gap: 10px; color: inherit;">
-          <img src="{% static 'img/logo.jpg' %}" alt="{{ project_name }} Logo" class="cupcake-icon">
-          <span class="logo-text">{{ project_name }}</span>
-        </a>
-      </div>
     </div>
 
-    <!-- Nav Links (Center) -->
-    <nav class="nav-links" id="mainNav">
-      <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
-      <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
-      <a href="{% url 'favoritos_list' %}" class="{% if request.resolver_match.url_name == 'favoritos_list' %}active{% endif %}">Favoritos</a>
-      <a href="{% url 'contacto' %}" class="{% if request.resolver_match.url_name == 'contacto' %}active{% endif %}">Contacto</a>
-      <a href="{% url 'feedback' %}" class="{% if request.resolver_match.url_name == 'feedback' %}active{% endif %}">Comentarios</a>
-      <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
-    </nav>
-
-    <!-- Right Controls: Cart & User Pill -->
+    <!-- Right: Cart & User Profile -->
     <div class="header-right-area">
       <!-- Cart -->
-      <a href="{% url 'carrito_detalle' %}" class="cart-mobile-link">
+      <a href="{% url 'carrito_detalle' %}" class="cart-mobile-link" aria-label="Ver carrito">
         <i class="bi bi-cart3"></i>
         <span class="cart-badge">{{ cart_count|default:0 }}</span>
       </a>
 
-      <!-- User Pill -->
+      <!-- User Profile -->
       <div class="header-auth-container">
         {% if request.user.is_authenticated %}
-        <div class="user-pill-container" id="mobileUserDropdown">
-          <button type="button" class="user-pill-button" id="mobileUserBtn">
-            <i class="bi bi-person-circle"></i> 
-            <span class="user-name-text">{{ request.user.first_name|default:request.user.username }}</span>
-            <i class="bi bi-chevron-down"></i>
+        <div class="user-profile-container">
+          <button type="button" class="user-profile-btn" id="userProfileBtn" aria-label="Menú de usuario">
+            <i class="bi bi-person-circle"></i>
           </button>
-          <div class="user-pill-dropdown" id="mobileDropdownMenu">
+          <div class="user-profile-dropdown" id="userProfileDropdown">
             {% if not request.user.is_staff and not request.user.is_superuser %}
             <a href="{% url 'pedidos_usuario' %}" class="dropdown-item-new">
               <i class="bi bi-bag-check"></i> Mis Pedidos
@@ -457,13 +432,24 @@
           </div>
         </div>
         {% else %}
-        <button type="button" class="user-pill-button login-trigger" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}">
-          <i class="bi bi-box-arrow-in-right"></i> Ingresar
+        <button type="button" class="user-profile-btn" onclick="var o=document.getElementById('loginModalOverlay');if(o){o.classList.add('active');document.body.style.overflow='hidden';}" aria-label="Ingresar">
+          <i class="bi bi-person-circle"></i>
         </button>
         {% endif %}
       </div>
     </div>
   </header>
+
+  <!-- Sidebar Navigation Panel (Same for PC & Mobile) -->
+  <nav class="nav-links" id="mainNav">
+    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Inicio</a>
+    <a href="{% url 'catalogo_publico' %}" class="{% if request.resolver_match.url_name == 'catalogo_publico' %}active{% endif %}">Catálogo</a>
+    <a href="{% url 'favoritos_list' %}" class="{% if request.resolver_match.url_name == 'favoritos_list' %}active{% endif %}">Favoritos</a>
+    <a href="{% url 'contacto' %}" class="{% if request.resolver_match.url_name == 'contacto' %}active{% endif %}">Contacto</a>
+    <a href="{% url 'feedback' %}" class="{% if request.resolver_match.url_name == 'feedback' %}active{% endif %}">Comentarios</a>
+    <a href="{% url 'solicitud_pedido' %}" class="{% if request.resolver_match.url_name == 'solicitud_pedido' %}active{% endif %}">Pedidos</a>
+  </nav>
+
 
   <main>
     {% if messages %}
@@ -1096,21 +1082,55 @@
   {% endif %}
   {% block extra_js %}{% endblock %}
   <script>
-    // Mobile Menu Toggle
+    // Sidebar Menu Toggle (Unified for PC & Mobile)
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mainNav = document.getElementById('mainNav');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
     
-    if (mobileMenuBtn && mainNav) {
-      mobileMenuBtn.addEventListener('click', () => {
+    if (mobileMenuBtn && mainNav && sidebarOverlay) {
+      const toggleMenu = () => {
         mainNav.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
         const icon = mobileMenuBtn.querySelector('i');
         if (mainNav.classList.contains('active')) {
           icon.classList.replace('bi-list', 'bi-x');
+          document.body.style.overflow = 'hidden';
         } else {
           icon.classList.replace('bi-x', 'bi-list');
+          document.body.style.overflow = '';
+        }
+      };
+
+      mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      sidebarOverlay.addEventListener('click', toggleMenu);
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mainNav.classList.contains('active')) {
+          toggleMenu();
         }
       });
     }
+
+    // User Profile Dropdown Toggle
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const userProfileDropdown = document.getElementById('userProfileDropdown');
+    
+    if (userProfileBtn && userProfileDropdown) {
+      userProfileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userProfileDropdown.classList.toggle('show');
+      });
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', () => {
+      if (userProfileDropdown) userProfileDropdown.classList.remove('show');
+    });
 
     // Auto-hide messages
     document.addEventListener('DOMContentLoaded', () => {
@@ -1125,20 +1145,6 @@
       });
     });
 
-    // User pill toggle (Unified)
-    const mobileUserBtn = document.getElementById('mobileUserBtn');
-    const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
-    if (mobileUserBtn && mobileDropdownMenu) {
-      mobileUserBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        mobileDropdownMenu.classList.toggle('show');
-      });
-    }
-
-    // Close all dropdowns on outside click
-    document.addEventListener('click', () => {
-      if (mobileDropdownMenu) mobileDropdownMenu.classList.remove('show');
-    });
   </script>
   {% if not request.user.is_authenticated %}
   <script>
