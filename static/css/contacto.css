@@ -1,9 +1,6 @@
 body {
   font-family: 'Poppins', sans-serif;
-  background-image: url("../img/dessert_pattern.jpg");
-  background-repeat: repeat;
-  background-size: 300px;
-  background-color: #fff0f5;
+  background-color: #fff5f7;
   margin: 0;
   padding: 0;
   color: #333;
@@ -22,18 +19,24 @@ body {
 .contact-title {
   display: block;
   width: 100%;
-  max-width: 1100px;
-  text-align: left;
+  text-align: center;
   color: #e91e63 !important;
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 25px;
+  font-size: 5rem;
+  font-weight: 900;
+  margin-bottom: 50px;
   font-family: 'Poppins', sans-serif;
+  text-transform: none;
+  letter-spacing: -2px;
+  text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.9);
+  padding: 20px 0;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2px);
+  border-radius: 15px;
 }
 
 .contact-title:hover {
-  transform: translateX(15px);
-  color: #c2185b !important;
+  transform: scale(1.05);
+  color: #ff4081 !important;
 }
 
 /* Main Container for Cards */
@@ -203,6 +206,6 @@ body {
     grid-template-columns: 1fr;
   }
   .contact-title {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 }
