@@ -350,24 +350,25 @@
     }
     .login-modal-close {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: -15px;
+      right: -15px;
+      width: 40px;
+      height: 40px;
       background: white;
-      border: 2px solid white;
-      color: #e91e63;
-      width: 38px;
-      height: 38px;
+      border: none;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s ease;
+      color: #e91e63;
+      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       z-index: 10;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
     }
     .login-modal-close:hover {
-      transform: rotate(90deg) scale(1.1);
+      transform: scale(1.1);
       background: #fdf2f5;
     }
     .login-modal-close i {
@@ -817,7 +818,6 @@
     </div>
   </footer>
   {% endif %}
-  <!-- Login Modal -->
   {% if not request.user.is_authenticated %}
   <div class="login-modal-overlay" id="loginModalOverlay">
     <div class="login-modal">
@@ -945,8 +945,6 @@
     // Login Modal Logic
     (function() {
       const overlay = document.getElementById('loginModalOverlay');
-      const openBtn = document.getElementById('openLoginModal');
-      const openBtnHeader = document.getElementById('openLoginModalHeader');
       const closeBtn = document.getElementById('closeLoginModal');
       const form = document.getElementById('loginModalForm');
       const errorDiv = document.getElementById('loginModalError');
@@ -957,15 +955,6 @@
       const pwdInput = document.getElementById('modal_password');
 
       if (!overlay) return;
-
-      function openModal() {
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-          const firstInput = document.getElementById('modal_username');
-          if (firstInput) firstInput.focus();
-        }, 400);
-      }
 
       function closeModal() {
         overlay.classList.remove('active');
@@ -1010,24 +999,22 @@
 
           try {
             const formData = new FormData(form);
-                  const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
-                  const csrfToken = csrfInput ? csrfInput.value : (document.cookie.match(/csrftoken=([^;]+)/) || [])[1];
+            const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+            const csrfToken = csrfInput ? csrfInput.value : (document.cookie.match(/csrftoken=([^;]+)/) || [])[1];
             const response = await fetch('{% url "ajax_login" %}', {
               method: 'POST',
               body: formData,
               headers: {
-                      'X-Requested-With': 'XMLHttpRequest',
-                      ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {})
-                    },
-                    credentials: 'same-origin'
+                'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {})
+              },
+              credentials: 'same-origin'
             });
             const data = await response.json();
 
             if (data.success) {
-              // Redirect to appropriate page
               window.location.href = data.redirect_url || '/';
             } else {
-              // Show error
               if (errorDiv) {
                 errorDiv.textContent = data.error || 'Usuario o contraseña incorrectos.';
                 errorDiv.style.display = 'block';
@@ -1038,7 +1025,7 @@
             }
           } catch (err) {
             if (errorDiv) {
-                    errorDiv.textContent = 'Error de conexión o seguridad (CSRF). Recarga la página e intenta de nuevo.';
+              errorDiv.textContent = 'Error de conexión o seguridad (CSRF). Recarga la página e intenta de nuevo.';
               errorDiv.style.display = 'block';
             }
             submitBtn.disabled = false;
