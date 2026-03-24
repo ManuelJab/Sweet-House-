@@ -11,9 +11,9 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from .models import Producto
-from django.core.mail import send_mail
-from django.core.mail import EmailMessage
-from django.core.mail import get_connection
+from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -641,47 +641,92 @@ def checkout(request):
 		# Aquí podrías registrar el pedido y limpiar el carrito
 		from web.models import SolicitudPedido
 		# Creamos una solicitud por cada item en el carrito
+		payment_method = request.POST.get('payment_method', 'nequi')
+		paypal_order_id = request.POST.get('paypal_order_id', '')
+		
 		created_ids = []
 		for item in items:
+			notes = f"Pago realizado via {payment_method.upper()} (Total: {total})"
+			if paypal_order_id:
+				notes += f" - PayPal ID: {paypal_order_id}"
+				
 			o = SolicitudPedido.objects.create(
 				name=request.user.get_full_name() or request.user.username,
 				email=request.user.email,
 				product=item['product'],
 				product_name=item['product'].name,
 				quantity=item['qty'],
-				notes=f"Pago realizado via Checkout (Total: {total})",
+				notes=notes,
 				status='recibido'
 			)
 			created_ids.append(o.pk)
 		request.session['cart'] = {}
 		request.session.modified = True
+		
+		# 1. Preparar datos del email
+		context_email = {
+			'user': request.user,
+			'items': items,
+			'total': total,
+			'payment_method': payment_method.upper(),
+			'order_ids': created_ids,
+			'paypal_id': paypal_order_id,
+		}
+		
+		# Forzamos la carga de variables de entorno para asegurar que lea las más recientes
+		load_dotenv()
+		
 		try:
-			host = os.environ.get('EMAIL_HOST') or getattr(settings, 'EMAIL_HOST', '')
-			user = os.environ.get('EMAIL_HOST_USER') or getattr(settings, 'EMAIL_HOST_USER', '')
-			password = os.environ.get('EMAIL_HOST_PASSWORD') or getattr(settings, 'EMAIL_HOST_PASSWORD', '')
-			try:
-				port = int(os.environ.get('EMAIL_PORT') or getattr(settings, 'EMAIL_PORT', 587))
-			except Exception:
-				port = 587
-			use_tls = (os.environ.get('EMAIL_USE_TLS') or str(getattr(settings, 'EMAIL_USE_TLS', True))).lower() in ('true', '1', 'yes')
-			use_ssl = (os.environ.get('EMAIL_USE_SSL') or str(getattr(settings, 'EMAIL_USE_SSL', False))).lower() in ('true', '1', 'yes')
-			smtp_ready = bool(host and user and password)
-			if smtp_ready:
-				conn = get_connection('django.core.mail.backends.smtp.EmailBackend',
-					host=host, port=port, username=user, password=password,
-					use_tls=use_tls, use_ssl=use_ssl)
-			else:
-				conn = get_connection('django.core.mail.backends.console.EmailBackend')
-			sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
+			# Usar la configuración de Gmail directamente para asegurar el envío
+			host = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+			user = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
+			password = os.environ.get('EMAIL_HOST_PASSWORD', 'enheskaqbmdokuhk')
+			port = int(os.environ.get('EMAIL_PORT', 465))
+			use_ssl = os.environ.get('EMAIL_USE_SSL', 'True').lower() in ('true', '1', 'yes')
+			
+			# Creamos la conexión manualmente para asegurar que use los datos correctos
+			from django.core.mail import get_connection
+			conn = get_connection(
+				'django.core.mail.backends.smtp.EmailBackend',
+				host=host,
+				port=port,
+				username=user,
+				password=password,
+				use_ssl=use_ssl,
+				use_tls=not use_ssl
+			)
+			
+			sender = f"Sweet House <{user}>"
+			subject = "Confirmación de tu pedido"
+			
+			# Cuerpo en texto plano exactamente como en la imagen
 			lines = []
 			for item in items:
 				lines.append(f"- {item['product'].name} x{item['qty']}")
-			body = "Gracias por tu compra.\n\nDetalle del pedido:\n" + "\n".join(lines) + f"\n\nTotal: ${total:,.2f}\nID(s) de solicitud: {', '.join(str(x) for x in created_ids)}"
-			subject = "Confirmación de tu pedido"
-			if request.user.email:
-				EmailMessage(subject, body, sender, [request.user.email], connection=conn).send(fail_silently=True)
-		except Exception:
-			pass
+			
+			body = "Gracias por tu compra.\n\n"
+			body += "Detalle del pedido:\n"
+			body += "\n".join(lines)
+			body += f"\n\nTotal: ${total:,.2f}"
+			body += f"\nID(s) de solicitud: {', '.join(str(x) for x in created_ids)}"
+			
+			# Obtener el email del usuario logueado
+			recipient_email = request.user.email
+			
+			if recipient_email:
+				# Enviamos el mensaje usando la conexión explícita
+				msg = EmailMessage(subject, body, sender, [recipient_email], connection=conn)
+				msg.send(fail_silently=False)
+				print(f"✅ Email enviado exitosamente a: {recipient_email}")
+				
+				# Notificar al admin (Stiven)
+				if user != recipient_email:
+					EmailMessage(f"NUEVO PEDIDO #{created_ids[0]}", body, sender, [user], connection=conn).send(fail_silently=True)
+			else:
+				print("⚠️ El usuario no tiene un email registrado.")
+					
+		except Exception as e:
+			print(f"❌ Error crítico enviando email: {str(e)}")
 		return render(request, 'tienda/checkout_exito.html', {'total': total})
 	# Tomar Nequi del entorno si está disponible para reflejar cambios sin reiniciar
 	nequi_number = os.environ.get('NEQUI_NUMBER', getattr(settings, 'NEQUI_NUMBER', '3000000000'))

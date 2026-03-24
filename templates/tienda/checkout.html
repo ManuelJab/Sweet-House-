@@ -303,29 +303,36 @@
                 <div class="method-title-paypal">PayPal</div>
                 
                 <div style="width: 100%;">
-                  {% if paypal_me_url or paypal_email %}
-                    <!-- Botón simple como enlace directo (más fiable) -->
-                    <a href="{% if paypal_me_url %}{{ paypal_me_url }}{% if paypal_is_me_url and paypal_amount_str %}/{{ paypal_amount_str }}{{ paypal_currency|default:'USD' }}{% endif %}{% else %}https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business={{ paypal_email }}&amount={{ paypal_amount_str }}&currency_code={{ paypal_currency|default:'USD' }}&item_name=Pedido+Sweet+House{% endif %}" 
+                  {% if paypal_me_url %}
+                    <!-- Botón personalizado que abre PayPal.Me -->
+                    <a href="{{ paypal_me_url }}{% if paypal_is_me_url and paypal_amount_str %}/{{ paypal_amount_str }}{{ paypal_currency|default:'USD' }}{% endif %}" 
                        target="_blank" 
                        rel="noopener"
                        class="paypal-btn"
-                       onclick="handlePaypalClick(event, this.href)">
+                       onclick="return handlePaypalMeClick(this)">
                       Pagar con PayPal
                     </a>
 
                     <!-- Formulario oculto para registrar el pedido -->
-                    <form action="/tienda/checkout/" method="post" id="paypal-reg-form" style="display:none;">
+                    <form action="/tienda/checkout/" method="post" id="paypal-success-form" style="display:none;">
                       {% csrf_token %}
-                      <input type="hidden" name="payment_method" value="paypal">
+                      <input type="hidden" name="payment_method" value="paypal_me">
                     </form>
 
                     <script>
-                      function handlePaypalClick(event, url) {
-                        // 1. No cancelamos el evento para que el target="_blank" funcione
-                        // 2. Enviamos el formulario de registro en segundo plano
+                      function handlePaypalMeClick(anchor) {
+                        // 1. Cambiamos visualmente el botón
+                        anchor.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+                        anchor.style.opacity = '0.7';
+                        anchor.style.pointerEvents = 'none';
+                        
+                        // 2. Registramos el pedido en la ventana actual tras un breve delay
+                        // para permitir que el navegador abra la nueva pestaña de PayPal.Me
                         setTimeout(function() {
-                          document.getElementById('paypal-reg-form').submit();
-                        }, 500);
+                          document.getElementById('paypal-success-form').submit();
+                        }, 1500);
+                        
+                        return true; // Permite que el enlace target="_blank" se abra
                       }
                     </script>
                   {% else %}

@@ -189,19 +189,13 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
-# 🔐 USUARIO SMTP (NO TU CORREO)
-EMAIL_HOST_USER = 'a4c177001@smtp-brevo.com'
-
-# 🔑 CLAVE SMTP
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# 📧 CORREO REAL VERIFICADO
-DEFAULT_FROM_EMAIL = 'manuelarrietabarreto20@gmail.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'enheskaqbmdokuhk')
+DEFAULT_FROM_EMAIL = f"Sweet House <{EMAIL_HOST_USER}>"
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 
 # SMTP configuration (Gmail example commented)
@@ -234,17 +228,17 @@ if not DEBUG:
 # ============================================
 # Client-side buttons require a client ID (sandbox o live)
 PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', '')
-# Opcional: enlace a PayPal.Me
-PAYPAL_ME_URL = os.environ.get('PAYPAL_ME_URL', '')
+# Enlace directo a PayPal.Me
+PAYPAL_ME_URL = os.environ.get('PAYPAL_ME_URL', 'https://paypal.me/STIVEN2580')
 # Opcional: email de tu cuenta PayPal para mostrarlo
 PAYPAL_EMAIL = os.environ.get('PAYPAL_EMAIL', '')
 # Moneda a usar en los botones (USD por compatibilidad)
 PAYPAL_CURRENCY = os.environ.get('PAYPAL_CURRENCY', 'USD')
 # Conversión COP->USD usada para calcular el monto aproximado en PayPal
 try:
-    PAYPAL_COP_PER_USD = float(os.environ.get('PAYPAL_COP_PER_USD', '4000'))
+    PAYPAL_COP_PER_USD = float(os.environ.get('PAYPAL_COP_PER_USD', '4500'))
 except ValueError:
-    PAYPAL_COP_PER_USD = 4000.0
+    PAYPAL_COP_PER_USD = 4500.0
 
 # Nequi
-NEQUI_NUMBER = os.environ.get('NEQUI_NUMBER', '3015096797')
+NEQUI_NUMBER = os.environ.get('NEQUI_NUMBER', '3000000000')
