@@ -188,14 +188,24 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'enheskaqbmdokuhk')
-DEFAULT_FROM_EMAIL = f"Sweet House <{EMAIL_HOST_USER}>"
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+try:
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+except Exception:
+    EMAIL_PORT = 587
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL',
+    f"Sweet House <{EMAIL_HOST_USER}>" if EMAIL_HOST_USER else "Sweet House <no-reply@sweethouse.local>"
+)
+
+if EMAIL_HOST and EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 
 # SMTP configuration (Gmail example commented)

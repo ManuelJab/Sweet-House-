@@ -161,8 +161,13 @@
         </div>
 
         <div class="delivery-info">
+            {% if email_sent %}
             <p><strong><i class="bi bi-envelope-fill"></i> Confirmación enviada</strong></p>
-            <p>Hemos enviado un email con los detalles de tu pedido.</p>
+            <p>Hemos enviado un email{% if recipient_email %} a <strong>{{ recipient_email }}</strong>{% endif %} con los detalles de tu pedido.</p>
+            {% else %}
+            <p><strong><i class="bi bi-envelope-fill"></i> Confirmación pendiente</strong></p>
+            <p>El pago fue registrado, pero no se pudo enviar la confirmación por correo.</p>
+            {% endif %}
             <p style="margin-top: 1rem;"><strong><i class="bi bi-truck"></i> Próximos pasos</strong></p>
             <p>Pronto nos pondremos en contacto para coordinar la entrega.</p>
         </div>

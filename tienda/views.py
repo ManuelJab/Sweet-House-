@@ -17,6 +17,7 @@ from django.utils.html import strip_tags
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+import logging
 
 from django.contrib.auth.decorators import login_required
 
@@ -26,6 +27,8 @@ from decimal import Decimal, ROUND_HALF_UP
 import os
 from dotenv import load_dotenv
 from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
 
 def inicio(request):
 	return render(request, 'tienda/inicio.html')
@@ -662,72 +665,47 @@ def checkout(request):
 			created_ids.append(o.pk)
 		request.session['cart'] = {}
 		request.session.modified = True
-		
-		# 1. Preparar datos del email
-		context_email = {
-			'user': request.user,
-			'items': items,
-			'total': total,
-			'payment_method': payment_method.upper(),
-			'order_ids': created_ids,
-			'paypal_id': paypal_order_id,
-		}
-		
-		# Forzamos la carga de variables de entorno para asegurar que lea las más recientes
-		load_dotenv()
-		
-		try:
-			# Usar la configuración de Gmail directamente para asegurar el envío
-			host = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-			user = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
-			password = os.environ.get('EMAIL_HOST_PASSWORD', 'enheskaqbmdokuhk')
-			port = int(os.environ.get('EMAIL_PORT', 465))
-			use_ssl = os.environ.get('EMAIL_USE_SSL', 'True').lower() in ('true', '1', 'yes')
-			
-			# Creamos la conexión manualmente para asegurar que use los datos correctos
-			from django.core.mail import get_connection
-			conn = get_connection(
-				'django.core.mail.backends.smtp.EmailBackend',
-				host=host,
-				port=port,
-				username=user,
-				password=password,
-				use_ssl=use_ssl,
-				use_tls=not use_ssl
-			)
-			
-			sender = f"Sweet House <{user}>"
-			subject = "Confirmación de tu pedido"
-			
-			# Cuerpo en texto plano exactamente como en la imagen
-			lines = []
-			for item in items:
-				lines.append(f"- {item['product'].name} x{item['qty']}")
-			
-			body = "Gracias por tu compra.\n\n"
-			body += "Detalle del pedido:\n"
-			body += "\n".join(lines)
-			body += f"\n\nTotal: ${total:,.2f}"
-			body += f"\nID(s) de solicitud: {', '.join(str(x) for x in created_ids)}"
-			
-			# Obtener el email del usuario logueado
-			recipient_email = request.user.email
-			
-			if recipient_email:
-				# Enviamos el mensaje usando la conexión explícita
-				msg = EmailMessage(subject, body, sender, [recipient_email], connection=conn)
+
+		email_sent = False
+		recipient_email = (request.user.email or '').strip()
+		sender = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@sweethouse.local')
+		subject = "Confirmación de tu pedido"
+
+		lines = [f"- {item['product'].name} x{item['qty']}" for item in items]
+		body = "Gracias por tu compra.\n\n"
+		body += "Detalle del pedido:\n"
+		body += "\n".join(lines)
+		body += f"\n\nTotal: ${total:,.2f}"
+		body += f"\nID(s) de solicitud: {', '.join(str(x) for x in created_ids)}"
+
+		if recipient_email:
+			try:
+				msg = EmailMessage(subject, body, sender, [recipient_email])
 				msg.send(fail_silently=False)
-				print(f"✅ Email enviado exitosamente a: {recipient_email}")
-				
-				# Notificar al admin (Stiven)
-				if user != recipient_email:
-					EmailMessage(f"NUEVO PEDIDO #{created_ids[0]}", body, sender, [user], connection=conn).send(fail_silently=True)
-			else:
-				print("⚠️ El usuario no tiene un email registrado.")
-					
-		except Exception as e:
-			print(f"❌ Error crítico enviando email: {str(e)}")
-		return render(request, 'tienda/checkout_exito.html', {'total': total})
+				email_sent = True
+				messages.success(request, f"Confirmación enviada a {recipient_email}.")
+			except Exception:
+				logger.exception("No se pudo enviar el correo de confirmación del checkout")
+				messages.warning(request, "El pago fue registrado, pero no pudimos enviar la confirmación por correo en este momento.")
+		else:
+			messages.warning(request, "El pago fue registrado, pero tu cuenta no tiene un correo registrado para enviar la confirmación.")
+
+		try:
+			from email.utils import parseaddr
+
+			admin_email = (
+				os.environ.get('ORDERS_NOTIFY_EMAIL')
+				or getattr(settings, 'ORDERS_NOTIFY_EMAIL', '')
+				or getattr(settings, 'EMAIL_HOST_USER', '')
+				or parseaddr(sender)[1]
+			)
+			admin_email = (admin_email or '').strip()
+			if admin_email and admin_email.lower() != recipient_email.lower():
+				EmailMessage(f"NUEVO PEDIDO #{created_ids[0]}", body, sender, [admin_email]).send(fail_silently=True)
+		except Exception:
+			logger.exception("No se pudo notificar por correo al administrador del nuevo pedido")
+
+		return render(request, 'tienda/checkout_exito.html', {'total': total, 'email_sent': email_sent, 'recipient_email': recipient_email})
 	# Tomar Nequi del entorno si está disponible para reflejar cambios sin reiniciar
 	nequi_number = os.environ.get('NEQUI_NUMBER', getattr(settings, 'NEQUI_NUMBER', '3000000000'))
 	paypal_client_id = getattr(settings, 'PAYPAL_CLIENT_ID', '')
