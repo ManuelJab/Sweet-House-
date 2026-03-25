@@ -1,0 +1,48 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<style>
+    body { font-family: 'Calibri', sans-serif; font-size: 11pt; }
+    h1 { color: #2F5496; font-size: 16pt; }
+    h2 { color: #2F5496; font-size: 14pt; border-bottom: 1px solid #2F5496; padding-bottom: 2px;}
+    h3 { font-size: 12pt; }
+    ul { margin-top: 0; }
+    .success { color: green; font-weight: bold; }
+</style>
+</head>
+<body>
+    <h1>Reporte de Pruebas Automatizadas - Sweet House</h1>
+    <p>Se ha implementado y ejecutado exitosamente una suite de testing automatizado para verificar las funcionalidades críticas del proyecto. La suite consta de <strong>12 pruebas</strong> divididas entre las aplicaciones principales del proyecto.</p>
+
+    <h2>1. Aplicación Web (web/tests.py)</h2>
+    <p>Se prueban las vistas públicas y formularios de contacto y retroalimentación para los clientes, asegurando que los usuarios y administradores interactúen correctamente.</p>
+    <ul>
+        <li><strong>test_home_view:</strong> Valida que la página de inicio cargue correctamente (HTTP 200).</li>
+        <li><strong>test_contacto_view:</strong> Valida que la página de contacto esté accesible (HTTP 200).</li>
+        <li><strong>test_feedback_submission:</strong> Verifica que un cliente pueda enviar un formulario de comentarios/feedback, que se guarde en la base de datos y redirija correctamente a la confirmación.</li>
+        <li><strong>test_admin_request:</strong> Verifica que un usuario logueado pueda enviar una solicitud para obtener permisos de administrador, registrándola en la base de datos.</li>
+        <li><strong>test_solicitud_pedido:</strong> Simula el proceso en el que un cliente llena y envía una "Solicitud de Pedido" para un producto específico (tipo catering/evento), validando la captura correcta de campos como cantidad, ocasión y fecha, así como el registro exitoso del pedido.</li>
+    </ul>
+
+    <h2>2. Aplicación de Tienda (tienda/tests.py)</h2>
+    <p>Se prueban los flujos internos de la tienda en línea, desde la visualización de catálogo hasta el carrito y la fase inicial de pago (checkout).</p>
+    <ul>
+        <li><strong>test_producto_creado_correctamente:</strong> Asegura que el modelo "Producto" guarde los datos correctamente y devuelva su nombre formatado.</li>
+        <li><strong>test_precio_producto:</strong> Valida que el sistema registre y mantenga la integridad y formato numérico del precio asignado.</li>
+        <li><strong>test_catalogo_publico_view_status_code:</strong> Comprueba que el catálogo público cargue y contenga en pantalla los productos registrados y activos.</li>
+        <li><strong>test_add_to_cart:</strong> Simula a un usuario añadiendo productos a su carrito de compras en sesión, verificando que la cantidad correspondiente quede guardada correctamente.</li>
+        <li><strong>test_toggle_favorites:</strong> Valida el mecanismo de "favoritos", añadiendo y consultando productos en la lista de deseos del usuario en sesión.</li>
+        <li><strong>test_checkout_view_with_empty_cart:</strong> Seguridad del carrito: valida que si el carrito está vacío, el usuario sea redirigido y no pueda acceder al proceso de pago.</li>
+        <li><strong>test_checkout_view_with_items:</strong> Valida que si el usuario tiene ítems en el carrito, pueda acceder a la página de pago y visualizar los productos a cobrar.</li>
+    </ul>
+
+    <h2>Resumen de Ejecución</h2>
+    <p>
+        <strong>Comando ejecutado:</strong> <code>python manage.py test</code><br>
+        <strong>Pruebas encontradas:</strong> 12<br>
+        <strong>Tiempo de ejecución:</strong> ~54.4 segundos<br>
+        <strong>Resultado General:</strong> <span class="success">OK (0 fallos, 0 errores)</span>
+    </p>
+    <p><em>El sistema garantiza estabilidad y soporte para su posterior despliegue.</em></p>
+</body>
+</html>
