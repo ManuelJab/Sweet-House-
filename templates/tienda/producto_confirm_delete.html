@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Eliminar Producto - {{ project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .delete-confirm-container {
+    max-width: 550px;
+    margin: 100px auto 50px;
+    padding: 0 20px;
+  }
+  .delete-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    border: 2px solid #fce4ec;
+  }
+  .delete-header {
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    color: #fff;
+    padding: 30px;
+    text-align: center;
+  }
+  .delete-header i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+  }
+  .delete-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+  }
+  .delete-body {
+    padding: 40px 30px;
+    text-align: center;
+  }
+  .delete-body p {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+  .product-name-highlight {
+    color: #e91e63;
+    font-weight: 700;
+    display: block;
+    font-size: 1.5rem;
+    margin-top: 10px;
+  }
+  .delete-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+  .btn-confirm-delete {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-confirm-delete:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+  }
+  .btn-cancel-delete {
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #ddd;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-cancel-delete:hover {
+    background: #e9ecef;
+    color: #333;
+    border-color: #ccc;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-confirm-container">
+  <div class="delete-card">
+    <div class="delete-header">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <h1>Eliminar Producto</h1>
+    </div>
+    <div class="delete-body">
+      <p>¿Estás completamente seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.
+        <span class="product-name-highlight">"{{ producto.name }}"</span>
+      </p>
+      
+      <form method="post" class="delete-actions">
+        {% csrf_token %}
+        <a href="{% url 'catalogo_publico' %}" class="btn-cancel-delete">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+        <button type="submit" class="btn-confirm-delete">
+          <i class="bi bi-trash3-fill"></i> Sí, eliminar producto
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

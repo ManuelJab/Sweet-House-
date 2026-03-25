@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Clientes - {{ project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .clientes-container { margin:100px auto 50px; max-width:1100px; padding:0 16px; }
+  .clientes-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .clientes-title { display:flex; align-items:center; gap:10px; margin:0; font-size:1.8rem; }
+  .clientes-title i { color:#e91e63; }
+  .volver-btn { display:inline-block; background:linear-gradient(135deg,#ff80ab,#ff4081); color:#fff; padding:10px 16px; border-radius:999px; text-decoration:none; font-weight:700; }
+  .clientes-card { background:#fff; border-radius:16px; box-shadow:0 20px 46px rgba(233,30,99,.14); overflow:hidden; }
+  .clientes-card .card-header { background:linear-gradient(135deg,#ff4081,#e91e63); color:#fff; padding:14px 18px; font-weight:700; }
+  .clientes-card .card-body { padding:16px; }
+  .clientes-table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; box-shadow:0 10px 24px rgba(233,30,99,.1); }
+  .clientes-table thead tr { background:#fff0f5; color:#c2185b; }
+  .clientes-table th, .clientes-table td { padding:14px 16px; border-bottom:1px solid #f3d1df; }
+  .badge-count { background:#e3f2fd; color:#1565c0; padding:4px 10px; border-radius:12px; font-size:.85rem; font-weight:700; }
+  .empty-state { text-align:center; padding:40px 20px; color:#666; }
+  .empty-state i { font-size:3rem; color:#ccc; display:block; margin-bottom:10px; }
+  @media (max-width: 720px) {
+    .clientes-title { font-size:1.5rem; }
+    .clientes-container { margin:80px 12px 40px; }
+    .clientes-table th:nth-child(3), .clientes-table td:nth-child(3) { display:none; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="clientes-container">
+    <div class="clientes-header">
+        <h2 class="clientes-title"><i class="bi bi-people-fill"></i> Clientes</h2>
+        <a href="{% url 'dashboard' %}" class="volver-btn">Volver al Dashboard</a>
+    </div>
+
+    <div class="clientes-card">
+        <div class="card-header">Listado de clientes</div>
+        <div class="card-body">
+        {% if clientes %}
+            <div class="table-responsive">
+            <table class="clientes-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th style="text-align:center;">Total Pedidos</th>
+                        <th style="text-align:right;">Último Pedido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clientes %}
+                    <tr>
+                        <td style="font-weight:600;">{{ c.name }}</td>
+                        <td style="color:#666;">{{ c.email }}</td>
+                        <td>{{ c.phone|default:"-" }}</td>
+                        <td style="text-align:center;">
+                            <span class="badge-count">{{ c.total_orders }}</span>
+                        </td>
+                        <td style="text-align:right; color:#666;">{{ c.last_order|date:"d M Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <p>No hay clientes registrados aún.</p>
+        </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

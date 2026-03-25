@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Pago registrado{% endblock %}
+{% block content %}
+<style>
+    .success-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 2rem;
+        margin-top: 80px;
+    }
+
+    .success-card {
+        background: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #ff4081, #e91e63);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: scaleIn 0.6s ease-out;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .success-icon svg {
+        width: 60px;
+        height: 60px;
+        stroke: white;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .success-card h1 {
+        color: #ff4081;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .success-message {
+        color: #555;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+
+    .total-amount {
+        background: linear-gradient(135deg, #ff4081, #e91e63);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 2rem 0;
+    }
+
+    .delivery-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #ff4081;
+        margin: 2rem 0;
+        text-align: left;
+    }
+
+    .delivery-info p {
+        color: #666;
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+
+    .btn-volver {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff4081, #e91e63);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-volver:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 64, 129, 0.3);
+    }
+
+    .checkmark {
+        animation: checkmark 0.6s ease-in-out 0.2s backwards;
+    }
+
+    @keyframes checkmark {
+        0% {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+        }
+
+        100% {
+            stroke-dasharray: 0;
+            stroke-dashoffset: 0;
+        }
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        <div class="success-icon">
+            <svg class="checkmark" viewBox="0 0 52 52">
+                <circle cx="26" cy="26" r="25" fill="none"></circle>
+                <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"></path>
+            </svg>
+        </div>
+
+        <h1>¡Gracias!</h1>
+
+        <div class="success-message">
+            <p>Tu confirmación de pago ha sido registrada exitosamente.</p>
+        </div>
+
+        <div class="total-amount">
+            💰 Total: ${{ total }}
+        </div>
+
+        <div class="delivery-info">
+            <p><strong><i class="bi bi-envelope-fill"></i> Confirmación enviada</strong></p>
+            <p>Hemos enviado un email con los detalles de tu pedido.</p>
+            <p style="margin-top: 1rem;"><strong><i class="bi bi-truck"></i> Próximos pasos</strong></p>
+            <p>Pronto nos pondremos en contacto para coordinar la entrega.</p>
+        </div>
+
+        <a href="{% url 'catalogo_publico' %}" class="btn-volver">Volver al catálogo</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Catálogo - {{ project_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=10">
+{% endblock %}
+{% block content %}
+
+<section class="banner-catalogo">
+	<img class="img-banner" src="{% static 'img/Banner.jpg.png' %}" alt="Nuestro Catálogo de Postres" loading="lazy">
+</section>
+
+<section id="catalogo" class="catalogo-section">
+	<div class="catalogo-filtro-container container">
+		<button class="btn-catalogo-dropdown" id="btn-catalogo-dropdown" aria-expanded="false">
+			<span class="btn-icon"><i class="bi bi-grid-fill"></i></span>
+			<span class="btn-text">Catálogo</span>
+			<span class="btn-arrow">▼</span>
+		</button>
+		<div class="categoria-dropdown" id="categoria-dropdown" role="menu" aria-label="Categorías de postres">
+			<button class="categoria-option active" data-filter="todos" role="menuitem">
+				<span class="option-icon"><i class="bi bi-grid-fill"></i></span>
+				<span>Todos</span>
+			</button>
+			{% if postres_especiales %}
+			<button class="categoria-option" data-filter="especiales" role="menuitem">
+				<span class="option-icon"><i class="bi bi-star-fill"></i></span>
+				<span>Especiales</span>
+			</button>
+			{% endif %}
+			<button class="categoria-option" data-filter="postres" role="menuitem">
+				<span class="option-icon"><i class="bi bi-cake2-fill"></i></span>
+				<span>Postres</span>
+			</button>
+			<button class="categoria-option" data-filter="flanes" role="menuitem">
+				<span class="option-icon"><i class="bi bi-pie-chart-fill"></i></span>
+				<span>Flanes</span>
+			</button>
+			<button class="categoria-option" data-filter="tortas_frias" role="menuitem">
+				<span class="option-icon"><i class="bi bi-snow"></i></span>
+				<span>Tortas frías</span>
+			</button>
+			<button class="categoria-option" data-filter="pudines" role="menuitem">
+				<span class="option-icon"><i class="bi bi-cup-fill"></i></span>
+				<span>Pudines</span>
+			</button>
+		</div>
+	</div>
+	{% if request.user.is_staff or request.user.is_superuser %}
+	<div class="container" style="margin-top: 20px; text-align: center;">
+		<a href="{% url 'producto_create' %}?next={{ request.path }}" class="btn btn--primary" style="display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 10px 25px rgba(233, 30, 99, 0.3); text-decoration: none;">
+			<i class="bi bi-plus-circle-fill" style="font-size: 1.4rem;"></i>
+			<span>Agregar más producto</span>
+		</a>
+	</div>
+	{% endif %}
+	{% if postres_especiales %}
+	<section class="especiales-section container" style="margin-top: 20px; display: none;">
+		<div class="evento-category categoria-seccion" data-categoria-seccion="especiales">
+			<h3 class="evento-title"><i class="bi bi-star-fill"></i> Especiales</h3>
+			<p class="evento-desc">Postres perfectos para tus eventos y celebraciones más importantes</p>
+			<div class="products-grid">
+				{% for p in postres_especiales %}
+					{% include 'tienda/catalogo_producto_card.html' with categoria_str='especiales' %}
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+	{% endif %}
+	<div class="catalogo-regulares container" id="productos-regulares" style="margin-bottom: 40px; margin-top: 20px;">
+		<!-- Postres -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="postres">
+			<h3 class="evento-title"><i class="bi bi-cake2-fill"></i> Postres</h3>
+			<p class="evento-desc">Nuestros clásicos y deliciosos postres</p>
+			<div class="products-grid">
+				{% for p in productos %}
+					{% if p.category == 'postre' and 'flan' not in p.name|lower %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='postres' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Flanes -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="flanes">
+			<h3 class="evento-title"><i class="bi bi-pie-chart-fill"></i> Flanes</h3>
+			<p class="evento-desc">Suaves y cremosos flanes tradicionales</p>
+			<div class="products-grid">
+				{% for p in productos %}
+					{% if 'flan' in p.name|lower %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='flanes' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Tortas frías -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="tortas_frias">
+			<h3 class="evento-title"><i class="bi bi-snow"></i> Tortas frías</h3>
+			<p class="evento-desc">Refrescantes y dulces para cualquier ocasión</p>
+			<div class="products-grid">
+				{% for p in productos %}
+					{% if p.category == 'torta_fria' %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='tortas_frias' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Pudines -->
+		<div class="evento-category categoria-seccion" data-categoria-seccion="pudines">
+			<h3 class="evento-title"><i class="bi bi-cup-fill"></i> Pudines</h3>
+			<p class="evento-desc">Irresistibles pudines artesanales</p>
+			<div class="products-grid">
+				{% for p in productos %}
+					{% if p.category == 'pudin' %}
+						{% include 'tienda/catalogo_producto_card.html' with categoria_str='pudines' %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Modal de ingredientes -->
+	<div id="ingredients-modal" class="ingredients-modal">
+		<p class="ingredients-modal-title" id="ingredients-modal-title"></p>
+		<p class="ingredients-modal-desc" id="ingredients-modal-desc"></p>
+		<p class="ingredients-modal-subtitle"><i class="bi bi-list-check"></i> Ingredientes</p>
+		<ul class="ingredients-list" id="ingredients-modal-list"></ul>
+	</div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/catalogo.js' %}?v=7"></script>
+{% endblock %}

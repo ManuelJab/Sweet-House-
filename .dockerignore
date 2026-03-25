@@ -1,0 +1,21 @@
+# Docker files to exclude from build context
+env/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.git/
+.gitignore
+.vscode/
+.idea/
+*.md
+db.sqlite3
+db.sqlite3-journal
+*.log
+temp_*
+.env.local
+.env.production

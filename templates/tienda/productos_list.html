@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Productos - Admin{% endblock %}
+{% block content %}
+<section class="admin-form">
+	<div class="admin-card">
+		<h1>Productos</h1>
+		<form method="get" style="margin:10px 0; display:flex; gap:8px;">
+			<input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre" style="flex:1; padding:8px 10px; border:1px solid #e0e0e0; border-radius:8px;">
+			<button type="submit" class="btn-primary">Buscar</button>
+			<a href="{% url 'producto_create' %}" class="btn-primary" style="margin-left:auto;">Crear producto</a>
+		</form>
+		<div class="table-responsive">
+			<table class="admin-table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nombre</th>
+						<th>Precio</th>
+						<th>Activo</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for p in productos %}
+					<tr>
+						<td>{{ p.id }}</td>
+						<td>{{ p.name }}</td>
+						<td>${{ p.price }}</td>
+						<td>{% if p.is_active %}Sí{% else %}No{% endif %}</td>
+						<td class="actions">
+							<a href="{% url 'producto_update' p.id %}" class="table-link">Editar</a>
+							<a href="{% url 'producto_delete' p.id %}" class="table-link danger">Eliminar</a>
+						</td>
+					</tr>
+				{% empty %}
+					<tr><td colspan="5">Sin productos</td></tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% if page_obj %}
+		<div style="display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px;">
+			{% if page_obj.has_previous %}
+				<a class="btn-secondary" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+			{% endif %}
+			<span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+			{% if page_obj.has_next %}
+				<a class="btn-secondary" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+			{% endif %}
+		</div>
+		{% endif %}
+	</div>
+</section>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+{% block title %}Mis Pedidos - {{ project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background-image: url("{% static 'img/dessert_pattern.jpg' %}");
+    background-repeat: repeat;
+    background-size: 300px;
+    background-color: #fff0f5;
+  }
+
+  .pedidos-page-wrapper {
+    min-height: 80vh;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pedidos-title {
+    color: #e91e63;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+  }
+
+  .pedidos-container {
+    max-width: 1000px;
+    width: 100%;
+    background: #fff;
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow: 0 15px 45px rgba(233, 30, 99, 0.1);
+    border: 1px solid #fce4ec;
+  }
+
+  .pedido-card {
+    background: #fff;
+    border: 1px solid #fce4ec;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 25px;
+    align-items: center;
+  }
+
+  .pedido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(233, 30, 99, 0.08);
+  }
+
+  .pedido-icon {
+    width: 70px;
+    height: 70px;
+    background: #fff0f5;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e91e63;
+    font-size: 2rem;
+  }
+
+  .pedido-info h3 {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .pedido-meta {
+    display: flex;
+    gap: 20px;
+    color: #777;
+    font-size: 0.95rem;
+  }
+
+  .pedido-status {
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  .status-recibido { background: #e3f2fd; color: #1976d2; }
+  .status-preparacion { background: #fff3e0; color: #f57c00; }
+  .status-envio { background: #e8f5e9; color: #2e7d32; }
+  .status-entregado { background: #fce4ec; color: #e91e63; }
+
+  .empty-pedidos {
+    text-align: center;
+    padding: 40px;
+  }
+
+  .empty-pedidos i {
+    font-size: 4rem;
+    color: #fce4ec;
+    margin-bottom: 20px;
+  }
+
+  .btn-pink {
+    background: #e91e63;
+    color: #fff !important;
+    padding: 14px 35px;
+    border-radius: 18px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 20px;
+  }
+
+  .btn-pink:hover {
+    background: #c2185b;
+    transform: translateY(-3px);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pedidos-page-wrapper">
+  <h1 class="pedidos-title">Mis Pedidos</h1>
+
+  <div class="pedidos-container">
+    {% if pedidos %}
+      {% for pedido in pedidos %}
+        <div class="pedido-card">
+          <div class="pedido-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+          <div class="pedido-info">
+            <h3>{{ pedido.product_name }}</h3>
+            <div class="pedido-meta">
+              <span><i class="bi bi-calendar3"></i> {{ pedido.created_at|date:"d M Y" }}</span>
+              <span><i class="bi bi-hash"></i> Pedido #{{ pedido.pk }}</span>
+              <span><i class="bi bi-layers"></i> Cantidad: {{ pedido.quantity }}</span>
+            </div>
+          </div>
+          <div class="pedido-status-wrapper">
+            <span class="pedido-status status-{{ pedido.status }}">
+              {{ pedido.get_status_display }}
+            </span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-pedidos">
+        <i class="bi bi-bag-x"></i>
+        <h2>Aún no has realizado pedidos</h2>
+        <p>¡Visita nuestro catálogo y endulza tu día!</p>
+        <a href="{% url 'catalogo_publico' %}" class="btn-pink">Ver catálogo</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

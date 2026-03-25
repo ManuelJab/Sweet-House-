@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Catálogo - {{ project_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}?v=5">{% endblock %}
+{% block content %}
+
+<section class="hero-catalogo">
+  <div class="hero-content container">
+    <h1>Nuestro Catálogo de Postres</h1>
+    <p><i class="bi bi-circle-fill"></i> Descubre Todos Nuestros Deliciosos Postres Artesanales <i
+        class="bi bi-circle-fill"></i></p>
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <div style="margin-top: 25px;">
+      <a href="{% url 'producto_create' %}?next={{ request.path }}" class="btn btn--primary" style="padding: 12px 25px; font-size: 1.1rem; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+        <i class="bi bi-plus-circle-fill"></i> Agregar más producto
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="catalogo" class="catalogo-section">
+  {% if postres_especiales %}
+  <section class="especiales-section container">
+    <h2 class="especiales-title">Tortas y postres para eventos especiales</h2>
+    <div class="especiales-list">
+      {% for s in postres_especiales %}
+      <div class="especial-card">
+        <span class="badge-especial">Especial</span>
+        <a class="especial-thumb" href="#" aria-label="{{ s.name }}">
+          {% if 'flan' in s.name|lower %}
+            <img src="{% static 'img/Flan.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'cheesecake' in s.name|lower %}
+            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'lava' in s.name|lower %}
+            <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'mousse' in s.name|lower %}
+            <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'panna' in s.name|lower %}
+            <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'galleta' in s.name|lower or s.category == 'galleta' %}
+            <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'tarta' in s.name|lower %}
+            <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'velvet' in s.name|lower %}
+            <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'leches' in s.name|lower %}
+            <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'trufa' in s.name|lower %}
+            <img src="{% static 'img/trufas.jpg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif 'chocolate' in s.name|lower %}
+            <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ s.name }}" loading="lazy">
+          {% elif s.image %}
+            <img src="{{ s.image.url }}" alt="{{ s.name }}">
+          {% else %}
+            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ s.name }}" loading="lazy">
+          {% endif %}
+        </a>
+        <div class="especial-body">
+          <h4 class="especial-title">{{ s.name }}</h4>
+          <p class="especial-price">${{ s.price }}</p>
+          <form action="{% url 'carrito_agregar' s.id %}" method="post" class="producto-actions">
+            {% csrf_token %}
+            <input type="number" name="qty" value="1" min="1" class="qty-input">
+            <button type="submit" class="btn btn--secondary">Agregar</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+  <div class="productos-grid container">
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <div class="producto card-ui add-product-card" style="border: 3px dashed #ff4081; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 400px; background: #fff5f8; cursor: pointer; transition: all 0.3s ease;" onclick="window.location.href='{% url 'producto_create' %}?next={{ request.path }}'">
+      <div style="text-align: center;">
+        <i class="bi bi-plus-circle-fill" style="font-size: 4rem; color: #ff4081;"></i>
+        <h3 style="margin-top: 15px; color: #e91e63;">Agregar más producto</h3>
+        <p style="color: #666; padding: 0 20px;">Haz clic aquí para añadir un nuevo postre al catálogo</p>
+      </div>
+    </div>
+    <style>
+      .add-product-card:hover {
+        transform: translateY(-10px);
+        background: #ffe0eb !important;
+        box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
+      }
+    </style>
+    {% endif %}
+    {% for p in productos %}
+    <div class="producto card-ui">
+      {% if 'flan' in p.name|lower %}
+        <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'cheesecake' in p.name|lower %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'lava' in p.name|lower %}
+        <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'mousse' in p.name|lower %}
+        <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'panna' in p.name|lower %}
+        <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+        <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'tarta' in p.name|lower %}
+        <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'velvet' in p.name|lower %}
+        <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'leches' in p.name|lower %}
+        <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'trufa' in p.name|lower %}
+        <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'chocolate' in p.name|lower %}
+        <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">
+      {% else %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% endif %}
+      <div class="producto-info">
+        <h3>{{ p.name }}</h3>
+        <p class="descripcion">{{ p.description|default:'Delicioso postre artesanal.' }}</p>
+        <p class="precio">${{ p.price }}</p>
+        {% if request.user.is_staff or request.user.is_superuser %}
+          <div style="margin-bottom:8px;">
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" class="btn btn--secondary"><i class="bi bi-pencil-fill"></i> Editar</a>
+          </div>
+        {% elif not request.user.is_staff and not request.user.is_superuser %}
+          <div style="margin-bottom:8px;">
+            <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" aria-label="Agregar a favoritos"><i
+                class="bi bi-heart-fill"></i> Favorito</a>
+          </div>
+          <form action="{% url 'carrito_agregar' p.id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn--primary">Agregar al Carrito</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p>No hay productos disponibles.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<div id="carrito-modal" class="modal">
+  <div class="modal-contenido carrito-imagen">
+    <span class="cerrar">&times;</span>
+    <div class="carrito-visual">
+      <img src="./img/carrito_compra.png" alt="Carrito de Compras" class="carrito-grande">
+      <h3>¡Productos agregados al carrito!</h3>
+      <p>Revisa tu pedido y procede al pago</p>
+      <a href="{% url 'carrito_detalle' %}" id="ir-checkout" class="btn-checkout">Ver Carrito y Pagar</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}

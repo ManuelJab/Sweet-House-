@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock %}
+{% block extra_css %}
+<style>
+  body {
+    background-image: url("{% static 'img/dessert_pattern.jpg' %}");
+    background-repeat: repeat;
+    background-size: 300px;
+    background-color: #fff0f5;
+  }
+
+  .checkout-page-wrapper {
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .checkout-container { 
+    max-width: 1000px; 
+    width: 100%;
+    margin: 20px auto; 
+    padding: 30px; 
+    background: #ffffff; 
+    border-radius: 25px; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  }
+
+  .checkout-title { 
+    text-align: center; 
+    font-size: 2.2rem; 
+    color: #e91e63; 
+    font-weight: 800; 
+    margin-bottom: 30px; 
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .checkout-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 24px; 
+    align-items: start; 
+  }
+  
+  .order-card, .payments-card { 
+    background: #fff; 
+    border-radius: 18px; 
+    box-shadow: 0 10px 30px rgba(233,30,99,0.08); 
+    overflow: hidden; 
+    border: 1px solid #fce4ec; 
+  }
+
+  .card-header { 
+    background: #e91e63; 
+    color: #fff; 
+    padding: 15px 20px; 
+    font-weight: 700; 
+    font-size: 1.15rem; 
+    text-align: left;
+  }
+
+  .card-body { 
+    padding: 20px 18px; 
+  }
+  
+  /* Tabla de resumen */
+  .checkout-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    margin-bottom: 20px; 
+    border: 1px solid #fce4ec; 
+  }
+
+  .checkout-table th { 
+    padding: 12px 15px; 
+    text-align: left; 
+    font-weight: 700; 
+    color: #c2185b;
+    font-size: 1rem;
+  }
+
+  .checkout-table td { 
+    padding: 12px 15px; 
+    border-top: 1px solid #fce4ec; 
+    color: #444; 
+    font-size: 0.95rem;
+  }
+  
+  .checkout-total-container { 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    gap: 12px; 
+    margin-top: 15px; 
+  }
+
+  .checkout-total-label { 
+    font-weight: 800; 
+    font-size: 1.2rem; 
+    color: #333; 
+  }
+
+  .total-chip { 
+    display: inline-block; 
+    background: #e91e63; 
+    color: #fff; 
+    padding: 8px 22px; 
+    border-radius: 999px; 
+    font-weight: 800; 
+    font-size: 1.2rem; 
+    box-shadow: 0 4px 12px rgba(233,30,99,0.25); 
+  }
+  
+  /* Métodos de pago grid */
+  .methods-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+  }
+
+  .method-card { 
+    background: #fff; 
+    border: 1px solid #fce4ec; 
+    border-radius: 16px; 
+    padding: 18px 15px; 
+    box-shadow: 0 8px 25px rgba(233,30,99,0.05); 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+
+  .method-title { 
+    font-weight: 800; 
+    color: #e91e63; 
+    margin: 10px 0 8px; 
+    font-size: 1.1rem; 
+  }
+
+  .method-desc { 
+    color: #666; 
+    font-size: 0.85rem; 
+    margin-bottom: 12px; 
+    line-height: 1.4; 
+  }
+  
+  .qr-placeholder { 
+    width: 110px; 
+    height: 110px; 
+    border: 2px dashed #fce4ec; 
+    border-radius: 12px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    margin: 10px 0; 
+    color: #999; 
+    font-size: 0.75rem; 
+    padding: 10px; 
+    background: #fff;
+  }
+
+  .qr-placeholder i { 
+    font-size: 2.2rem; 
+    color: #e91e63; 
+    margin-bottom: 6px; 
+    opacity: 0.8; 
+  }
+  
+  .nequi-logo { width: 32px; height: auto; }
+
+  .nequi-btn { 
+    background: #e91e63; 
+    color: #fff; 
+    border: none; 
+    border-radius: 999px; 
+    padding: 10px 20px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    width: 100%; 
+    transition: all 0.3s ease; 
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(233,30,99,0.15);
+  }
+
+  .method-title-paypal { 
+    color: #c2185b; 
+    font-weight: 700; 
+    font-size: 1.4rem; 
+    margin: 5px 0 15px; 
+    font-family: 'Poppins', sans-serif; 
+    letter-spacing: -0.4px; 
+    line-height: 1; 
+  }
+
+  .paypal-btn { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: #0070ba; 
+    color: #fff; 
+    border: none; 
+    border-radius: 999px; 
+    padding: 10px 24px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    text-decoration: none; 
+    width: 100%;
+    transition: all 0.3s ease; 
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0,112,186,0.15);
+  }
+
+  .paypal-btn:hover { 
+    background: #005ea6; 
+    box-shadow: 0 6px 18px rgba(0,112,186,0.3);
+  }
+  
+  @media (max-width: 992px) {
+    .checkout-grid { grid-template-columns: 1fr; }
+    .checkout-title { font-size: 2.5rem; }
+    .checkout-container { padding: 30px 20px; }
+  }
+
+  @media (max-width: 600px) {
+    .methods-grid { grid-template-columns: 1fr; }
+    .card-body { padding: 20px 15px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page-wrapper">
+  <div class="checkout-container">
+    <h1 class="checkout-title">Checkout</h1>
+    
+    <div class="checkout-grid">
+      <!-- Sección Izquierda: Resumen -->
+      <section class="order-card">
+        <div class="card-header">Resumen del pedido</div>
+        <div class="card-body">
+          <table class="checkout-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for it in items %}
+              <tr>
+                <td>{{ it.product.name }}</td>
+                <td>{{ it.qty }}</td>
+                <td>${{ it.subtotal }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="checkout-total-container">
+            <span class="checkout-total-label">Total a pagar:</span>
+            <span class="total-chip">${{ total }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección Derecha: Pagos -->
+      <section class="payments-card">
+        <div class="card-header">Métodos de pago</div>
+        <div class="card-body">
+          <div class="methods-grid">
+            <!-- NEQUI -->
+            <div class="method-card">
+              <img src="{% static 'img/nequi_logo.png' %}" alt="Nequi" class="nequi-logo">
+              <div class="method-title">Transferencia Nequi</div>
+              <div class="method-desc">Escanea el código QR para pagar <strong>${{ total }}</strong></div>
+              
+              <div class="qr-placeholder">
+                <i class="bi bi-qr-code"></i>
+                <span>QR pendiente de subir</span>
+              </div>
+              
+              <div class="method-desc" style="margin-top: 8px;">O envía a: <strong>{{ nequi_number|default:"3000000000" }}</strong></div>
+              
+              <form method="post" style="width: 100%;">
+                {% csrf_token %}
+                <button type="submit" class="nequi-btn">He realizado el pago</button>
+              </form>
+            </div>
+            
+            <!-- PAYPAL -->
+            <div class="method-card">
+              <div class="paypal-container">
+                <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal Icon" style="width: 60px; height: auto; margin-bottom: 5px;">
+                <div class="method-title-paypal">PayPal</div>
+                
+                <div style="width: 100%;">
+                  {% if paypal_me_url %}
+                    <!-- Botón personalizado que abre PayPal.Me -->
+                    <a href="{{ paypal_me_url }}{% if paypal_is_me_url and paypal_amount_str %}/{{ paypal_amount_str }}{{ paypal_currency|default:'USD' }}{% endif %}" 
+                       target="_blank" 
+                       rel="noopener"
+                       class="paypal-btn"
+                       onclick="return handlePaypalMeClick(this)">
+                      Pagar con PayPal
+                    </a>
+
+                    <!-- Formulario oculto para registrar el pedido -->
+                    <form action="/tienda/checkout/" method="post" id="paypal-success-form" style="display:none;">
+                      {% csrf_token %}
+                      <input type="hidden" name="payment_method" value="paypal_me">
+                    </form>
+
+                    <script>
+                      function handlePaypalMeClick(anchor) {
+                        // 1. Cambiamos visualmente el botón
+                        anchor.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+                        anchor.style.opacity = '0.7';
+                        anchor.style.pointerEvents = 'none';
+                        
+                        // 2. Registramos el pedido en la ventana actual tras un breve delay
+                        // para permitir que el navegador abra la nueva pestaña de PayPal.Me
+                        setTimeout(function() {
+                          document.getElementById('paypal-success-form').submit();
+                        }, 300);
+                        
+                        return true; // Permite que el enlace target="_blank" se abra
+                      }
+                    </script>
+                  {% else %}
+                    <button class="paypal-btn" disabled style="opacity: 0.6; cursor: not-allowed;">Pagar con PayPal</button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}

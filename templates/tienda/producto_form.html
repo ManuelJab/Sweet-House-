@@ -1,0 +1,500 @@
+{% extends 'base.html' %}
+{% block title %}{% if is_create %}Nuevo Producto{% else %}Editar Producto{% endif %}{% endblock %}
+{% block extra_css %}
+<style>
+	/* ── Admin Form Modern Design ── */
+	.admin-form {
+		padding: 40px 20px;
+		background: #fdfdfd;
+		min-height: calc(100vh - var(--header-height));
+	}
+
+	.admin-card {
+		max-width: 900px;
+		margin: 0 auto;
+		background: #fff;
+		border-radius: 24px;
+		box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+		padding: 40px;
+		border: 1px solid #f0f0f0;
+	}
+
+	.admin-card h1 {
+		color: #e91e63;
+		font-size: 2.2rem;
+		font-weight: 800;
+		margin-bottom: 10px;
+		text-align: center;
+	}
+
+	.form-description {
+		text-align: center;
+		color: #666;
+		margin-bottom: 40px;
+		font-size: 1.05rem;
+	}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 25px;
+	}
+
+	.form-item {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		margin: 0;
+	}
+
+	.form-span-2 {
+		grid-column: span 2;
+	}
+
+	.form-label {
+		font-weight: 700;
+		color: #333;
+		font-size: 0.95rem;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	/* Inputs styling */
+	.admin-form input[type="text"],
+	.admin-form input[type="number"],
+	.admin-form textarea,
+	.admin-form select {
+		width: 100%;
+		padding: 14px 18px;
+		border: 2px solid #eee;
+		border-radius: 14px;
+		font-size: 1rem;
+		font-family: inherit;
+		transition: all 0.3s ease;
+		background: #fafafa;
+	}
+
+	.admin-form input:focus,
+	.admin-form textarea:focus,
+	.admin-form select:focus {
+		outline: none;
+		border-color: #ff6ea6;
+		background: #fff;
+		box-shadow: 0 0 0 4px rgba(255, 110, 166, 0.1);
+	}
+
+	/* Price Input Special Styling */
+	.price-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.currency-chip {
+		position: absolute;
+		left: 16px;
+		font-weight: 700;
+		color: #e91e63;
+		font-size: 1.1rem;
+	}
+
+	.price-input-wrapper input {
+		padding-left: 35px !important;
+	}
+
+	/* Image Dropzone Modernization */
+	.dropzone {
+		border: 2px dashed #ff80ab;
+		background: #fff9fb;
+		border-radius: 16px;
+		padding: 30px;
+		text-align: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.dropzone:hover, .dropzone.is-over {
+		background: #fff0f5;
+		border-color: #e91e63;
+		transform: scale(1.01);
+	}
+
+	.dropzone input[type="file"] {
+		display: none;
+	}
+
+	.dz-help {
+		color: #e91e63;
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	.dz-icon {
+		font-size: 2.5rem;
+		color: #ff80ab;
+	}
+
+	/* Switches Modernization */
+	.switch-group {
+		display: flex;
+		gap: 30px;
+		background: #fdf2f5;
+		padding: 20px;
+		border-radius: 16px;
+		border: 1px solid #fce4ec;
+	}
+
+	.switch-container {
+		flex-direction: row !important;
+		align-items: center;
+		justify-content: space-between;
+		background: white;
+		padding: 12px 18px;
+		border-radius: 12px;
+		flex: 1;
+		box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+	}
+
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 50px;
+		height: 28px;
+	}
+
+	.switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0; left: 0; right: 0; bottom: 0;
+		background-color: #ccc;
+		transition: .4s;
+		border-radius: 34px;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: "";
+		height: 20px;
+		width: 20px;
+		left: 4px;
+		bottom: 4px;
+		background-color: white;
+		transition: .4s;
+		border-radius: 50%;
+	}
+
+	input:checked + .slider {
+		background-color: #e91e63;
+	}
+
+	input:checked + .slider:before {
+		transform: translateX(22px);
+	}
+
+	/* Preview Section */
+	.form-preview {
+		display: flex;
+		justify-content: center;
+		background: #f8f8f8;
+		border-radius: 16px;
+		padding: 20px;
+		margin-top: 10px;
+	}
+
+	.preview-image {
+		max-height: 250px;
+		border-radius: 12px;
+		box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+		object-fit: cover;
+	}
+
+	/* Hints and Errors */
+	.hint {
+		font-size: 0.82rem;
+		color: #888;
+		margin-top: 4px;
+	}
+
+	.error-msg {
+		color: #dc3545;
+		font-size: 0.82rem;
+		font-weight: 600;
+		margin-top: 4px;
+	}
+
+	.char-counter {
+		text-align: right;
+		font-size: 0.8rem;
+		color: #999;
+		margin-top: -5px;
+	}
+
+	/* Actions */
+	.admin-actions {
+		display: flex;
+		gap: 15px;
+		margin-top: 20px;
+	}
+
+	.btn {
+		padding: 14px 30px;
+		font-size: 1rem;
+		font-weight: 700;
+		border-radius: 14px;
+		transition: all 0.3s ease;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+	}
+
+	.btn-primary {
+		background: linear-gradient(135deg, #ff4081, #e91e63);
+		color: white;
+		border: none;
+		box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+	}
+
+	.btn-primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 12px 28px rgba(233, 30, 99, 0.4);
+	}
+
+	.btn-secondary {
+		background: #fff;
+		color: #666;
+		border: 2px solid #eee;
+	}
+
+	.btn-secondary:hover {
+		background: #fafafa;
+		border-color: #ddd;
+		transform: translateY(-2px);
+	}
+
+	/* Mobile Responsive */
+	@media (max-width: 768px) {
+		.admin-card {
+			padding: 25px 20px;
+		}
+		
+		.form-grid {
+			grid-template-columns: 1fr;
+		}
+		
+		.form-span-2 {
+			grid-column: span 1;
+		}
+
+		.switch-group {
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.admin-card h1 {
+			font-size: 1.8rem;
+		}
+	}
+</style>
+{% endblock %}
+{% block content %}
+<section class="admin-form">
+	<div class="admin-card">
+		<h1>{% if is_create %}<i class="bi bi-plus-circle"></i> Nuevo Producto{% else %}<i class="bi bi-pencil-square"></i> Editar Producto{% endif %}</h1>
+		<p class="form-description">Gestiona los detalles de tus postres artesanales para que luzcan increíbles en el catálogo.</p>
+		
+		<form method="post" enctype="multipart/form-data" class="admin-form-body form-grid" id="producto-form">
+			{% csrf_token %}
+			{% if back_url %}
+			<input type="hidden" name="next" value="{{ back_url }}">
+			{% endif %}
+
+			{% if form.non_field_errors %}
+			<div class="message error form-span-2">
+				{{ form.non_field_errors }}
+			</div>
+			{% endif %}
+
+			<!-- Nombre -->
+			<div class="form-item">
+				<label for="id_name" class="form-label"><i class="bi bi-tag-fill"></i> {{ form.name.label }}</label>
+				{{ form.name }}
+				<small class="hint">{{ form.name.help_text }}</small>
+				{% if form.name.errors %}
+				<small class="error-msg">{{ form.name.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Precio -->
+			<div class="form-item">
+				<label for="id_price" class="form-label"><i class="bi bi-currency-dollar"></i> {{ form.price.label }} (COP)</label>
+				<div class="price-input-wrapper">
+					<span class="currency-chip">$</span>
+					{{ form.price }}
+				</div>
+				<small class="hint">Ingresa el valor total en pesos colombianos. Ej: 25000</small>
+				{% if form.price.errors %}
+				<small class="error-msg">{{ form.price.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Descripción -->
+			<div class="form-item form-span-2">
+				<label for="id_description" class="form-label"><i class="bi bi-text-left"></i> {{ form.description.label }}</label>
+				{{ form.description }}
+				<div class="char-counter"><small id="desc-counter">0/600</small></div>
+				<small class="hint">{{ form.description.help_text }}</small>
+				{% if form.description.errors %}
+				<small class="error-msg">{{ form.description.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Ingredientes -->
+			<div class="form-item form-span-2">
+				<label for="id_ingredients" class="form-label"><i class="bi bi-list-check"></i> {{ form.ingredients.label }}</label>
+				{{ form.ingredients }}
+				<small class="hint">{{ form.ingredients.help_text }}</small>
+				{% if form.ingredients.errors %}
+				<small class="error-msg">{{ form.ingredients.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Imagen -->
+			<div class="form-item">
+				<label for="id_image" class="form-label"><i class="bi bi-image"></i> {{ form.image.label }}</label>
+				<div id="image-dropzone" class="dropzone">
+					<i class="bi bi-cloud-arrow-up dz-icon"></i>
+					{{ form.image }}
+					<div class="dz-help">Haz clic o arrastra una imagen aquí</div>
+				</div>
+				<small class="hint">{{ form.image.help_text }}</small>
+				{% if form.image.errors %}
+				<small class="error-msg">{{ form.image.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Categoría -->
+			<div class="form-item">
+				<label for="id_category" class="form-label"><i class="bi bi-grid-fill"></i> {{ form.category.label }}</label>
+				{{ form.category }}
+				<small class="hint">{{ form.category.help_text }}</small>
+				{% if form.category.errors %}
+				<small class="error-msg">{{ form.category.errors|striptags }}</small>
+				{% endif %}
+			</div>
+
+			<!-- Toggles Group -->
+			<div class="form-span-2 switch-group">
+				<div class="form-item switch-container">
+					<label for="id_is_special" class="form-label"><i class="bi bi-star-fill" style="color:#fbc02d"></i> {{ form.is_special.label }}</label>
+					<span class="switch">
+						{{ form.is_special }}
+						<span class="slider"></span>
+					</span>
+				</div>
+				<div class="form-item switch-container">
+					<label for="id_is_active" class="form-label"><i class="bi bi-check-circle-fill" style="color:#4caf50"></i> {{ form.is_active.label }}</label>
+					<span class="switch">
+						{{ form.is_active }}
+						<span class="slider"></span>
+					</span>
+				</div>
+			</div>
+
+			<!-- Previsualización -->
+			<div class="form-item form-preview form-span-2">
+				<img id="preview-img" src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" 
+					alt="Previsualización" class="preview-image" 
+					style="{% if not form.instance.image %}display:none;{% endif %}">
+			</div>
+
+			<!-- Botones de Acción -->
+			<div class="admin-actions form-span-2">
+				<button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar cambios</button>
+				<a href="{% if back_url %}{{ back_url }}{% else %}{% url 'productos_list' %}{% endif %}" class="btn btn-secondary">
+					<i class="bi bi-arrow-left"></i> Volver
+				</a>
+			</div>
+		</form>
+	</div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+	(function () {
+		// Preview de imagen
+		const input = document.getElementById('id_image');
+		const img = document.getElementById('preview-img');
+		function setPreview(file) {
+			if (!file) { img.style.display = 'none'; img.src = ''; return; }
+			const reader = new FileReader();
+			reader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
+			reader.readAsDataURL(file);
+		}
+		if (input) {
+			input.addEventListener('change', function () {
+				const f = this.files && this.files[0];
+				setPreview(f);
+			});
+		}
+
+		// Drag & drop para imagen
+		const dz = document.getElementById('image-dropzone');
+		if (dz && input) {
+			['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('is-over'); }));
+			['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('is-over'); }));
+			dz.addEventListener('drop', e => {
+				const file = e.dataTransfer.files && e.dataTransfer.files[0];
+				if (file) {
+					const dt = new DataTransfer();
+					dt.items.add(file);
+					input.files = dt.files;
+					setPreview(file);
+				}
+			});
+			// Focus click zona
+			dz.addEventListener('click', () => input.click());
+		}
+
+		// Contador de descripción
+		const desc = document.getElementById('id_description');
+		const counter = document.getElementById('desc-counter');
+		if (desc && counter) {
+			const update = () => { counter.textContent = `${desc.value.length}/600`; };
+			desc.addEventListener('input', update);
+			update();
+		}
+
+		// Formateo de precio para COP (evitar decimales forzados)
+		const price = document.getElementById('id_price');
+		if (price) {
+			// Cambiar tipo a text temporalmente si es necesario para manejar separadores visuales
+			// o mantenerlo como number pero sin forzar .00
+			price.addEventListener('blur', () => {
+				let v = price.value.replace(/,/g, '').trim();
+				if (v && !isNaN(Number(v))) {
+					const num = Number(v);
+					// Si es un número entero (común en COP), no forzar decimales
+					if (num % 1 === 0) {
+						price.value = num.toString();
+					} else {
+						price.value = num.toFixed(2);
+					}
+				}
+			});
+		}
+	})();
+</script>
+{% endblock %}

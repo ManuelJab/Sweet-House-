@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Comentarios de clientes{% endblock %}
+{% block extra_css %}
+<style>
+  .feedback-hero { text-align:center; margin: calc(-1 * var(--header-height)) auto 20px; padding: calc(40px + var(--header-height)) 20px 40px; background-color: #fce4ec; color: #c2185b; }
+  .feedback-hero-title { color:#c2185b; font-weight:800; font-size:32px; margin:0; }
+  .feedback-hero-sub { color: #c2185b; opacity: 0.8; margin-top:6px; }
+  .feedback-container { max-width: 1100px; margin: 20px auto 60px; padding: 0 16px; }
+  .feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 992px) {
+      .feedback-grid { grid-template-columns: 1fr; }
+      .feedback-hero-title { font-size: 26px; }
+    }
+    .feedback-card { background:#fff; border:2px solid #ff4081; border-radius:18px; box-shadow:0 16px 36px rgba(255,64,129,.15); overflow:hidden; }
+    .feedback-card .body { padding: 18px; }
+    .feedback-title { color:#e91e63; margin:0; font-size:20px; font-weight:800; padding: 14px 18px; border-bottom:1px solid #ffe3ed; display:flex; align-items:center; gap:10px; }
+    .feedback-form .form-group { margin-bottom: 14px; }
+    .feedback-form label { font-weight:600; margin-bottom:6px; display:block; }
+    .feedback-form .input, .feedback-form .textarea { width:100%; border:1px solid #ddd; border-radius:6px; padding:10px 12px; }
+    .feedback-form .input:focus, .feedback-form .textarea:focus { outline:none; border-color:#ff4081; box-shadow:0 0 0 3px rgba(255,64,129,.1); }
+    .rating-wrap ul { list-style:none; padding:0; margin:0; display:flex; gap:8px; }
+    .rating-wrap ul li label { display:inline-block; background:#fff0f5; border:1px solid #ffd1e0; color:#ffb300; padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700; }
+    .rating-wrap ul li input { display:none; }
+    .rating-wrap ul li:nth-child(1) label::before { content: "★"; }
+    .rating-wrap ul li:nth-child(2) label::before { content: "★★"; }
+    .rating-wrap ul li:nth-child(3) label::before { content: "★★★"; }
+    .rating-wrap ul li:nth-child(4) label::before { content: "★★★★"; }
+    .rating-wrap ul li:nth-child(5) label::before { content: "★★★★★"; }
+    .feedback-btn { background: linear-gradient(135deg, #ff4081, #e91e63); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-weight:700; cursor:pointer; }
+    .feedback-list .item { border-bottom:1px solid #f2f2f2; padding: 12px 0; }
+    .feedback-list .item:last-child { border-bottom:none; }
+    .stars { color:#ffb300; font-size: 18px; }
+  </style>
+{% endblock %}
+{% block content %}
+<div class="feedback-hero">
+  <h1 class="feedback-hero-title"><i class="bi bi-chat-text-fill"></i> Comentarios y Reseñas</h1>
+  <div class="feedback-hero-sub">Tu opinión nos ayuda a mejorar cada día</div>
+</div>
+<div class="feedback-container">
+  <div class="feedback-grid">
+    <section class="feedback-card">
+      <h1 class="feedback-title"><i class="bi bi-pencil-square"></i> Deja tu comentario</h1>
+      <div class="body">
+        {% if request.user.is_authenticated %}
+          {% if request.user.is_staff or request.user.is_superuser %}
+            <p style="color:#777;">Los administradores no pueden publicar comentarios. Revisa los más recientes a la derecha.</p>
+          {% else %}
+            <form method="post" class="feedback-form" novalidate>
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Nombre</label>
+                {{ form.name }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Correo</label>
+                {{ form.email }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.comment.id_for_label }}">Comentario</label>
+                {{ form.comment }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.rating.id_for_label }}">Calificación</label>
+                <div class="rating-wrap">
+                  {{ form.rating }}
+                </div>
+              </div>
+              <button type="submit" class="feedback-btn">Enviar comentario</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <form method="post" class="feedback-form" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="{{ form.name.id_for_label }}">Nombre</label>
+              {{ form.name }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.email.id_for_label }}">Correo</label>
+              {{ form.email }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.comment.id_for_label }}">Comentario</label>
+              {{ form.comment }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.rating.id_for_label }}">Calificación</label>
+              <div class="rating-wrap">
+                {{ form.rating }}
+              </div>
+            </div>
+            <button type="submit" class="feedback-btn">Enviar comentario</button>
+          </form>
+        {% endif %}
+      </div>
+    </section>
+    <section class="feedback-card">
+      <h2 class="feedback-title"><i class="bi bi-chat-text-fill"></i> Últimos comentarios</h2>
+      <div class="body feedback-list">
+        {% for fb in recientes %}
+          <div class="item">
+            <div class="stars">{{ fb.rating }} / 5 ★</div>
+            <strong>{{ fb.name|default:"Cliente" }}</strong>
+            <div>{{ fb.comment }}</div>
+            <small style="color:#666;">{{ fb.created_at|date:"d/m/Y H:i" }}</small>
+          </div>
+        {% empty %}
+          <div style="text-align:center; color:#999; padding: 20px 0;">
+            <div style="font-size: 36px; color:#ff80ab;"><i class="bi bi-chat-dots"></i></div>
+            <div>Aún no hay comentarios publicados</div>
+            <small>¡Sé el primero en dejar tu opinión!</small>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

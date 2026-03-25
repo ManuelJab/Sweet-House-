@@ -1,0 +1,63 @@
+{% load static %}
+<div class="product-card"
+	data-categoria="{{ categoria_str }}"
+	data-ingredients="{% if p.ingredients %}{{ p.ingredients }}{% endif %}"
+	data-product-name="{{ p.name }}" data-description="{{ p.description|default:'' }}" data-price="{{ p.price }}"
+	data-product-id="{{ p.id }}">
+	{% if p.is_special %}
+	<span class="badge-especial">Especial</span>
+	{% endif %}
+	{% if p.image %}
+		<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy" onerror="this.onerror=null; this.src='{% static 'img/cheesecake.jpeg' %}';">
+	{% else %}
+		{% if 'flan' in p.name|lower %}
+			<img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'tarta' in p.name|lower or 'frutas' in p.name|lower %}
+			<img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'trufa' in p.name|lower %}
+			<img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'panna' in p.name|lower %}
+			<img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'maracuya' in p.name|lower or 'mousse' in p.name|lower %}
+			<img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+			<img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'chocolate' in p.name|lower or 'lava' in p.name|lower %}
+			<img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'leches' in p.name|lower %}
+			<img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% elif 'velvet' in p.name|lower %}
+			<img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+		{% else %}
+			<img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+		{% endif %}
+	{% endif %}
+	<div class="product-card-body">
+		<h3 class="product-card-name">{{ p.name }}</h3>
+		<p class="product-card-price">${{ p.price }}</p>
+		{% if request.user.is_staff or request.user.is_superuser %}
+		<div style="margin-bottom: 8px; display:flex; gap:8px;">
+			<a href="{% url 'producto_update' p.id %}?next={{ request.path }}" 
+				style="font-size: 0.85rem; padding: 6px 12px; flex: 1; text-align: center; text-decoration: none; background-color: #e3f2fd; color: #1976d2; border: 1.5px solid #2196f3; border-radius: 20px; font-weight: 700; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 6px;">
+				<i class="bi bi-pencil-square"></i> EDITAR
+			</a>
+		</div>
+		<div class="product-card-actions" style="display:flex; flex-direction:column; gap:8px;">
+			<a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" 
+				style="flex:1; text-align:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:30px; padding:10px; font-weight: 600;">
+				Eliminar
+			</a>
+		</div>
+		{% else %}
+		<div class="product-card-actions" style="display:flex; flex-direction:column; gap:8px;">
+			<form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:flex;">
+				{% csrf_token %}
+				<button class="btn btn--primary" style="flex:1; text-align:center;">Agregar al carrito</button>
+			</form>
+			<a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+				<i class="bi bi-heart-fill"></i> Favorito
+			</a>
+		</div>
+		{% endif %}
+	</div>
+</div>

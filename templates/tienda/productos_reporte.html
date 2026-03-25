@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reporte de Productos{% endblock %}
+{% block extra_css %}
+<style>
+  .report-container { max-width: 960px; margin: 80px auto 40px; background:#fff; border: 1px solid #eee; border-radius: 12px; padding: 24px; }
+  .report-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
+  .report-header h1 { margin:0; font-size: 1.6rem; }
+  .report-meta { color:#777; font-size: .9rem; }
+  .report-actions { text-align: right; margin: 12px 0 20px; }
+  .report-actions .btn-print { background:#e91e63; color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; }
+  table.report-table { width:100%; border-collapse: collapse; }
+  table.report-table th, table.report-table td { border:1px solid #e0e0e0; padding:8px 10px; font-size: .95rem; }
+  table.report-table th { background:#fafafa; text-align:left; }
+  .status-pill { display:inline-block; padding:4px 8px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  .status-on { background:#e8f5e9; color:#2e7d32; }
+  .status-off { background:#ffebee; color:#c62828; }
+  @media print {
+    .report-actions, header, footer { display:none !important; }
+    body { background:#fff !important; }
+    .report-container { box-shadow:none; border:none; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="report-container">
+  <div class="report-header">
+    <h1><i class="bi bi-box-seam"></i> Reporte de Productos</h1>
+    <div class="report-meta">
+      Fecha de generación: {{ now|date:"d/m/Y H:i" }}
+    </div>
+  </div>
+  <div class="report-actions">
+    <button class="btn-print" onclick="window.print()"><i class="bi bi-printer-fill"></i> Imprimir / PDF</button>
+  </div>
+  <div class="table-responsive">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Creado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productos %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.category|title }}</td>
+          <td>${{ p.price }}</td>
+          <td>
+            {% if p.is_active %}
+              <span class="status-pill status-on">Activo</span>
+            {% else %}
+              <span class="status-pill status-off">Inactivo</span>
+            {% endif %}
+          </td>
+          <td>{{ p.created_at|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center; color:#777;">No hay productos para mostrar.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

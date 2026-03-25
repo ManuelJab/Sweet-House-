@@ -1,0 +1,641 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}{% endblock %}
+{% block title %}Inicio - {{ project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Estilos para el slider */
+  .slider-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    overflow: hidden;
+    margin-top: calc(-1 * var(--header-height));
+    padding-top: var(--header-height);
+  }
+
+  .video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .slider-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 0;
+  }
+
+  .slider-content {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 0 10%;
+    height: 100%;
+    text-align: left;
+    z-index: 1;
+  }
+
+  .slider-text {
+    width: 50%;
+    text-align: left;
+  }
+
+  .slider-text h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 42px;
+    color: #fff;
+    margin-bottom: 25px;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.4;
+  }
+
+  .slider-text p {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .slider-text .highlight {
+    background-color: #ff4081;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 30px;
+    font-weight: bold;
+  }
+
+  .slider-image {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slider-image img {
+    width: 280px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0;
+    filter: brightness(0) invert(1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+    animation: floatingCupcake 3s ease-in-out infinite, rotateCupcake 4s linear infinite;
+    transform-origin: center;
+  }
+
+  /* Animación de flotamiento */
+  @keyframes floatingCupcake {
+
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-25px) rotate(5deg);
+    }
+  }
+
+  /* Animación de rotación suave */
+  @keyframes rotateCupcake {
+    0% {
+      filter: brightness(0) invert(1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)) hue-rotate(0deg);
+    }
+
+    50% {
+      filter: brightness(0) invert(1) drop-shadow(0 12px 20px rgba(255, 64, 129, 0.4)) hue-rotate(10deg);
+    }
+
+    100% {
+      filter: brightness(0) invert(1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)) hue-rotate(0deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .slider-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .slider-text,
+    .slider-image {
+      width: 100%;
+      text-align: center;
+    }
+
+    .slider-text h1 {
+      font-size: 32px;
+    }
+
+    .slider-text p {
+      font-size: 18px;
+    }
+
+    .slider-image img {
+      width: 220px;
+      height: auto;
+    }
+  }
+
+  .btn-recipe {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f8f3f0;
+    color: #e75e8d;
+    border: 2px solid #e75e8d;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-recipe:hover {
+    background-color: #e75e8d;
+    color: white;
+  }
+
+  /* Franja de información y redes */
+  .intro-strip {
+    position: relative;
+    padding: 32px 10%;
+    color: #4b4b4b;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255, 243, 240, 0.95), rgba(255, 243, 240, 0.95));
+  }
+
+  .intro-strip::before,
+  .intro-strip::after {
+    content: '';
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(2px);
+  }
+
+  .intro-strip::before {
+    top: -120px;
+    left: -120px;
+    background: radial-gradient(circle, rgba(255, 194, 136, 0.25) 0%, rgba(255, 194, 136, 0) 60%);
+  }
+
+  .intro-strip::after {
+    bottom: -150px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(255, 128, 171, 0.25) 0%, rgba(255, 128, 171, 0) 60%);
+  }
+
+  .intro-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .intro-text {
+    max-width: 65%;
+  }
+
+  .intro-text .lead {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #7a7a7a;
+  }
+
+  .intro-text .address {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #6b6b6b;
+  }
+
+  .intro-icons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .intro-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff4081;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+
+  .intro-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+    background: #ffe6ef;
+  }
+
+  .intro-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  @media (max-width: 768px) {
+    .intro-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .intro-text {
+      max-width: 100%;
+    }
+  }
+
+
+  /* Controles del slider */
+  .slider-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+  }
+
+  .slider-prev {
+    left: 20px;
+  }
+
+  .slider-next {
+    right: 20px;
+  }
+
+  /* Estilos para productos destacados */
+  .featured-products {
+    padding: 80px 10%;
+    text-align: center;
+    background-image: url("{% static 'img/dessert_pattern.jpg' %}");
+    background-repeat: repeat;
+    background-size: 400px;
+    background-attachment: scroll;
+    position: relative;
+  }
+
+  .featured-products::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.85); /* Capa blanca semi-transparente para legibilidad */
+    z-index: 0;
+  }
+
+  .featured-products h2, 
+  .featured-products .products-grid,
+  .featured-products p {
+    position: relative;
+    z-index: 1;
+  }
+
+  .featured-products h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .featured-products h2:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: #e75e8d;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+  @media (max-width: 992px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+  }
+  @media (max-width: 576px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+
+  .product-card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Slider Principal -->
+<div class="slider-container">
+  <video class="video-background" autoplay muted loop>
+    <source src="{% static 'videos/video_stiman.mp4' %}" type="video/mp4">
+  </video>
+  <div class="slider-overlay"></div>
+  <div class="slider-content">
+    <div class="slider-image">
+      <img src="{% static 'img/logo.jpg' %}" alt="Logo {{ project_name }}">
+    </div>
+    <div class="slider-text">
+      <h1>Bienvenido <span
+          style="white-space: nowrap; display: inline-block; margin-top: 15px;">{{ project_name }}</span></h1>
+      <p>Deliciosos <span class="highlight">postres</span> para cada momento especial</p>
+    </div>
+  </div>
+</div>
+<div class="banner-postres">
+  <div class="banner-texto">
+    <i class="bi bi-cake2-fill"></i> ¡Los mejores postres artesanales de la ciudad! <i class="bi bi-cup-hot-fill"></i>
+    Ingredientes frescos y naturales <i class="bi bi-box-seam-fill"></i> Entrega a domicilio <i
+      class="bi bi-star-fill"></i> ¡Haz
+    tu pedido ya! <i class="bi bi-circle-fill"></i> Sabores únicos que te enamorarán <i class="bi bi-heart-fill"></i>
+  </div>
+</div>
+
+<!-- Franja con dirección e íconos sociales eliminada (movida al footer) -->
+
+
+<!-- Productos destacados / más vendidos -->
+<section class="featured-products">
+  <h2><span style="color:#ff4081;"><i class="bi bi-fire"></i></span> Más vendidos</h2>
+  <div class="products-grid">
+    {% for p in mas_vendidos %}
+    <div class="product-card">
+      {% if 'flan' in p.name|lower %}
+        <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'cheesecake' in p.name|lower %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'lava' in p.name|lower %}
+        <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'mousse' in p.name|lower %}
+        <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'panna' in p.name|lower %}
+        <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+        <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'tarta' in p.name|lower %}
+        <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'velvet' in p.name|lower %}
+        <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'leches' in p.name|lower %}
+        <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'trufa' in p.name|lower %}
+        <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'chocolate' in p.name|lower %}
+        <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}">
+      {% else %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% endif %}
+      <div style="padding: 16px;">
+        <h3 style="margin:0 0 8px 0;">{{ p.name }}</h3>
+        <p style="margin:0 0 10px 0; color:#c2185b; font-weight:600;">${{ p.price }}</p>
+        <span class="badge-especial"><i class="bi bi-fire"></i> Popular</span>
+        {% if not request.user.is_staff and not request.user.is_superuser %}
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:flex;">
+              {% csrf_token %}
+              <button class="btn btn--primary" style="flex:1; text-align:center;">Agregar al carrito</button>
+            </form>
+            <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;"><i
+                class="bi bi-heart-fill"></i>
+              Favorito</a>
+          </div>
+        {% else %}
+          <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" 
+               style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color: #e3f2fd; color: #1976d2; border: 1.5px solid #2196f3; border-radius: 25px; padding: 10px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; gap: 6px;">
+              <i class="bi bi-pencil-square"></i> EDITAR
+            </a>
+            <a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" 
+               style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:25px; padding:10px; font-weight:700; font-size: 0.9rem;">
+              ELIMINAR
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p style="color:#666;">Aún no hay ventas registradas. Te mostramos nuestros especiales.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Recomendados de la semana -->
+<section class="featured-products">
+  <h2><span style="color:#ffb300;"><i class="bi bi-star-fill"></i></span> Recomendados de la semana</h2>
+  <div class="products-grid">
+    {% for p in recomendados %}
+    <div class="product-card">
+      {% if 'flan' in p.name|lower %}
+        <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'cheesecake' in p.name|lower %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'lava' in p.name|lower %}
+        <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'mousse' in p.name|lower %}
+        <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'panna' in p.name|lower %}
+        <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+        <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'tarta' in p.name|lower %}
+        <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'velvet' in p.name|lower %}
+        <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'leches' in p.name|lower %}
+        <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'trufa' in p.name|lower %}
+        <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif 'chocolate' in p.name|lower %}
+        <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% elif p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}">
+      {% else %}
+        <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+      {% endif %}
+      <div style="padding: 16px;">
+        <h3 style="margin:0 0 8px 0;">{{ p.name }}</h3>
+        <p style="margin:0 0 10px 0; color:#c2185b; font-weight:600;">${{ p.price }}</p>
+        <span class="badge-especial"><i class="bi bi-star-fill"></i> Recomendado</span>
+        {% if not request.user.is_staff and not request.user.is_superuser %}
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <form action="{% url 'carrito_agregar' p.id %}" method="post" style="display:flex;">
+              {% csrf_token %}
+              <button class="btn btn--primary" style="flex:1; text-align:center;">Agregar al carrito</button>
+            </form>
+            <a href="{% url 'favoritos_toggle' p.id %}" class="btn btn--secondary" style="display:flex; align-items:center; justify-content:center; text-decoration:none;"><i
+                class="bi bi-heart-fill"></i>
+              Favorito</a>
+          </div>
+        {% else %}
+          <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+            <a href="{% url 'producto_update' p.id %}?next={{ request.path }}" 
+               style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color: #e3f2fd; color: #1976d2; border: 1.5px solid #2196f3; border-radius: 25px; padding: 10px; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; gap: 6px;">
+              <i class="bi bi-pencil-square"></i> EDITAR
+            </a>
+            <a href="{% url 'producto_delete' p.id %}?next={{ request.path }}" class="btn btn--danger" 
+               style="display:flex; align-items:center; justify-content:center; text-decoration:none; background-color:#ff4081; color:white; border-radius:25px; padding:10px; font-weight:700; font-size: 0.9rem;">
+              ELIMINAR
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p style="color:#666;">No hay recomendados disponibles.</p>
+    {% endfor %}
+  </div>
+</section>
+
+ 
+
+<style>
+  /* Asegurar espacio extra antes del footer en la home */
+  .featured-products:last-of-type {
+    margin-bottom: 40px;
+  }
+
+  /* Sección Creadores */
+  .creators-section { padding: 50px 10%; background: linear-gradient(135deg, #fce4ec, #f8bbd9); margin-bottom: 80px; }
+  .creators-title { color:#e91e63; font-weight:800; font-size:2.5rem; text-align:center; margin-bottom:2rem; position:relative; }
+  .creators-title::after { content:""; display:block; width:100px; height:5px; background:#e91e63; margin:10px auto 0; border-radius:3px; }
+  .creators-grid { display:grid; grid-template-columns: repeat(2, minmax(220px, 320px)); gap:30px; justify-content:center; }
+  .creator-card { background:#fff; border-radius:20px; box-shadow:0 16px 36px rgba(233,30,99,.15); padding:24px; text-align:center; border:2px solid #ff4081; transition: transform 0.3s ease; }
+  .creator-card:hover { transform: translateY(-8px); }
+  .creator-avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin:0 auto 15px; box-shadow:0 8px 20px rgba(0,0,0,.15); border:3px solid #ff4081; }
+  .creator-avatar img { width:100%; height:100%; object-fit:cover; }
+  .creator-name { color:#e91e63; font-weight:700; margin-bottom:5px; font-size:1.2rem; }
+  .creator-role { color:#666; font-size:0.9rem; font-weight:500; }
+
+  @media (max-width: 992px) {
+    .creators-grid { grid-template-columns: 1fr; max-width: 350px; margin: 0 auto; gap: 20px; }
+    .creators-title { font-size: 2rem; }
+    .creators-section { padding: 40px 5%; }
+  }
+</style>
+
+{% endblock %}
+
+{% block footer_extra %}
+<div class="footer-grid">
+  <div class="footer-brand">
+    <h3 class="footer-title">{{ project_name }}</h3>
+    <p class="footer-text">Deliciosos postres artesanales.<br>Amor en cada bocado.</p>
+    <div class="footer-links">
+      <a href="{% url 'catalogo_publico' %}"><i class="bi bi-chevron-right"></i> Catálogo</a>
+      <a href="{% url 'solicitud_pedido' %}"><i class="bi bi-chevron-right"></i> Pedidos</a>
+      <a href="{% url 'feedback' %}"><i class="bi bi-chevron-right"></i> Comentarios</a>
+    </div>
+  </div>
+  <div class="footer-hours">
+    <h4 class="footer-subtitle">Horarios de Atención</h4>
+    <ul class="footer-list">
+      <li>
+        <i class="bi bi-calendar-event-fill"></i>
+        <span><strong>Lunes a Domingo</strong><br>8:00 AM - 8:00 PM</span>
+      </li>
+      <li>
+        <i class="bi bi-truck"></i>
+        <span>Domicilios disponibles</span>
+      </li>
+    </ul>
+  </div>
+  <div class="footer-contact">
+    <h4 class="footer-subtitle">Contacto</h4>
+    <ul class="footer-list">
+      <li>
+        <a href="https://wa.me/573000000000">
+          <i class="bi bi-whatsapp"></i> +57 3000000000
+        </a>
+      </li>
+      <li>
+        <a href="mailto:{{ support_email }}">
+          <i class="bi bi-envelope-fill"></i> {{ support_email }}
+        </a>
+      </li>
+      <li>
+        <i class="bi bi-geo-alt-fill"></i> Cartagena, Colombia
+      </li>
+    </ul>
+  </div>
+  <div class="footer-social">
+    <h4 class="footer-subtitle">Síguenos</h4>
+    <p class="footer-text">¡Entérate de nuestras promociones!</p>
+    <div class="social-links">
+      <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+      <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const prevBtn = document.querySelector('.slider-prev');
+    const nextBtn = document.querySelector('.slider-next');
+  });
+</script>
+{% endblock %}

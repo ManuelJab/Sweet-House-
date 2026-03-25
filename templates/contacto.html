@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contacto - {{ project_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contacto.css' %}?v=4">
+{% endblock %}
+{% block content %}
+
+<div class="contact-page-wrapper">
+    <h1 class="contact-title">Contáctanos</h1>
+
+    <!-- Main pink box with 4 white cards -->
+    <div class="contact-main-box">
+        <div class="contact-grid">
+            <!-- Oficina -->
+            <div class="contact-card">
+                <span class="card-icon"><i class="bi bi-building"></i></span>
+                <h3>Nuestra Oficina</h3>
+                <div class="card-content">
+                    <p><strong><i class="bi bi-geo-alt-fill"></i> Dirección:</strong></p>
+                    <p>Calle 123 # 45-67</p>
+                    <p>Cartagena, Colombia</p>
+                </div>
+            </div>
+
+            <!-- Contacto directo -->
+            <div class="contact-card">
+                <span class="card-icon"><i class="bi bi-envelope-at"></i></span>
+                <h3>Contáctanos</h3>
+                <div class="card-content">
+                    <p><strong><i class="bi bi-envelope-fill"></i> Email:</strong></p>
+                    <p><a href="mailto:{{ support_email }}">{{ support_email|default:"contacto@sweethouse.local" }}</a></p>
+                    <p><strong><i class="bi bi-telephone-fill"></i> Teléfono:</strong></p>
+                    <p><a href="tel:+573000000000">+57 300 000 0000</a></p>
+                </div>
+            </div>
+
+            <!-- Horarios -->
+            <div class="contact-card">
+                <span class="card-icon"><i class="bi bi-clock-history"></i></span>
+                <h3>Horarios de Atención</h3>
+                <div class="card-content">
+                    <p><strong>Lunes a Viernes:</strong> 9:00 AM - 5:00 PM</p>
+                    <p><strong>Sábado:</strong> 09:00 AM - 4:00 PM</p>
+                    <p><strong>Domingo:</strong> 10:00 AM - 2:00 PM</p>
+                    <p><strong>Feriados:</strong> 10:00 AM - 2:00 PM</p>
+                </div>
+            </div>
+
+            <!-- Entregas -->
+            <div class="contact-card">
+                <span class="card-icon"><i class="bi bi-truck"></i></span>
+                <h3>Horario de Entrega</h3>
+                <div class="card-content">
+                    <p><strong><i class="bi bi-truck"></i> Entregas:</strong> 9:00 AM - 5:00 PM</p>
+                    <p><strong><i class="bi bi-box-seam-fill"></i> Tiempo estimado:</strong> 30 minutos</p>
+                    <p><strong><i class="bi bi-star-fill"></i> Pedidos especiales:</strong> Con 24h de anticipación</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Creators Section -->
+    <section class="creators-section">
+        <h2 class="creators-title">Creadores</h2>
+        <div class="creators-grid">
+            <div class="creator-card">
+                <div class="creator-avatar">
+                    <img src="{% static 'img/stiven.png' %}" alt="Stiven Hernandez Vega">
+                </div>
+                <div class="creator-name">Stiven Hernandez Vega</div>
+                <div class="creator-role">Desarrollador Full-stack</div>
+            </div>
+            <div class="creator-card">
+                <div class="creator-avatar">
+                    <img src="{% static 'img/manuel.jpeg' %}" alt="Manuel">
+                </div>
+                <div class="creator-name">Manuel</div>
+                <div class="creator-role">Desarrollador Back-end</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/app.js' %}"></script>
+{% endblock %}

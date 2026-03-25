@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Solicitudes - {{ project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dash-container { display:grid; grid-template-columns: 220px 1fr; gap:16px; margin-top:90px; }
+  .dash-sidebar { background:#fff; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); padding:14px; position:sticky; top:90px; height: fit-content; }
+  .dash-sidebar h3 { margin:6px 10px 10px; color:#ff4081; }
+  .dash-nav { list-style:none; padding:0; margin:0; }
+  .dash-nav li a { display:block; padding:10px 12px; border-radius:10px; color:#444; text-decoration:none; }
+  .dash-nav li a:hover { background:#fff0f5; color:#c2185b; }
+  .dash-main { }
+  .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
+  .card { background:#fff; border-radius:14px; box-shadow:0 16px 36px rgba(0,0,0,0.18); padding:14px; }
+  .card h4 { margin:0 0 6px; color:#ff4081; font-size:13px; }
+  .card p { margin:0; font-size:24px; font-weight:800; color:#222; }
+  
+  .filters { background:#fff; border-radius:14px; box-shadow:0 16px 36px rgba(0,0,0,0.18); padding:16px; margin-bottom:20px; }
+  .filter-row { display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:10px; align-items:end; }
+  .filter-group { display:flex; flex-direction:column; }
+  .filter-group label { font-size:12px; color:#999; margin-bottom:4px; font-weight:600; }
+  .filter-group input, .filter-group select { padding:8px; border:1px solid #e0e0e0; border-radius:6px; font-size:13px; }
+  .filter-group input:focus, .filter-group select:focus { outline:none; border-color:#ff6ea6; box-shadow:0 0 0 3px rgba(255,110,166,0.1); }
+  .filter-btn { background:#ff6ea6; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; font-size:13px; }
+  .filter-btn:hover { background:#e91e63; }
+  
+  .section { background:#fff; border-radius:14px; box-shadow:0 16px 36px rgba(0,0,0,0.18); overflow:hidden; }
+  .section-header { display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid #f1d1df; }
+  .section-header h3 { margin:0; color:#c2185b; }
+  .section-body { padding:0; }
+  
+  .solicitudes-table { width:100%; border-collapse:collapse; }
+  .solicitudes-table th { text-align:left; padding:12px 14px; color:#c2185b; background:#fff0f5; font-size:12px; font-weight:600; border-bottom:2px solid #f1d1df; }
+  .solicitudes-table td { padding:12px 14px; border-bottom:1px solid #f3e0e7; font-size:13px; }
+  .solicitudes-table tr:hover { background:#fafafa; }
+  
+  .solicitud-name { font-weight:600; color:#222; }
+  .solicitud-email { color:#999; font-size:11px; }
+  .solicitud-producto { color:#c2185b; font-weight:500; }
+  .solicitud-fecha { color:#999; white-space:nowrap; }
+  .solicitud-qty { text-align:center; background:#f9f9f9; border-radius:4px; padding:4px 8px; display:inline-block; }
+  
+  .actions { display:flex; gap:8px; }
+  .action-link { display:inline-block; padding:6px 10px; background:#ff6ea6; color:#fff; text-decoration:none; border-radius:4px; font-size:11px; font-weight:600; }
+  .action-link:hover { background:#e91e63; }
+  
+  .pagination { display:flex; justify-content:center; gap:6px; margin-top:20px; padding:0; }
+  .pagination a, .pagination span { padding:6px 10px; border-radius:4px; border:1px solid #e0e0e0; text-decoration:none; color:#444; font-size:12px; }
+  .pagination .current { background:#ff6ea6; color:#fff; border-color:#ff6ea6; }
+  .pagination a:hover { background:#fff0f5; }
+  
+  .no-data { text-align:center; padding:40px; color:#999; }
+  
+  @media (max-width: 1200px) {
+    .filter-row { grid-template-columns: 1fr 1fr; }
+    .dash-container { grid-template-columns:1fr; }
+    .dash-sidebar { position:relative; top:auto; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-container">
+  <aside class="dash-sidebar">
+    <h3>Panel</h3>
+    <ul class="dash-nav">
+      <li><a href="{% url 'dashboard' %}">Resumen</a></li>
+      <li><a href="{% url 'productos_list' %}">Productos</a></li>
+      <li><a href="{% url 'solicitudes_list' %}" style="background:#fff0f5; color:#c2185b;">Solicitudes</a></li>
+      {% if request.user.is_staff or request.user.is_superuser %}
+        <li><a href="/admin/">Django Admin</a></li>
+      {% endif %}
+    </ul>
+  </aside>
+
+  <main class="dash-main">
+    <!-- Cards de estadísticas -->
+    <div class="cards">
+      <div class="card">
+        <h4>Total de solicitudes</h4>
+        <p>{{ total_solicitudes }}</p>
+      </div>
+      <div class="card">
+        <h4>Mostrando</h4>
+        <p>{{ page_obj.object_list|length }}</p>
+      </div>
+      <div class="card">
+        <h4>Página</h4>
+        <p>{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</p>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <form method="get" novalidate>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="q">Buscar por nombre/email/teléfono</label>
+            <input type="text" id="q" name="q" placeholder="Ej: Juan, juan@email.com" value="{{ q }}">
+          </div>
+          <div class="filter-group">
+            <label for="product">Producto</label>
+            <select id="product" name="product">
+              <option value="">Todos</option>
+              {% for prod in productos_unicos %}
+                <option value="{{ prod }}" {% if product_filter == prod %}selected{% endif %}>{{ prod }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="date_from">Desde</label>
+            <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+          </div>
+          <div class="filter-group">
+            <label for="date_to">Hasta</label>
+            <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+          </div>
+          <button type="submit" class="filter-btn">Filtrar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabla de solicitudes -->
+    <div class="section">
+      <div class="section-header">
+        <h3>📋 Solicitudes de pedidos</h3>
+      </div>
+      <div class="section-body">
+        {% if solicitudes %}
+          <div class="table-responsive">
+            <table class="solicitudes-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Teléfono</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for solicitud in solicitudes %}
+                  <tr>
+                    <td>
+                      <div class="solicitud-name">{{ solicitud.name }}</div>
+                      <div class="solicitud-email">{{ solicitud.email }}</div>
+                    </td>
+                    <td>
+                      <div class="solicitud-producto">{{ solicitud.product_name }}</div>
+                    </td>
+                    <td>
+                      <span class="solicitud-qty">{{ solicitud.quantity }}</span>
+                    </td>
+                    <td>{{ solicitud.phone|default:"—" }}</td>
+                    <td>
+                      <div class="solicitud-fecha">{{ solicitud.created_at|date:"d/m/Y H:i" }}</div>
+                    </td>
+                    <td>
+                      <div class="actions">
+                        <a href="{% url 'solicitud_detail' solicitud.pk %}" class="action-link">Ver</a>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginación -->
+          {% if page_obj.has_other_pages %}
+            <div class="pagination">
+              {% if page_obj.has_previous %}
+                <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if product_filter %}&product={{ product_filter }}{% endif %}">Primera</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if product_filter %}&product={{ product_filter }}{% endif %}">← Anterior</a>
+              {% endif %}
+
+              {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                  <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                  <a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}{% if product_filter %}&product={{ product_filter }}{% endif %}">{{ num }}</a>
+                {% endif %}
+              {% endfor %}
+
+              {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if product_filter %}&product={{ product_filter }}{% endif %}">Siguiente →</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if product_filter %}&product={{ product_filter }}{% endif %}">Última</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="no-data">
+            <p>No hay solicitudes que coincidan con los filtros.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
