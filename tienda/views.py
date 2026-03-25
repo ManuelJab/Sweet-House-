@@ -418,7 +418,7 @@ def signup(request):
 				first_name = user.first_name if user.first_name else user.username
 				messages.success(request, f'¡Registro exitoso! Tu cuenta ha sido creada. Por favor, inicia sesión con tus credenciales.')
 				
-				# Notificar al admin sobre el nuevo registro (automáticamente asíncrono)
+				# Notificar al admin sobre el nuevo registro
 				try:
 					email_user = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
 					EmailMessage(
@@ -702,10 +702,13 @@ def checkout(request):
 			
 			recipient_email = request.user.email
 			if recipient_email:
-				# Ahora enviamos de forma normal y el AsyncEmailBackend se encarga del resto
+				# El AsyncEmailBackend en settings.py se encarga de que sea asíncrono
 				EmailMessage(subject, body, sender, [recipient_email]).send(fail_silently=False)
+				
 				# Copia al administrador
-				EmailMessage(f"NUEVO PEDIDO #{created_ids[0]}", body, sender, [os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')]).send(fail_silently=True)
+				admin_email = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
+				if admin_email != recipient_email:
+					EmailMessage(f"NUEVO PEDIDO #{created_ids[0]}", body, sender, [admin_email]).send(fail_silently=True)
 			else:
 				print("⚠️ El usuario no tiene un email registrado.")
 					
@@ -912,7 +915,7 @@ def solicitud_enviar_email(request, pk: int):
 	use_tls = (os.environ.get('EMAIL_USE_TLS') or str(getattr(settings, 'EMAIL_USE_TLS', True))).lower() in ('true', '1', 'yes')
 	use_ssl = (os.environ.get('EMAIL_USE_SSL') or str(getattr(settings, 'EMAIL_USE_SSL', False))).lower() in ('true', '1', 'yes')
 	if smtp_ready:
-		EmailMessage(subject, message, sender, [dest_email], reply_to=[reply_to_email]).send(fail_silently=False)
+		EmailMessage(subject, message, sender, [dest_email]).send(fail_silently=False)
 		messages.success(request, f"Mensaje enviado a {dest_email}. Respuestas llegarán a {reply_to_email}.")
 	else:
 		from django.core.mail import get_connection

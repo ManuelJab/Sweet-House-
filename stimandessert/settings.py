@@ -195,14 +195,15 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Email configuration
-# Usamos el motor asíncrono personalizado para eliminar retrasos de carga
+# Usamos el motor asíncrono robusto para eliminar retrasos de carga
 EMAIL_BACKEND = 'tienda.email_backend.AsyncEmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-# Port 465 con SSL es más estable para despliegue en Render que 587
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False').lower() == 'true'
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'True').lower() == 'true'
+# El puerto 587 con TLS es el estándar más compatible para Gmail
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pintamarcos35@gmail.com')
+# IMPORTANTE: Generar una nueva contraseña de aplicación si la anterior fue eliminada
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'enheskaqbmdokuhk')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', f"Sweet House <{EMAIL_HOST_USER}>")
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
