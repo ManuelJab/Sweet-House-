@@ -70,6 +70,14 @@ class EmailUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'first_name', 'password1', 'password2')
 
+    def clean_email(self):
+        email = (self.cleaned_data.get('email') or '').strip().lower()
+        if not email:
+            raise ValidationError('El correo electrónico es obligatorio para registrarse.')
+        if User.objects.filter(email__iexact=email).exists():
+            raise ValidationError('Ya existe una cuenta registrada con este correo.')
+        return email
+
     def save(self, commit: bool = True) -> User:
         user = super().save(commit=False)
         # assign email from the form

@@ -411,6 +411,7 @@ def producto_delete(request, pk: int):
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
+from django.core.signing import TimestampSigner, BadSignature
 
 def signup(request):
 	if request.user.is_authenticated:
@@ -424,9 +425,30 @@ def signup(request):
 				# Ensure newly registered users are not staff/superuser by default
 				user.is_staff = False
 				user.is_superuser = False
+				# Requiere verificación de correo antes de permitir login
+				user.is_active = False
 				user.save()
 				first_name = user.first_name if user.first_name else user.username
-				messages.success(request, f'¡Registro exitoso! Tu cuenta ha sido creada. Por favor, inicia sesión con tus credenciales.')
+				
+				# Enviar enlace de verificación al correo
+				try:
+					signer = TimestampSigner(salt='email-verify')
+					token = signer.sign(f"{user.pk}:{user.email}")
+					verify_url = request.build_absolute_uri(
+						f"{reverse('verify_email')}?token={token}"
+					)
+					subject = "Verifica tu correo - Sweet House"
+					body = (
+						f"Hola {first_name},\n\n"
+						"Gracias por registrarte en Sweet House. Para activar tu cuenta, verifica tu correo entrando al siguiente enlace:\n\n"
+						f"{verify_url}\n\n"
+						"Si no fuiste tú, puedes ignorar este mensaje."
+					)
+					send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=True)
+				except Exception:
+					pass
+				
+				messages.success(request, 'Registro iniciado. Te enviamos un enlace de verificación a tu correo. Activa tu cuenta desde allí.')
 				
 				# Notificar al admin sobre el nuevo registro
 				try:
@@ -449,6 +471,32 @@ def signup(request):
     
 	return render(request, 'registration/signup.html', {'form': form})
 
+
+def verify_email(request):
+	"""Verifica el correo del usuario a partir de un token firmado en la URL."""
+	token = (request.GET.get('token') or '').strip()
+	if not token:
+		messages.error(request, 'Token de verificación faltante.')
+		return redirect('login')
+	try:
+		signer = TimestampSigner(salt='email-verify')
+		value = signer.unsign(token)
+		user_id_str, email = value.split(':', 1)
+		User = get_user_model()
+		user = User.objects.filter(pk=int(user_id_str), email__iexact=email).first()
+		if not user:
+			messages.error(request, 'Token inválido.')
+			return redirect('login')
+		if user.is_active:
+			messages.info(request, 'Tu cuenta ya estaba verificada. Puedes iniciar sesión.')
+			return redirect('login')
+		user.is_active = True
+		user.save(update_fields=['is_active'])
+		messages.success(request, 'Correo verificado. Ya puedes iniciar sesión.')
+		return redirect('login')
+	except BadSignature:
+		messages.error(request, 'Token de verificación inválido.')
+	return redirect('login')
 
 class CustomLoginView(LoginView):
 	"""Login view that redirects staff to the admin dashboard and normal users to home."""

@@ -57,7 +57,6 @@ INSTALLED_APPS = [
 
 
     'import_export',
-    'anymail',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -195,12 +194,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
-# Email configuration (Brevo / Sendinblue)
-EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
-ANYMAIL = {
-    "SENDINBLUE_API_KEY": os.environ.get('BREVO_API_KEY'),
-}
+# Email configuration (Brevo / Sendinblue) con fallback si no está anymail
 DEFAULT_FROM_EMAIL = "dessert <ztigreh123@gmail.com>"
+try:
+    import anymail  # noqa: F401
+    INSTALLED_APPS.append('anymail')
+    EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+    ANYMAIL = {
+        "SENDINBLUE_API_KEY": os.environ.get('BREVO_API_KEY'),
+    }
+except Exception:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'Sweet House')
 
 # SMTP configuration (Gmail example commented)

@@ -8,6 +8,7 @@ from tienda.views import (
     CustomLoginView,
     home,
     ajax_login,
+    verify_email,
 )
 from web.views import solicitud_pedido, request_admin, feedback
 from tienda.forms import EmailAuthenticationForm
@@ -29,6 +30,7 @@ urlpatterns = [
     ), name='login'),
     path('accounts/ajax-login/', ajax_login, name='ajax_login'),
     path('accounts/request-admin/', request_admin, name='request_admin'),
+    path('accounts/verify-email/', verify_email, name='verify_email'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tienda/', include('tienda.urls')),
 ]
