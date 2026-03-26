@@ -207,7 +207,7 @@ body {
 /* Banner Footer Design */
 .banner-footer {
   background: #fff9f0; /* Soft cream background like the image */
-  margin-top: 60px;
+  margin-top: 40px;
   position: relative;
   overflow: hidden;
   border-top: 1px solid #eee;
@@ -219,7 +219,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 50px 20px;
+  padding: 28px 16px;
   position: relative;
   background: url("../img/dessert_pattern.jpg");
   background-size: cover;
@@ -240,9 +240,9 @@ body {
 
 .footer-banner-content {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 60px; /* Increased gap since images are gone */
+  gap: 40px;
   z-index: 1;
   flex: 1;
   padding: 0 20px;
@@ -250,27 +250,27 @@ body {
 
 .footer-section-brand {
   text-align: center;
-  min-width: 250px;
+  min-width: 220px;
 }
 
 .footer-logo-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .footer-main-logo {
-  width: 70px;
-  height: 70px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   border: 3px solid #e91e63;
 }
 
 .footer-brand-name {
   font-family: 'Poppins', sans-serif;
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   color: #e91e63;
   font-weight: 800;
   margin: 0;
@@ -285,7 +285,7 @@ body {
 }
 
 .footer-love {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #ffb400; /* Gold/yellow like image slogan */
   font-weight: 600;
   font-style: italic;
@@ -293,7 +293,7 @@ body {
 
 .footer-divider {
   width: 1px;
-  height: 180px;
+  height: 140px;
   background: #ff4081;
   opacity: 0.3;
   align-self: center;
@@ -302,11 +302,12 @@ body {
 .footer-section {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
+  align-items: center;
 }
 
 .footer-section-title {
-  padding: 5px 20px;
+  padding: 5px 16px;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 800;
@@ -327,7 +328,7 @@ body {
 }
 
 .footer-list-new li {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .footer-list-new a {
@@ -346,7 +347,7 @@ body {
 
 .footer-list-new i {
   color: #e91e63;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .footer-hours-content {
@@ -363,12 +364,12 @@ body {
 .hours-time {
   font-size: 0.95rem;
   color: #666;
-  margin: 5px 0 15px 0;
+  margin: 4px 0 10px 0;
 }
 
 .domicilios-tag {
   background: #fff5f0;
-  padding: 8px 15px;
+  padding: 6px 12px;
   border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 700;
@@ -388,7 +389,7 @@ body {
 }
 
 .footer-social-new {
-  margin-top: 15px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -407,8 +408,8 @@ body {
 }
 
 .social-icons-new a {
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -423,7 +424,7 @@ body {
 
 .footer-bottom-strip {
   background: #e91e63;
-  padding: 12px 0;
+  padding: 10px 0;
   text-align: center;
   color: #fff;
 }
@@ -445,12 +446,12 @@ body {
 @media (max-width: 992px) {
   .footer-banner-container {
     flex-direction: column;
-    padding: 40px;
+    padding: 28px 18px;
   }
   .footer-banner-content {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 30px;
+    gap: 22px;
   }
   .footer-divider {
     display: none;

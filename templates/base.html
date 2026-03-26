@@ -757,14 +757,6 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
-  <style>
-    .banner-footer{padding:28px 0}
-    .banner-footer .footer-main-logo{width:52px;height:52px}
-    .banner-footer .footer-brand-name{font-size:1.4rem}
-    .banner-footer .footer-section-title{font-size:1rem}
-    .banner-footer .footer-list-new a{font-size:.95rem}
-    .banner-footer .footer-bottom-strip{padding:10px 0;font-size:.9rem}
-  </style>
   <footer class="banner-footer">
     <div class="footer-banner-container">
       <!-- Main Content Area -->
@@ -834,7 +826,7 @@
       <p>© 2026 Sweet House · Todos los derechos reservados ♡</p>
     </div>
   </footer>
-              {% if not request.user.is_authenticated %}
+  {% if not request.user.is_authenticated %}
   <div class="login-modal-overlay" id="loginModalOverlay">
     <div class="login-modal">
       <button class="login-modal-close" id="closeLoginModal" aria-label="Cerrar">
