@@ -10,15 +10,24 @@ from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
-from .models import Producto
+from .models import Producto, PasswordResetCode
 from django.core.mail import send_mail, EmailMessage, get_connection, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+import logging
+import secrets
+from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods
+from core.utils import enviar_correo
 
 
 from django.db.models import Sum, Count
@@ -26,7 +35,8 @@ from decimal import Decimal, ROUND_HALF_UP
 import os
 from dotenv import load_dotenv
 from django.http import JsonResponse
-from django.core.mail import EmailMessage
+
+logger = logging.getLogger(__name__)
 
 def inicio(request):
 	return render(request, 'tienda/inicio.html')
@@ -465,6 +475,154 @@ class CustomLoginView(LoginView):
 		first_name = user.first_name if user.first_name else user.username
 		messages.success(self.request, f'¡Bienvenido {first_name}! Has iniciado sesión correctamente.')
 		return response
+
+
+class PasswordResetCodeRequestForm(forms.Form):
+	email = forms.EmailField(label='Correo electrónico')
+
+	def clean_email(self):
+		return (self.cleaned_data.get('email') or '').strip().lower()
+
+
+class PasswordResetCodeVerifyForm(forms.Form):
+	email = forms.EmailField(label='Correo electrónico')
+	code = forms.CharField(label='Código', max_length=6)
+
+	def clean_email(self):
+		return (self.cleaned_data.get('email') or '').strip().lower()
+
+	def clean_code(self):
+		code = (self.cleaned_data.get('code') or '').strip()
+		if not code.isdigit() or len(code) != 6:
+			raise forms.ValidationError('El código debe tener 6 dígitos.')
+		return code
+
+
+@require_http_methods(['GET', 'POST'])
+def password_reset_code_request(request):
+	if request.user.is_authenticated:
+		return redirect('home')
+
+	form = PasswordResetCodeRequestForm(request.POST or None)
+	if request.method == 'POST' and form.is_valid():
+		email = form.cleaned_data['email']
+		request.session['pw_reset_email'] = email
+		request.session.modified = True
+
+		User = get_user_model()
+		user = User.objects.filter(email__iexact=email, is_active=True).first()
+		if user:
+			now = timezone.now()
+			last = (
+				PasswordResetCode.objects
+				.filter(email__iexact=email, used_at__isnull=True)
+				.order_by('-created_at')
+				.first()
+			)
+			can_send = True
+			if last and not last.is_expired():
+				seconds_since_last = (now - last.last_sent_at).total_seconds()
+				if seconds_since_last < 60:
+					can_send = False
+
+			if can_send:
+				code = f"{secrets.randbelow(1_000_000):06d}"
+				expires_at = now + timedelta(minutes=10)
+				prc = PasswordResetCode.objects.create(
+					user=user,
+					email=user.email,
+					code_hash=make_password(code),
+					expires_at=expires_at,
+					last_sent_at=now,
+				)
+				try:
+					asunto = "Código de recuperación de contraseña"
+					contenido = (
+						"<p>Tu código de recuperación es:</p>"
+						f"<p style='font-size:28px;font-weight:800;letter-spacing:4px'>{code}</p>"
+						"<p>Este código vence en 10 minutos.</p>"
+					)
+					enviar_correo(user.email, asunto, contenido)
+				except Exception:
+					logger.exception("No se pudo enviar el código de recuperación por email")
+					prc.delete()
+
+		messages.success(request, "Si el correo está registrado, te enviaremos un código de recuperación.")
+		return redirect('password_reset_code_verify')
+
+	return render(request, 'registration/password_reset_code_request.html', {'form': form})
+
+
+@require_http_methods(['GET', 'POST'])
+def password_reset_code_verify(request):
+	if request.user.is_authenticated:
+		return redirect('home')
+
+	initial_email = (request.GET.get('email') or request.session.get('pw_reset_email') or '').strip().lower()
+	form = PasswordResetCodeVerifyForm(request.POST or None, initial={'email': initial_email})
+
+	if request.method == 'POST' and form.is_valid():
+		email = form.cleaned_data['email']
+		code = form.cleaned_data['code']
+
+		prc = (
+			PasswordResetCode.objects
+			.filter(email__iexact=email, used_at__isnull=True)
+			.order_by('-created_at')
+			.first()
+		)
+		if not prc or prc.is_expired() or prc.attempts >= 5:
+			form.add_error(None, 'Código inválido o expirado.')
+			return render(request, 'registration/password_reset_code_verify.html', {'form': form})
+
+		if check_password(code, prc.code_hash):
+			prc.verified_at = timezone.now()
+			prc.save(update_fields=['verified_at'])
+			request.session['pw_reset_user_id'] = prc.user_id
+			request.session['pw_reset_code_id'] = prc.id
+			request.session.modified = True
+			return redirect('password_reset_code_set_password')
+
+		prc.attempts = (prc.attempts or 0) + 1
+		prc.save(update_fields=['attempts'])
+		form.add_error('code', 'Código inválido o expirado.')
+
+	return render(request, 'registration/password_reset_code_verify.html', {'form': form})
+
+
+@require_http_methods(['GET', 'POST'])
+def password_reset_code_set_password(request):
+	if request.user.is_authenticated:
+		return redirect('home')
+
+	user_id = request.session.get('pw_reset_user_id')
+	code_id = request.session.get('pw_reset_code_id')
+	if not user_id or not code_id:
+		messages.error(request, "Debes solicitar y verificar un código primero.")
+		return redirect('password_reset_code_request')
+
+	User = get_user_model()
+	user = User.objects.filter(pk=user_id, is_active=True).first()
+	prc = PasswordResetCode.objects.filter(pk=code_id, user_id=user_id, used_at__isnull=True).first()
+	if not user or not prc or prc.is_expired() or prc.verified_at is None:
+		messages.error(request, "El código ya no es válido. Solicita uno nuevo.")
+		request.session.pop('pw_reset_user_id', None)
+		request.session.pop('pw_reset_code_id', None)
+		request.session.modified = True
+		return redirect('password_reset_code_request')
+
+	form = SetPasswordForm(user, request.POST or None)
+	if request.method == 'POST' and form.is_valid():
+		form.save()
+		prc.used_at = timezone.now()
+		prc.save(update_fields=['used_at'])
+		request.session.pop('pw_reset_user_id', None)
+		request.session.pop('pw_reset_code_id', None)
+		request.session.modified = True
+		messages.success(request, "Contraseña actualizada. Ya puedes iniciar sesión.")
+		return redirect('login')
+
+	return render(request, 'registration/password_reset_code_set_password.html', {'form': form})
 
 
 from django.contrib.auth import authenticate
