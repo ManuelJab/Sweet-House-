@@ -71,25 +71,46 @@ def contacto(request):
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = CustomerFeedback
-        fields = ['name', 'email', 'comment', 'rating']
+        fields = ['comment', 'rating']
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Tu nombre (opcional)', 'class': 'input'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Tu correo (opcional)', 'class': 'input'}),
-            'comment': forms.Textarea(attrs={'rows':4, 'placeholder':'Cuéntanos qué debemos mejorar...', 'class': 'textarea'}),
+            'comment': forms.Textarea(attrs={'rows':4, 'placeholder':'Cuéntanos qué debemos mejorar...', 'class': 'textarea', 'required': 'required'}),
             'rating': forms.RadioSelect(choices=[(i, f'{i}★') for i in range(1,6)]),
         }
 
 def feedback(request):
+    can_comment = False
+    has_purchased = False
+    is_admin = False
+
+    if request.user.is_authenticated:
+        is_admin = request.user.is_staff or request.user.is_superuser
+        if not is_admin:
+            has_purchased = SolicitudPedido.objects.filter(email__iexact=request.user.email).exists()
+            if has_purchased:
+                can_comment = True
+
     if request.method == 'POST':
-        if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+        if not request.user.is_authenticated:
+            messages.warning(request, 'Debes iniciar sesión para dejar un comentario.')
+            return redirect('login')
+            
+        if is_admin:
             messages.info(request, 'Los administradores no pueden publicar comentarios.')
             return redirect('feedback')
+            
+        if not has_purchased:
+            messages.warning(request, 'Debes haber realizado al menos un pedido para poder dejar un comentario.')
+            return redirect('feedback')
+            
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            fb = form.save()
+            fb = form.save(commit=False)
+            fb.name = request.user.first_name or request.user.username
+            fb.email = request.user.email
+            fb.save()
             try:
                 send_mail(
-                    subject=f'Nuevo comentario del cliente ({fb.rating}★)',
+                    subject=f'Nuevo comentario verificado ({fb.rating}★)',
                     message=f'Nombre: {fb.name}\nEmail: {fb.email}\nRating: {fb.rating}\n\nComentario:\n{fb.comment}',
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[settings.DEFAULT_FROM_EMAIL],
@@ -97,12 +118,19 @@ def feedback(request):
                 )
             except Exception:
                 logger.exception('No se pudo enviar el correo de feedback')
-            messages.success(request, 'Gracias por tu comentario. ¡Nos ayuda a mejorar!')
+            messages.success(request, 'Gracias por tu reseña verificada. ¡Nos ayuda a mejorar!')
             return redirect('feedback')
     else:
         form = FeedbackForm()
+        
     recientes = CustomerFeedback.objects.all()[:10]
-    return render(request, 'web/feedback.html', {'form': form, 'recientes': recientes})
+    return render(request, 'web/feedback.html', {
+        'form': form,
+        'recientes': recientes,
+        'can_comment': can_comment,
+        'has_purchased': has_purchased,
+        'is_admin': is_admin
+    })
 
 
 def solicitud_pedido(request):

@@ -43,55 +43,50 @@
     <section class="feedback-card">
       <h1 class="feedback-title"><i class="bi bi-pencil-square"></i> Deja tu comentario</h1>
       <div class="body">
-        {% if request.user.is_authenticated %}
-          {% if request.user.is_staff or request.user.is_superuser %}
-            <p style="color:#777;">Los administradores no pueden publicar comentarios. Revisa los más recientes a la derecha.</p>
-          {% else %}
-            <form method="post" class="feedback-form" novalidate>
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="{{ form.name.id_for_label }}">Nombre</label>
-                {{ form.name }}
-              </div>
-              <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Correo</label>
-                {{ form.email }}
-              </div>
-              <div class="form-group">
-                <label for="{{ form.comment.id_for_label }}">Comentario</label>
-                {{ form.comment }}
-              </div>
-              <div class="form-group">
-                <label for="{{ form.rating.id_for_label }}">Calificación</label>
-                <div class="rating-wrap">
-                  {{ form.rating }}
-                </div>
-              </div>
-              <button type="submit" class="feedback-btn">Enviar comentario</button>
-            </form>
-          {% endif %}
+        {% if not request.user.is_authenticated %}
+          <div style="text-align:center; padding: 40px 10px;">
+            <i class="bi bi-lock-fill" style="font-size: 3rem; color: #ffb300;"></i>
+            <h3 style="color:#e91e63; margin-top:15px; font-weight:800;">Inicia sesión para opinar</h3>
+            <p style="color:#666;">Solo los usuarios registrados pueden interactuar con las reseñas de la tienda.</p>
+            <a href="{% url 'login' %}?next={{ request.path }}" class="feedback-btn" style="display:inline-block; margin-top:15px; text-decoration:none;"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</a>
+          </div>
+        {% elif is_admin %}
+          <div style="text-align:center; padding: 40px 10px;">
+            <i class="bi bi-shield-lock-fill" style="font-size: 3rem; color: #ccc;"></i>
+            <h3 style="color:#666; margin-top:15px; font-weight:800;">Modo Administrador</h3>
+            <p style="color:#999;">Los administradores no interactúan con el sistema de reseñas públicas.</p>
+          </div>
+        {% elif not has_purchased %}
+           <div style="text-align:center; padding: 40px 10px;">
+            <i class="bi bi-bag-x-fill" style="font-size: 3rem; color: #ff4081;"></i>
+            <h3 style="color:#e91e63; margin-top:15px; font-weight:800;">Compras requeridas</h3>
+            <p style="color:#666; margin-top:8px;">Para mantener nuestras reseñas <strong>100% reales</strong>, solicitamos que tengas al menos un pedido antes de poder dejarnos un comentario.<br><br>¡Anímate a probar nuestras delicias!</p>
+            <a href="{% url 'catalogo_publico' %}" class="feedback-btn" style="display:inline-block; margin-top:15px; text-decoration:none;"><i class="bi bi-shop"></i> Ver Catálogo</a>
+          </div>
         {% else %}
           <form method="post" class="feedback-form" novalidate>
             {% csrf_token %}
-            <div class="form-group">
-              <label for="{{ form.name.id_for_label }}">Nombre</label>
-              {{ form.name }}
+            <div style="margin-bottom: 24px; padding: 12px 18px; background: #fdf2f5; border-radius: 12px; border-left: 5px solid #e91e63; display:flex; gap:14px; align-items:center;">
+              <i class="bi bi-patch-check-fill" style="font-size:1.8rem; color:#e91e63;"></i>
+              <div>
+                <strong style="color: #e91e63; font-size:1.05rem;">Cliente Verificado</strong>
+                <p style="margin: 2px 0 0; font-size: 0.9rem; color: #666;">Publicando reseña pública a nombre de: <br><b>{{ request.user.first_name|default:request.user.username }}</b></p>
+              </div>
             </div>
+            
             <div class="form-group">
-              <label for="{{ form.email.id_for_label }}">Correo</label>
-              {{ form.email }}
-            </div>
-            <div class="form-group">
-              <label for="{{ form.comment.id_for_label }}">Comentario</label>
+              <label for="{{ form.comment.id_for_label }}">Tu opinión sincera:</label>
               {{ form.comment }}
             </div>
+            
             <div class="form-group">
-              <label for="{{ form.rating.id_for_label }}">Calificación</label>
+              <label for="{{ form.rating.id_for_label }}">¿Qué calificación nos das?</label>
               <div class="rating-wrap">
                 {{ form.rating }}
               </div>
             </div>
-            <button type="submit" class="feedback-btn">Enviar comentario</button>
+            
+            <button type="submit" class="feedback-btn" style="width:100%; margin-top:10px;"><i class="bi bi-send-fill"></i> Publicar mi reseña verificada</button>
           </form>
         {% endif %}
       </div>
