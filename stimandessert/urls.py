@@ -8,9 +8,6 @@ from tienda.views import (
     CustomLoginView,
     home,
     ajax_login,
-    password_reset_code_request,
-    password_reset_code_verify,
-    password_reset_code_set_password,
 )
 from web.views import solicitud_pedido, request_admin, feedback
 from tienda.forms import EmailAuthenticationForm
@@ -32,9 +29,6 @@ urlpatterns = [
     ), name='login'),
     path('accounts/ajax-login/', ajax_login, name='ajax_login'),
     path('accounts/request-admin/', request_admin, name='request_admin'),
-    path('accounts/password-reset-code/', password_reset_code_request, name='password_reset_code_request'),
-    path('accounts/password-reset-code/verify/', password_reset_code_verify, name='password_reset_code_verify'),
-    path('accounts/password-reset-code/set-password/', password_reset_code_set_password, name='password_reset_code_set_password'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tienda/', include('tienda.urls')),
 ]
