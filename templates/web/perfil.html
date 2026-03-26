@@ -33,11 +33,81 @@
   <div style="background: #fff0f3; border: 1px solid #ffccd5; padding: 20px; border-radius: 12px;">
     <h3 style="color: #d32f2f; margin-top: 0;"><i class="bi bi-exclamation-triangle-fill"></i> Zona de Peligro</h3>
     <p style="color: #555; font-size: 0.95rem;">Una vez que elimines tu cuenta, no hay vuelta atrás. Perderás el acceso a tu historial de pedidos interactivos y tus favoritos permanentemente.</p>
-    <form method="post" onsubmit="return confirm('¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta permanentemente? Esto no se puede deshacer.');">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="delete">
-      <button type="submit" style="background: white; color: #d32f2f; border: 2px solid #d32f2f; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;"><i class="bi bi-trash-fill"></i> Eliminar mi cuenta por completo</button>
-    </form>
+    <button type="button" onclick="document.getElementById('deleteModal').classList.add('active');" style="background: white; color: #d32f2f; border: 2px solid #d32f2f; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s;"><i class="bi bi-trash-fill"></i> Eliminar mi cuenta por completo</button>
+  </div>
+</div>
+
+<style>
+  .delete-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    opacity: 0; visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  .delete-modal-overlay.active {
+    opacity: 1; visibility: visible;
+  }
+  .delete-modal-content {
+    background: white;
+    padding: 35px 30px;
+    border-radius: 24px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .delete-modal-overlay.active .delete-modal-content {
+    transform: translateY(0) scale(1);
+  }
+  .delete-modal-icon {
+    font-size: 55px;
+    color: #e53935;
+    margin-bottom: 20px;
+    line-height: 1;
+    display: inline-block;
+    filter: drop-shadow(0 4px 8px rgba(229,57,53,0.3));
+  }
+  .btn-modal-cancel {
+    flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #e0e0e0; 
+    background: #f8f9fa; color: #555; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-modal-cancel:hover { background: #e0e0e0; }
+  .btn-modal-delete {
+    width: 100%; padding: 12px; border-radius: 12px; border: none; 
+    background: #d32f2f; color: white; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 15px rgba(211,47,47,0.3);
+    transition: all 0.2s;
+  }
+  .btn-modal-delete:hover { background: #b71c1c; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(211,47,47,0.4); }
+</style>
+
+<div class="delete-modal-overlay" id="deleteModal">
+  <div class="delete-modal-content">
+    <div class="delete-modal-icon">
+      <i class="bi bi-exclamation-octagon-fill"></i>
+    </div>
+    <h3 style="color: #2b2b2b; font-size: 1.5rem; font-weight: 800; margin: 0 0 12px;">¿Eliminar cuenta?</h3>
+    <p style="color: #666; font-size: 1rem; line-height: 1.5; margin-bottom: 28px;">
+      Estás a punto de borrar tu cuenta de forma <b>permanente</b>. Todo tu historial de pedidos y favoritos se eliminará y no podrás recuperarlos.<br>¿Estás seguro de continuar?
+    </p>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button type="button" onclick="document.getElementById('deleteModal').classList.remove('active');" class="btn-modal-cancel">
+        Cancelar
+      </button>
+      <form method="post" style="flex: 1; margin: 0; display:flex;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+        <button type="submit" class="btn-modal-delete">
+          Sí, eliminar
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}
