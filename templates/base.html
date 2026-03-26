@@ -757,6 +757,7 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+  {% if request.resolver_match.url_name == 'home' %}
   <footer class="banner-footer">
     <div class="footer-banner-container">
       <!-- Main Content Area -->
@@ -826,6 +827,7 @@
       <p>© 2026 Sweet House · Todos los derechos reservados ♡</p>
     </div>
   </footer>
+  {% endif %}
   {% if not request.user.is_authenticated %}
   <div class="login-modal-overlay" id="loginModalOverlay">
     <div class="login-modal">
