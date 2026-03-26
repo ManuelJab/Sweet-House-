@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -270,3 +271,31 @@ def dashboard(request):
         'user': user,
     }
     return render(request, 'dashboard.html', context)
+
+
+@login_required
+def perfil_usuario(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'update':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            
+            # Save data
+            request.user.first_name = first_name
+            request.user.last_name = last_name
+            request.user.save()
+            
+            messages.success(request, 'Tus datos han sido actualizados exitosamente.')
+            return redirect('perfil')
+            
+        elif action == 'delete':
+            user = request.user
+            logout(request)
+            user.delete()
+            # It's good practice to add a success message after logout, but it uses session, 
+            # so we just redirect. 
+            return redirect('home')
+            
+    return render(request, 'web/perfil.html')

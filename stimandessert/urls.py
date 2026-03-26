@@ -10,7 +10,7 @@ from tienda.views import (
     ajax_login,
     verify_email,
 )
-from web.views import solicitud_pedido, request_admin, feedback
+from web.views import solicitud_pedido, request_admin, feedback, perfil_usuario
 from tienda.forms import EmailAuthenticationForm
 from django.conf import settings
 from django.conf.urls.static import static
@@ -23,6 +23,7 @@ urlpatterns = [
     path('comentarios/', feedback, name='feedback'),
     path('solicitud/', solicitud_pedido, name='solicitud_pedido'),
     path('dashboard/', admin_dashboard, name='dashboard'),
+    path('perfil/', perfil_usuario, name='perfil'),
     # Use a custom authentication form that asks for email (stored in User.username)
     path('accounts/login/', CustomLoginView.as_view(
         template_name='registration/login.html',
