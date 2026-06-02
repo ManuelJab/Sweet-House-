@@ -1148,6 +1148,7 @@ def solicitud_enviar_email(request, pk: int):
 		port = 587
 	use_tls = (os.environ.get('EMAIL_USE_TLS') or str(getattr(settings, 'EMAIL_USE_TLS', True))).lower() in ('true', '1', 'yes')
 	use_ssl = (os.environ.get('EMAIL_USE_SSL') or str(getattr(settings, 'EMAIL_USE_SSL', False))).lower() in ('true', '1', 'yes')
+	smtp_ready = all([host, user, password])
 	if smtp_ready:
 		EmailMessage(subject, message, sender, [dest_email]).send(fail_silently=False)
 		messages.success(request, f"Mensaje enviado a {dest_email}. Respuestas llegarán a {reply_to_email}.")
