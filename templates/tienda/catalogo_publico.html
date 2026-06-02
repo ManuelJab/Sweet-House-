@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+
+<div class="banner-catalogo">
+    <img src="{% static 'img/Banner_Catalogo.jpg' %}" alt="Catálogo Sweet House" class="img-banner">
+</div>
+
+<section class="catalogo-section">
+    <div class="container">
+        <h1 class="text-center my-5" style="color: #ff4081; font-weight: 800; font-size: 3rem;">Catálogo de Dulzuras</h1>
+
+        {% if postres_especiales %}
+        <div class="especiales-section mb-5">
+            <h2 class="especiales-title mb-4"><i class="bi bi-star-fill" style="color: #ffb300;"></i> Nuestros Especiales</h2>
+            <div class="products-grid">
+                {% for p in postres_especiales %}
+                <div class="product-card">
+                    <div class="badge-especial">Especial</div>
+                    <div class="product-image">
+                        {% if 'flan' in p.name|lower %}
+                            <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'cheesecake' in p.name|lower %}
+                            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'lava' in p.name|lower %}
+                            <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'mousse' in p.name|lower %}
+                            <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'panna' in p.name|lower %}
+                            <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+                            <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'tarta' in p.name|lower %}
+                            <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'velvet' in p.name|lower %}
+                            <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'leches' in p.name|lower %}
+                            <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'trufa' in p.name|lower %}
+                            <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'chocolate' in p.name|lower %}
+                            <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                        {% else %}
+                            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ p.name }}</h3>
+                        <p class="description">{{ p.description|truncatechars:80 }}</p>
+                        <p class="price">$ {{ p.price|intcomma }}</p>
+                        <div class="product-actions">
+                            <a href="{% url 'carrito_agregar' p.id %}" class="btn-pink">Agregar</a>
+                            {% if request.user.is_authenticated %}
+                                <a href="#" class="btn-fav" data-id="{{ p.id }}">
+                                    <i class="bi {% if p.id in favorites_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="productos-regulares">
+            <h2 class="mb-4" style="color: #e91e63; font-weight: 700;">Todos nuestros productos</h2>
+            <div class="products-grid">
+                {% for p in productos %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if 'flan' in p.name|lower %}
+                            <img src="{% static 'img/Flan.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'cheesecake' in p.name|lower %}
+                            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'lava' in p.name|lower %}
+                            <img src="{% static 'img/lava_chocolate.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'mousse' in p.name|lower %}
+                            <img src="{% static 'img/mousse_maracuya.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'panna' in p.name|lower %}
+                            <img src="{% static 'img/panna_Italiana.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'galleta' in p.name|lower or p.category == 'galleta' %}
+                            <img src="{% static 'img/postre_galleta.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'tarta' in p.name|lower %}
+                            <img src="{% static 'img/tartas_frutas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'velvet' in p.name|lower %}
+                            <img src="{% static 'img/torta_red_velvet.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'leches' in p.name|lower %}
+                            <img src="{% static 'img/tres_leches.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'trufa' in p.name|lower %}
+                            <img src="{% static 'img/trufas.jpg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif 'chocolate' in p.name|lower %}
+                            <img src="{% static 'img/postre_chocolate.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% elif p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                        {% else %}
+                            <img src="{% static 'img/cheesecake.jpeg' %}" alt="{{ p.name }}" loading="lazy">
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ p.name }}</h3>
+                        <p class="description">{{ p.description|truncatechars:80 }}</p>
+                        <p class="price">$ {{ p.price|intcomma }}</p>
+                        <div class="product-actions">
+                            <a href="{% url 'carrito_agregar' p.id %}" class="btn-pink">Agregar</a>
+                            {% if request.user.is_authenticated %}
+                                <a href="#" class="btn-fav" data-id="{{ p.id }}">
+                                    <i class="bi {% if p.id in favorites_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No hay productos disponibles en este momento.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}
