@@ -6,12 +6,52 @@
 <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
 
 <div class="banner-catalogo">
-    <img src="{% static 'img/Banner_Catalogo.jpg' %}" alt="Catálogo Sweet House" class="img-banner">
+    <img src="{% static 'img/Banner.jpg.png' %}" alt="Catálogo Sweet House" class="img-banner">
 </div>
 
-<section class="catalogo-section">
-    <div class="container">
-        <h1 class="text-center my-5" style="color: #ff4081; font-weight: 800; font-size: 3rem;">Catálogo de Dulzuras</h1>
+<section class="catalogo-section" style="background-image: url('{% static 'img/dessert_pattern.jpg' %}'); background-repeat: repeat; background-size: 300px;">
+    <div class="container" style="background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 20px; margin-top: 40px; margin-bottom: 40px;">
+        <h1 class="text-center my-4" style="color: #ff4081; font-weight: 800; font-size: 3.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">Catálogo de Dulzuras</h1>
+        
+        <!-- Categorías Estilo Banner -->
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="category-banner p-4 d-flex align-items-center" style="background: #fff; border-left: 5px solid #ff4081; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div class="icon-box me-4" style="font-size: 2.5rem; color: #ff4081;"><i class="bi bi-cake2"></i></div>
+                    <div>
+                        <h3 style="color: #ff4081; font-weight: 700; margin-bottom: 5px;">Postres</h3>
+                        <p class="text-muted mb-0">Nuestros clásicos y deliciosos postres</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="category-banner p-4 d-flex align-items-center" style="background: #fff; border-left: 5px solid #ff4081; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div class="icon-box me-4" style="font-size: 2.5rem; color: #ff4081;"><i class="bi bi-egg-fried"></i></div>
+                    <div>
+                        <h3 style="color: #ff4081; font-weight: 700; margin-bottom: 5px;">Flanes</h3>
+                        <p class="text-muted mb-0">Suaves y cremosos flanes tradicionales</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="category-banner p-4 d-flex align-items-center" style="background: #fff; border-left: 5px solid #ff4081; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div class="icon-box me-4" style="font-size: 2.5rem; color: #ff4081;"><i class="bi bi-snow2"></i></div>
+                    <div>
+                        <h3 style="color: #ff4081; font-weight: 700; margin-bottom: 5px;">Tortas frías</h3>
+                        <p class="text-muted mb-0">Refrescantes y dulces para cualquier ocasión</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="category-banner p-4 d-flex align-items-center" style="background: #fff; border-left: 5px solid #ff4081; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div class="icon-box me-4" style="font-size: 2.5rem; color: #ff4081;"><i class="bi bi-cup-hot"></i></div>
+                    <div>
+                        <h3 style="color: #ff4081; font-weight: 700; margin-bottom: 5px;">Pudines</h3>
+                        <p class="text-muted mb-0">Irresistibles pudines artesanales</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {% if postres_especiales %}
         <div class="especiales-section mb-5">
@@ -119,6 +159,81 @@
                 {% empty %}
                 <p>No hay productos disponibles en este momento.</p>
                 {% endfor %}
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+        <!-- Galería de Imágenes Disponibles -->
+        <div class="galeria-img-section mt-5">
+            <h2 class="text-center mb-4" style="color: #ff4081; font-weight: 700;">Nuestras Delicias (Galería)</h2>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/Flan.jpg' %}" class="card-img-top rounded" alt="Flan">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Flan Casero</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/cheesecake.jpeg' %}" class="card-img-top rounded" alt="Cheesecake">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Cheesecake</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/lava_chocolate.jpg' %}" class="card-img-top rounded" alt="Lava de Chocolate">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Lava de Chocolate</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/mousse_maracuya.jpg' %}" class="card-img-top rounded" alt="Mousse">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Mousse de Maracuyá</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/panna_Italiana.jpg' %}" class="card-img-top rounded" alt="Panna Cotta">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Panna Cotta</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/postre_chocolate.jpeg' %}" class="card-img-top rounded" alt="Postre de Chocolate">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Postre de Chocolate</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/postre_galleta.jpg' %}" class="card-img-top rounded" alt="Galletas">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Galletas Integrales</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/tartas_frutas.jpg' %}" class="card-img-top rounded" alt="Tartas">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Tartas de Frutas</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/torta_red_velvet.jpg' %}" class="card-img-top rounded" alt="Red Velvet">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Red Velvet</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/tres_leches.jpg' %}" class="card-img-top rounded" alt="Tres Leches">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Tres Leches</small></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="{% static 'img/trufas.jpg' %}" class="card-img-top rounded" alt="Trufas">
+                        <div class="card-body p-2 text-center"><small class="text-muted">Trufas de Chocolate</small></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
