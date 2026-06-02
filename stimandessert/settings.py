@@ -108,9 +108,9 @@ WSGI_APPLICATION = 'stimandessert.wsgi.application'
 # Render projects have used different env var names over time.
 # Prefer the standard DATABASE_URL, but accept common alternates too.
 _database_url = (
-    os.environ.get('DATABASE_URL')
-    or os.environ.get('External_DataBase_URL')
+    os.environ.get('External_DataBase_URL')
     or os.environ.get('EXTERNAL_DATABASE_URL')
+    or os.environ.get('DATABASE_URL')
     or ''
 ).strip()
 
