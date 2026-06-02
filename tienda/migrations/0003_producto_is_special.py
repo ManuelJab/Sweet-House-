@@ -10,9 +10,25 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='producto',
-            name='is_special',
-            field=models.BooleanField(default=False),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql=(
+                        "ALTER TABLE tienda_producto "
+                        "ADD COLUMN IF NOT EXISTS is_special boolean NOT NULL DEFAULT FALSE;"
+                    ),
+                    reverse_sql=(
+                        "ALTER TABLE tienda_producto "
+                        "DROP COLUMN IF EXISTS is_special;"
+                    ),
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='producto',
+                    name='is_special',
+                    field=models.BooleanField(default=False),
+                ),
+            ],
         ),
     ]

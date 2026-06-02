@@ -10,9 +10,25 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='producto',
-            name='category',
-            field=models.CharField(choices=[('postre', 'Postre'), ('galleta', 'Galleta'), ('pudin', 'Pudín'), ('otro', 'Otro')], default='postre', max_length=20),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql=(
+                        "ALTER TABLE tienda_producto "
+                        "ADD COLUMN IF NOT EXISTS category varchar(20) NOT NULL DEFAULT 'postre';"
+                    ),
+                    reverse_sql=(
+                        "ALTER TABLE tienda_producto "
+                        "DROP COLUMN IF EXISTS category;"
+                    ),
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='producto',
+                    name='category',
+                    field=models.CharField(choices=[('postre', 'Postre'), ('galleta', 'Galleta'), ('pudin', 'Pudín'), ('otro', 'Otro')], default='postre', max_length=20),
+                ),
+            ],
         ),
     ]

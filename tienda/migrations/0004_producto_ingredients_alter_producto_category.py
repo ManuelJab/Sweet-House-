@@ -10,10 +10,26 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='producto',
-            name='ingredients',
-            field=models.TextField(blank=True, verbose_name='Ingredientes'),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql=(
+                        "ALTER TABLE tienda_producto "
+                        "ADD COLUMN IF NOT EXISTS ingredients text NOT NULL DEFAULT '';"
+                    ),
+                    reverse_sql=(
+                        "ALTER TABLE tienda_producto "
+                        "DROP COLUMN IF EXISTS ingredients;"
+                    ),
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='producto',
+                    name='ingredients',
+                    field=models.TextField(blank=True, verbose_name='Ingredientes'),
+                ),
+            ],
         ),
         migrations.AlterField(
             model_name='producto',
