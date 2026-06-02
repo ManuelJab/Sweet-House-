@@ -827,9 +827,24 @@ def favoritos_list(request):
 # Catálogo público (desde DB)
 
 def catalogo_publico(request):
-	productos = Producto.objects.filter(is_active=True).order_by('name')
-	postres_especiales = Producto.objects.filter(is_active=True, is_special=True).order_by('name')
+	from django.db import connection
+
 	favorites_ids = _get_favorites(request.session)
+	try:
+		tables = connection.introspection.table_names()
+		if Producto._meta.db_table not in tables:
+			return render(request, 'tienda/catalogo_publico.html', {
+				'productos': [],
+				'postres_especiales': [],
+				'favorites_ids': favorites_ids,
+			})
+
+		productos = Producto.objects.filter(is_active=True).order_by('name')
+		postres_especiales = Producto.objects.filter(is_active=True, is_special=True).order_by('name')
+	except Exception:
+		productos = []
+		postres_especiales = []
+
 	return render(request, 'tienda/catalogo_publico.html', {
 		'productos': productos,
 		'postres_especiales': postres_especiales,
@@ -838,7 +853,16 @@ def catalogo_publico(request):
 
 
 def catalogo_estilizado(request):
-	productos = Producto.objects.filter(is_active=True).order_by('name')
+	from django.db import connection
+
+	try:
+		tables = connection.introspection.table_names()
+		if Producto._meta.db_table not in tables:
+			return render(request, 'catalogo.html', {'productos': []})
+		productos = Producto.objects.filter(is_active=True).order_by('name')
+	except Exception:
+		productos = []
+
 	return render(request, 'catalogo.html', {'productos': productos})
 
 
