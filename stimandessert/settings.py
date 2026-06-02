@@ -14,9 +14,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
-import os
-from pathlib import Path
-
 from dotenv import load_dotenv
 import dj_database_url
 
@@ -108,14 +105,21 @@ WSGI_APPLICATION = 'stimandessert.wsgi.application'
 # ============================================
 # Database Configuration
 # ============================================
-# Use dj-database-url to parse the DATABASE_URL environment variable
-# Fallback to a local SQLite database if DATABASE_URL is not set.
+# Render projects have used different env var names over time.
+# Prefer the standard DATABASE_URL, but accept common alternates too.
+_database_url = (
+    os.environ.get('DATABASE_URL')
+    or os.environ.get('External_DataBase_URL')
+    or os.environ.get('EXTERNAL_DATABASE_URL')
+    or ''
+).strip()
 
-_database_url = os.environ.get('DATABASE_URL', '')
+if _database_url.startswith('postgres://'):
+    _database_url = _database_url.replace('postgres://', 'postgresql://', 1)
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+    'default': dj_database_url.parse(
+        _database_url or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         ssl_require=os.environ.get('DJANGO_DEBUG', 'False').lower() not in ('true', '1', 'yes')
     )
